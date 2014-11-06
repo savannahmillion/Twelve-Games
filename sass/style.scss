@@ -1,3 +1,69 @@
 @import "bourbon/bourbon";
 @import "neat/neat";
 @import "normalize";
+
+// LAYOUT
+header {
+	@include linear-gradient(45deg, #93CDD5, #F1F1E2);
+      
+    -webkit-animation:Bubblegum 10s ease infinite;
+    -moz-animation:Bubblegum 10s ease infinite;
+    -o-animation:Bubblegum 10s ease infinite;
+    animation:Bubblegum 10s ease infinite;  
+      
+    background-size: 600% 100%;     
+    width: 100%;  
+    height: 85vh;
+    overflow: hidden;
+    position: relative;
+    
+    text-align: center;
+}
+
+@-webkit-keyframes Bubblegum {
+    0% {
+        background-position: 0 0
+    }
+    50% {
+        background-position:100% 0
+    }
+    100% {
+        background-position: 0 0
+    }
+}
+
+    @-moz-keyframes Bubblegum {
+    0% {
+        background-position:0 0
+    }
+    50% {
+        background-position:100% 0
+    }
+    100% {
+        background-position:0 0
+    }
+}
+
+    @-o-keyframes Bubblegum {
+    0% {
+        background-position:0 0
+    }
+    50% {
+        background-position:100% 0
+    }
+    100% {
+        background-position:0 0
+    }
+}
+
+    @keyframes Bubblegum { 
+    0% {
+        background-position:0 0
+    }
+    50% {
+        background-position:100% 0
+    }
+    100% {
+        background-position:0 0
+    }
+}
