@@ -1,11 +1,17 @@
 <?php 
 	$page_title = "Twelve Games";
 ?>
-<?php include("includes/header.html");?>
+<?php include("includes/head.html");?>
 
-	<h2>this is a test</h2>
-	<p>this is some content</p>
-	<?php include("includes/footer.html");?>
+<body>
+
+<?php include("includes/sidebar.html");?>
+
+
+	<div class="page-content">
+		<h1>this is a test</h1>
+		<p>this is some content</p>
+	</div>
 
 </body>
 
