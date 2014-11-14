@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>hello phaser!</title>
+        <script src="../../js/phaser.min.js"></script>
+    </head>
+    <body>
+
+    <script type="text/javascript">
+
+    window.onload = function() {
+        var game = new Phaser.Game(900, 700, Phaser.CANVAS, '', { preload: preload, create: create });
+
+        function preload () {
+            this.load.image('background', 'assets/01_peartree_bckgrd.png');
+            this.load.image('pear', 'assets/01_peartree_pear.png');
+
+            this.load.atlasJSONHash('bird', 'assets/01_peartree_bird-together.png', 'assets/01_peartree_bird_anim.json');
+        }
+
+        function create () {
+            var background = this.add.sprite(this.world.centerX, this.world.centerY, 'background');
+            background.anchor.setTo(0.5, 0.5);
+
+            for(i = 0; i < 20; i++)
+            {
+                var xOffset = this.rnd.integerInRange(-300, 300);
+                var yOffset = this.rnd.integerInRange(50, -250);
+                this.add.sprite(this.world.centerX + xOffset, this.world.centerY + yOffset, 'pear');
+            }
+
+            var bot = this.add.sprite(625, 625, 'bird');
+            bot.animations.add('flap');
+            bot.animations.play('flap', 10, true);
+        }
+    };
+
+    </script>
+
+    </body>
+</html>
