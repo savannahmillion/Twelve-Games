@@ -4,7 +4,6 @@
 <?php include("includes/head.html");?>
 
 <body>
-<div class="page-wrap">
 
 	<?php include("includes/header.html");?>
 	<?php include("includes/navigation.html");?>
@@ -20,7 +19,6 @@
 		</div>	
 
 	<?php include("includes/footer.html");?>
-</div>
 
 </body>
 
