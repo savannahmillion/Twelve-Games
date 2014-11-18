@@ -7,19 +7,17 @@ function mainGame() {
     };
 
     window.addEventListener("resize", function(event){
-        var w = document.getElementById("game-canvas").clientWidth;
         var h = document.getElementById("game-canvas").clientHeight;
+        var w = document.getElementById("game-canvas").clientWidth;
 
-        game.width = w;
-        game.height = h;
-
-        game.stage.bounds.width = width;
-        game.stage.bounds.height = height;
+        game.scale.setupScale(w, h);
+        game.scale.setShowAll();
+        game.scale.refresh();
     });
 
     var width = document.getElementById("game-canvas").clientWidth;
     var height = document.getElementById("game-canvas").clientHeight;
-
+    
     var game = new Phaser.Game(width, height, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
     var bird;
     var pears;
@@ -33,8 +31,8 @@ function mainGame() {
         this.load.image('background', 'img/one/background.png');
         this.load.image('pear', 'img/one/pear.png');
 
-        this.load.image('bird', 'img/one/bird.png');
-        //this.load.atlasJSONHash('bird', 'img/one/bird.png', 'img/one/bird_anim.json');
+        //this.load.image('bird', 'img/one/bird.png');
+        this.load.atlasJSONHash('bird', 'img/one/bird.png', 'img/one/bird_anim.json');
     }
 
     function create () {
