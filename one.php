@@ -11,9 +11,8 @@
 
 		<div class="main-content center">
 			<h1>a partridge</h1>
-			<p>this is some content</p>
 
-			<div class="game">
+			<div class="game" id="game-canvas">
 
 				<script type="text/javascript">
 
