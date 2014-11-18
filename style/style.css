@@ -358,7 +358,8 @@ th {
 
 /* you're the angel FONTop of my christmas tree */
 h1 {
-  font-weight: 200; }
+  font-weight: 200;
+  font-size: 20px; }
 
 footer p {
   padding-top: 160px; }
@@ -379,8 +380,8 @@ body {
   margin: 0 auto; }
 
 .game {
-  width: 900px;
-  height: 700px;
+  width: 800px;
+  height: 450px;
   margin: 30px auto 0 auto;
   border: 3px solid #93CFD6; }
 
@@ -399,6 +400,11 @@ footer {
   bottom: 0;
   background-image: url("../img/repeating-trees.png");
   background-repeat: repeat-x; }
+
+.page-header {
+  width: 300px;
+  height: auto;
+  padding-top: 5px; }
 
 .center {
   text-align: center; }

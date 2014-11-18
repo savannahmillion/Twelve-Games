@@ -13,15 +13,9 @@
 			<h1>a partridge</h1>
 
 			<div class="game" id="game-canvas">
-
 				<script type="text/javascript">
-
-			    window.onload = function(){
-			        mainGame();  
-			    };
-
-			    </script>
-
+					window.addEventListener("load", mainGame);
+				</script>
 			</div>
 		</div>	
 
