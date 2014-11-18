@@ -1,0 +1,94 @@
+@import "bourbon/bourbon";
+@import "normalize";
+
+$alabaster: #F2F3E4; // white
+$morningGlory: #93CFD6; // blue
+$shocking: #EA8EBA; // pink
+
+/* you're the angel FONTop of my christmas tree */
+$sans-serif: Helvetica;
+
+h1 { font-weight: 200; }
+footer p { padding-top: 160px; }
+
+/* and they shouted LAYOUT with glee */
+html {
+	position: relative;
+	min-height: 100%;
+}
+
+body {
+	background-color: $alabaster;
+	font-family: $sans-serif;
+	margin: 0 0 260px;
+}
+
+.main-content {
+	width: 100%;
+	padding-bottom: 40px;
+	margin: 0 auto;
+}
+
+.game {
+	width: 800px;
+	height: 450px;
+	margin: 30px auto 0 auto;
+	background-color: $morningGlory;
+}
+
+header {
+	width: 100%;
+	height: 40px;
+	text-align: center;
+	background-color: darken($morningGlory, 30%);
+}
+
+footer {
+	width: 100%;
+	height: 260px;
+	text-align: center;
+	//padding-top: 160px;
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	background-image: url("../img/repeating-trees.png");
+	background-repeat: repeat-x;
+}
+
+.center {
+	text-align: center;
+}
+
+/* NAV yourself a merry little christmas */
+nav {
+	width: 100%;
+	height: 70px;
+	background-color: $morningGlory;
+	ul {
+		margin: 0 auto;
+		width: 1024px;
+		padding-top: 10px;
+		list-style-type: none;
+		li {
+			display: block;
+			float: left;
+			text-align: center;
+			width: 8.3333%;
+			height: 55px;
+			&:hover {
+					border-bottom: 5px solid $shocking;
+				}
+			a {
+				text-decoration: none;
+				img {
+					border-radius: 50%;
+					width: 50px;
+					height: 50px;
+					background-color: lighten($morningGlory, 20%);
+				}
+			}
+		}
+	}
+}
+
+/* Responsive */
