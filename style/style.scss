@@ -30,10 +30,12 @@ body {
 }
 
 .game {
-	width: 800px;
-	height: 450px;
+	width: 900px;
+	height: 700px;
+	//width: 800px;
+	//height: 450px;
 	margin: 30px auto 0 auto;
-	background-color: $morningGlory;
+	border: 3px solid $morningGlory;
 }
 
 header {

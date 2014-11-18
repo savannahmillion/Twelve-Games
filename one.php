@@ -12,8 +12,19 @@
 		<div class="main-content center">
 			<h1>a partridge</h1>
 			<p>this is some content</p>
-			<div class="game"></div>
-		</div>
+
+			<div class="game">
+
+				<script type="text/javascript">
+
+			    window.onload = function(){
+			        mainGame();  
+			    };
+
+			    </script>
+
+			</div>
+		</div>	
 
 	<?php include("includes/footer.html");?>
 </div>

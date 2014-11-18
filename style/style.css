@@ -379,10 +379,10 @@ body {
   margin: 0 auto; }
 
 .game {
-  width: 800px;
-  height: 450px;
+  width: 900px;
+  height: 700px;
   margin: 30px auto 0 auto;
-  background-color: #93CFD6; }
+  border: 3px solid #93CFD6; }
 
 header {
   width: 100%;
