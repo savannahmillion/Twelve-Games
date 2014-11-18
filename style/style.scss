@@ -30,9 +30,8 @@ body {
 }
 
 .game {
-	//width: 900px;
-	//height: 700px;
 	width: 800px;
+	height: auto;
 	height: 450px;
 	margin: 30px auto 0 auto;
 	border: 3px solid $morningGlory;
@@ -104,5 +103,6 @@ nav {
 @media (max-width: 800px) {
 	.game {
 		width: 90%;
+		height: auto;
 	}
 }
