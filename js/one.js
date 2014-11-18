@@ -12,13 +12,7 @@ function mainGame() {
         this.load.image('background', 'assets/01_peartree_bckgrd.png');
         this.load.image('pear', 'assets/01_peartree_pear.png');
 
-        this.load.image('bird', 'assets/01_peartree_bird-together.png');
-
-        /*
-         * commented out for now- broken on windows for some reason..? At least using MAMP
-         * should work when actually on server
-         */
-        //this.load.atlasJSONHash('bird', 'assets/01_peartree_bird-together.png', 'assets/01_peartree_bird_anim.json');
+        this.load.atlasJSONHash('bird', 'assets/01_peartree_bird-together.png', 'assets/01_peartree_bird_anim.json');
     }
 
     function create () {
@@ -46,8 +40,8 @@ function mainGame() {
         bird.body.collideWorldBounds = true;
         bird.body.setSize(0, 0, 76, 56);
 
-        //bird.animations.add('flap');
-        //bird.animations.play('flap', 10, true);
+        bird.animations.add('flap');
+        bird.animations.play('flap', 10, true);
 
         cursors = game.input.keyboard.createCursorKeys();
         flapButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
