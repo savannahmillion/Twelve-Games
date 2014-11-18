@@ -357,6 +357,16 @@ th {
   padding: 0; }
 
 /* you're the angel FONTop of my christmas tree */
+body {
+  font-family: "brandon-grotesque", helvetica, sans-serif;
+  font-size: 18px;
+  line-height: 26px;
+  color: #2b6a72; }
+  body a {
+    color: #e263a0;
+    text-decoration: none;
+    border-bottom: 1px solid #e263a0; }
+
 h1 {
   font-weight: 200;
   font-size: 18px;
@@ -367,7 +377,7 @@ h1 {
 
 footer p {
   padding-top: 160px;
-  line-height: 30px;
+  font-size: .8em;
   color: #ddf0f2; }
 
 /* and they shouted LAYOUT with glee */
@@ -377,18 +387,23 @@ html {
 
 body {
   background-color: #F2F3E4;
-  font-family: "brandon-grotesque", helvetica, sans-serif;
   margin: 0 0 260px; }
-
-.main-content a, footer a {
-  color: #e263a0;
-  text-decoration: none;
-  border-bottom: 1px solid #e263a0; }
 
 .main-content {
   width: 100%;
   padding-bottom: 40px;
   margin: 0 auto; }
+
+.about-content {
+  width: 1024px;
+  height: auto;
+  margin: 0 auto; }
+
+.bio-content {
+  width: 46%;
+  height: auto;
+  margin: 20px 20px 0 20px;
+  float: left; }
 
 .game {
   width: 800px;
@@ -416,6 +431,9 @@ footer {
   width: 300px;
   height: auto;
   padding-top: 5px; }
+
+a.img-link {
+  border-bottom: none; }
 
 .center {
   text-align: center; }

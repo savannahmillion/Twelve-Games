@@ -7,6 +7,17 @@ $shocking: #EA8EBA; // pink
 
 /* you're the angel FONTop of my christmas tree */
 $sans-serif: "brandon-grotesque", helvetica, sans-serif;
+body {
+	font-family: $sans-serif;
+	font-size: 18px;
+	line-height: 26px;
+	color: darken($morningGlory, 40%);
+	a {
+		color: darken($shocking, 10%);
+		text-decoration: none;
+		border-bottom: 1px solid darken($shocking, 10%);
+	}
+}
 
 h1 { 
 	font-weight: 200; 
@@ -19,7 +30,7 @@ h1 {
 
 footer p { 
 	padding-top: 160px;
-	line-height: 30px;
+	font-size: .8em;
 	color: lighten($morningGlory, 20%);
 }
 
@@ -31,20 +42,32 @@ html {
 
 body {
 	background-color: $alabaster;
-	font-family: $sans-serif;
 	margin: 0 0 260px;
 }
 
-.main-content a, footer a {
-	color: darken($shocking, 10%);
-	text-decoration: none;
-	border-bottom: 1px solid darken($shocking, 10%);
-}
+//.main-content a, footer a {
+//	color: darken($shocking, 10%);
+//	text-decoration: none;
+//	border-bottom: 1px solid darken($shocking, 10%);
+//}
 
 .main-content {
 	width: 100%;
 	padding-bottom: 40px;
 	margin: 0 auto;
+}
+
+.about-content {
+	width: 1024px;
+	height: auto;
+	margin: 0 auto;
+}
+
+.bio-content {
+	width: 46%;
+	height: auto;
+	margin: 20px 20px 0 20px;
+	float: left;
 }
 
 .game {
@@ -65,7 +88,6 @@ footer {
 	width: 100%;
 	height: 280px;
 	text-align: center;
-	//padding-top: 160px;
 	position: absolute;
 	left: 0;
 	bottom: 0;
@@ -77,6 +99,10 @@ footer {
 	width: 300px;
 	height: auto;
 	padding-top: 5px;
+}
+
+a.img-link {
+	border-bottom: none;
 }
 
 .center {
