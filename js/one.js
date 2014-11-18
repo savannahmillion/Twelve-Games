@@ -1,5 +1,5 @@
 function mainGame() {
-    var game = new Phaser.Game(900, 700, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render});
+    var game = new Phaser.Game(900, 700, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
     var bird;
     var pears;
 
@@ -9,10 +9,10 @@ function mainGame() {
     var originalScale;
 
     function preload () {
-        this.load.image('background', 'assets/01_peartree_bckgrd.png');
-        this.load.image('pear', 'assets/01_peartree_pear.png');
+        this.load.image('background', 'games/01_peartree/assets/01_peartree_bckgrd.png');
+        this.load.image('pear', 'games/01_peartree/assets/01_peartree_pear.png');
 
-        this.load.atlasJSONHash('bird', 'assets/01_peartree_bird-together.png', 'assets/01_peartree_bird_anim.json');
+        this.load.atlasJSONHash('bird', 'games/01_peartree/assets/01_peartree_bird-together.png', 'games/01_peartree/assets/01_peartree_bird_anim.json');
     }
 
     function create () {
