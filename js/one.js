@@ -1,5 +1,26 @@
 function mainGame() {
-    var game = new Phaser.Game(900, 700, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
+
+    function log(msg){
+        setTimeout(function() {
+            throw new Error(msg);
+        }, 0);
+    };
+
+    window.addEventListener("resize", function(event){
+        var w = document.getElementById("game-canvas").clientWidth;
+        var h = document.getElementById("game-canvas").clientHeight;
+
+        game.width = w;
+        game.height = h;
+
+        game.stage.bounds.width = width;
+        game.stage.bounds.height = height;
+    });
+
+    var width = document.getElementById("game-canvas").clientWidth;
+    var height = document.getElementById("game-canvas").clientHeight;
+
+    var game = new Phaser.Game(width, height, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
     var bird;
     var pears;
 
@@ -9,10 +30,11 @@ function mainGame() {
     var originalScale;
 
     function preload () {
-        this.load.image('background', 'games/01_peartree/assets/01_peartree_bckgrd.png');
-        this.load.image('pear', 'games/01_peartree/assets/01_peartree_pear.png');
+        this.load.image('background', 'img/one/background.png');
+        this.load.image('pear', 'img/one/pear.png');
 
-        this.load.atlasJSONHash('bird', 'games/01_peartree/assets/01_peartree_bird-together.png', 'games/01_peartree/assets/01_peartree_bird_anim.json');
+        this.load.image('bird', 'img/one/bird.png');
+        //this.load.atlasJSONHash('bird', 'img/one/bird.png', 'img/one/bird_anim.json');
     }
 
     function create () {
@@ -26,8 +48,8 @@ function mainGame() {
         pears = this.add.group();
         for(i = 0; i < 20; i++)
         {
-            var xOffset = this.rnd.integerInRange(-300, 300);
-            var yOffset = this.rnd.integerInRange(50, -250);
+            var xOffset = this.rnd.integerInRange(-200, 200);
+            var yOffset = this.rnd.integerInRange(0, -175);
             pears.create(this.world.centerX + xOffset, this.world.centerY + yOffset, 'pear');
         }
 
