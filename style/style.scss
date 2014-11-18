@@ -100,3 +100,9 @@ nav {
 }
 
 /* Responsive */
+
+@media (max-width: 800px) {
+	.game {
+		width: 90%;
+	}
+}

@@ -436,5 +436,8 @@ nav {
           background-color: #ddf0f2; }
 
 /* Responsive */
+@media (max-width: 800px) {
+  .game {
+    width: 90%; } }
 
 /*# sourceMappingURL=style.css.map */
