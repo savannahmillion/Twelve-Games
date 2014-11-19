@@ -18,7 +18,6 @@ function mainGame() {
     var height = document.getElementById("game-canvas").clientHeight;
     
     var game = new Phaser.Game(width, height, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
-    game.world.setBounds(0, 0, width, height);
     var bird;
     var pears;
 
@@ -31,7 +30,6 @@ function mainGame() {
         this.load.image('background', 'img/one/background.png');
         this.load.image('pear', 'img/one/pear.png');
 
-        //this.load.image('bird', 'img/one/bird.png');
         this.load.atlasJSONHash('bird', 'img/one/bird.png', 'img/one/bird_anim.json');
     }
 
