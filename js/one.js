@@ -68,8 +68,9 @@ function mainGame() {
     }
 
     function update() {
-        if(flapButton.isDown)
+        if(flapButton.justPressed()) {
             bird.body.velocity.y = -400;
+        }
 
         if(cursors.left.isDown)
         {
