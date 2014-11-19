@@ -18,6 +18,7 @@ function mainGame() {
     var height = document.getElementById("game-canvas").clientHeight;
     
     var game = new Phaser.Game(width, height, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
+    game.world.setBounds(0, 0, width, height);
     var bird;
     var pears;
 
@@ -35,7 +36,8 @@ function mainGame() {
     }
 
     function create () {
-        this.physics.startSystem(Phaser.Physics.ARCADE);
+        
+        game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.arcade.gravity.y = 1200;
 
         var background = this.add.sprite(this.world.centerX, this.world.centerY, 'background');
@@ -50,14 +52,12 @@ function mainGame() {
             pears.create(this.world.centerX + xOffset, this.world.centerY + yOffset, 'pear');
         }
 
-        bird = this.add.sprite(625, 625, 'bird');
+        bird = game.add.sprite(625, 625, 'bird');
         originalScale = bird.scale.x;
         bird.anchor.setTo(0.5, 0.5);
 
-        this.physics.enable(bird, Phaser.Physics.ARCADE);
-
+        game.physics.enable(bird, Phaser.Physics.ARCADE, true);
         bird.body.collideWorldBounds = true;
-        bird.body.setSize(0, 0, 76, 56);
 
         bird.animations.add('flap');
         bird.animations.play('flap', 10, true);
