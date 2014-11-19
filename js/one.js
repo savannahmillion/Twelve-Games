@@ -11,7 +11,6 @@ function mainGame() {
         var w = document.getElementById("game-canvas").clientWidth;
 
         game.scale.setupScale(w, h);
-        game.scale.setShowAll();
         game.scale.refresh();
     });
 
