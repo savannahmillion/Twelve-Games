@@ -3,7 +3,7 @@
 ?>
 <?php include("includes/head.html");?>
 
-<script src="js/one.js"></script>
+<script src="js/two.js"></script>
 
 <body>
 
@@ -11,7 +11,7 @@
 	<?php include("includes/navigation.html");?>
 
 		<div class="main-content center">
-			<h1>a partridge</h1>
+			<h1>turtle doves</h1>
 
 			<div class="game" id="game-canvas">
 				<script type="text/javascript">

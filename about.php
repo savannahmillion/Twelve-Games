@@ -14,7 +14,7 @@
 
 			<div class="about-content">
 				<p>
-					Twelve Games is a set of twelve micro-games released over twelve days preceding Christmas. David and Savannah initiated it as a fun exploration in HTML5 game frameworks and learning GitHub together. The project is hosted <a href="https://github.com/savannahmillion/Twelve-Games">here on GitHub</a> if you'd like to check it out! The games were built with <a href="http://phaser.io/">phaser.io</a>.
+					Twelve Games is a set of twelve micro-games released over twelve days preceding Christmas. David and Savannah initiated it as a fun exploration in HTML5 game frameworks and learning git together. The project is hosted <a href="https://github.com/savannahmillion/Twelve-Games">here on GitHub</a> if you'd like to check it out! The games were built with <a href="http://phaser.io/">phaser.io</a>.
 				</p>
 				<div class="bio-content">
 					<img src="img/david-avatar.png" class="avatar">

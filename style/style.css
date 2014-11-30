@@ -391,12 +391,13 @@ body {
 
 .main-content {
   width: 100%;
+  min-height: 100%;
   padding-bottom: 40px;
   margin: 0 auto; }
 
 .about-content {
   width: 1024px;
-  height: auto;
+  height: 600px;
   margin: 0 auto; }
 
 .bio-content {
@@ -468,6 +469,10 @@ nav {
 /* Responsive */
 @media (max-width: 800px) {
   .game {
+    width: 90%;
+    height: auto; }
+
+  .about-content, .bio-content {
     width: 90%;
     height: auto; } }
 
