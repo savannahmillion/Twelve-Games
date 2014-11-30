@@ -5,7 +5,7 @@
 
 <script src="js/two.js"></script>
 
-<body>
+<body id="two">
 
 	<?php include("includes/header.html");?>
 	<?php include("includes/navigation.html");?>

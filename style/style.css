@@ -466,14 +466,20 @@ nav {
           height: 50px;
           background-color: #ddf0f2; }
 
+body#one li#onenav,
+body#two li#twonav {
+  border-bottom: 5px solid #6ebfc8; }
+
 /* Responsive */
+@media (max-width: 1024px) {
+  nav ul {
+    width: 100%; } }
 @media (max-width: 800px) {
-  .game {
+  .game, .about-content, .bio-content {
     width: 90%;
     height: auto; }
 
-  .about-content, .bio-content {
-    width: 90%;
-    height: auto; } }
+  .about-content {
+    height: 1200px; } }
 
 /*# sourceMappingURL=style.css.map */

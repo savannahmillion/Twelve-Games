@@ -123,6 +123,7 @@ nav {
 			display: block;
 			float: left;
 			text-align: center;
+			//width: 85px;
 			width: 8.3333%;
 			height: 55px;
 			padding-top: 10px;
@@ -143,16 +144,27 @@ nav {
 	}
 }
 
+body#one li#onenav,
+body#two li#twonav {
+	border-bottom: 5px solid darken($morningGlory, 10%);
+}
+
 /* Responsive */
 
+@media (max-width: 1024px) {
+	nav ul {
+		width: 100%;
+	}
+}
+
 @media (max-width: 800px) {
-	.game {
+	.game, .about-content, .bio-content {
 		width: 90%;
 		height: auto;
 	}
 
-	.about-content, .bio-content {
-		width: 90%;
-		height: auto;
+	.about-content {
+		height: 1200px;
 	}
+
 }

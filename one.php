@@ -5,7 +5,7 @@
 
 <script src="js/one.js"></script>
 
-<body>
+<body id="one">
 
 	<?php include("includes/header.html");?>
 	<?php include("includes/navigation.html");?>
