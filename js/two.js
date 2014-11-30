@@ -29,6 +29,8 @@ function mainGame() {
     var max;
     var range;
 
+    var startButton;
+
     function preload () {
         this.load.image('background', 'img/one/background.png');
         this.load.image(turtleKey, 'img/one/pear.png');
@@ -55,10 +57,38 @@ function mainGame() {
             var turtle = turtles.create(xPos, yPos, turtleKey);
             turtle.anchor.setTo(0.5, 0.5);
         }
+
+        var indices = turtleIndices();
+        log(indices[0]);
+        log(indices[1]);
+
+        startButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    }
+
+    var turtleIndices = function(){
+        var indices = [];
+        for(i = 0; i < NUM_TURTLES; i++)
+            indices.push(i);
+
+        var firstIndex = indices[game.rnd.integerInRange(0, indices.length - 1)];
+
+        var indices2 = [];
+        for(i = 0; i < NUM_TURTLES; i++)
+            if(i != firstIndex)
+                indices2.push(i);
+
+        var secondIndex = indices2[game.rnd.integerInRange(0, indices2.length - 1)];
+
+        return [firstIndex, secondIndex];
     }
 
     function update() {
+        if(startButton.justPressed()) {
+            var indices = turtleIndices();
 
+            var t1 = turtles.getAt(indices[0]);
+            var t2 = turtles.getAt(indices[1]);
+        }
     }
 
     function render() {
