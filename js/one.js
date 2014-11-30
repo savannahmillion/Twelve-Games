@@ -24,6 +24,8 @@ function mainGame() {
     var cursors;
     var flapButton;
 
+    var sfx_flap;
+
     var originalScale;
 
     function preload () {
@@ -31,6 +33,8 @@ function mainGame() {
         this.load.image('pear', 'img/one/pear.png');
 
         this.load.atlasJSONHash('bird', 'img/one/bird.png', 'img/one/bird_anim.json');
+
+        this.load.audio('sfx', 'sfx/one/flap.wav');
     }
 
     function create () {
@@ -40,6 +44,10 @@ function mainGame() {
 
         var background = this.add.sprite(this.world.centerX, this.world.centerY, 'background');
         background.anchor.setTo(0.5, 0.5);
+
+        sfx_flap = game.add.audio('sfx');
+
+        sfx_flap.addMarker('flap', 0.0, 1.0);
 
         //Create Group
         pears = this.add.group();
@@ -67,6 +75,7 @@ function mainGame() {
     function update() {
         if(flapButton.justPressed()) {
             bird.body.velocity.y = -400;
+            sfx_flap.play('flap');
         }
 
         if(cursors.left.isDown)
