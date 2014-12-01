@@ -473,8 +473,25 @@ body#two li#twonav {
 /* Responsive */
 @media (max-width: 1024px) {
   nav ul {
+    margin-left: -40px;
     width: 100%; } }
 @media (max-width: 800px) {
+  nav {
+    height: 140px; }
+    nav ul li {
+      width: 16.33333%; }
+      nav ul li:hover {
+        border-bottom: none;
+        background-color: #93CFD6; }
+
+  body#one li#onenav,
+  body#two li#twonav {
+    border-bottom: none; }
+
+  body#one img#onenavimg,
+  body#two img#twonavimg {
+    border: solid 3px #6ebfc8; }
+
   .game, .about-content, .bio-content {
     width: 90%;
     height: auto; }

@@ -152,12 +152,42 @@ body#two li#twonav {
 /* Responsive */
 
 @media (max-width: 1024px) {
-	nav ul {
-		width: 100%;
+	nav {
+		ul {
+			margin-left: -40px;
+			width: 100%;
+		}
 	}
 }
 
 @media (max-width: 800px) {
+	nav {
+		height: 140px;
+		ul {
+			//width: 100%;
+			li {
+				width: 16.33333%;
+				&:hover {
+					border-bottom: none;
+					background-color: $morningGlory;
+				}
+				//a img {
+				//	border: solid 1px black;
+				//}
+			}
+		}
+	}
+
+	body#one li#onenav,
+	body#two li#twonav {
+		border-bottom: none;
+	}
+
+	body#one img#onenavimg,
+	body#two img#twonavimg {
+		border: solid 3px darken($morningGlory, 10%);
+	}
+
 	.game, .about-content, .bio-content {
 		width: 90%;
 		height: auto;
