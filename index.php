@@ -5,8 +5,7 @@
 
 <body>
 
-	<header></header>
-
+	<?php include("includes/header.html");?>
 	<?php include("includes/navigation.html");?>
 
 
