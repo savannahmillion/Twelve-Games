@@ -1,5 +1,14 @@
 function mainGame() {
 
+    function coroutine(f) {
+        var obj = f();
+        obj.next();
+        
+        return function(x) {
+            obj.next(x);
+        }
+    }
+
     function log(msg){
         setTimeout(function() {
             throw new Error(msg);
@@ -58,11 +67,40 @@ function mainGame() {
             turtle.anchor.setTo(0.5, 0.5);
         }
 
-        var indices = turtleIndices();
-        log(indices[0]);
-        log(indices[1]);
-
         startButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
+        var test = coroutine(function*(_) {
+            var NUM_ROTS = 7;
+            var count = 0;
+
+            while(count < NUM_ROTS)
+            {
+                var indices = turtleIndices();
+
+                var t1 = turtles.getAt(indices[0]);
+                var t2 = turtles.getAt(indices[1]);
+
+                var t1StartPos = t1.position;
+                var t2StartPos = t2.position;
+                var avgPos = Phaser.Point.interpolate(t1StartPos, t2StartPos, 0.5);
+
+                var rotation = 0;
+                while(rotation < 180) {
+                    yield _;
+
+                    rotation += 5;
+
+                    var p1 = new Phaser.Point(t1StartPos.x, t1StartPos.y);
+                    var p2 = new Phaser.Point(t2StartPos.x, t2StartPos.y);
+
+                    t1.position = Phaser.Point.rotate(p1, avgPos.x, avgPos.y, rotation, true);
+                    t2.position = Phaser.Point.rotate(p2, avgPos.x, avgPos.y, rotation, true);
+                }
+                count++;
+            }
+        });
+
+        game.time.events.loop(Phaser.Timer.SECOND / 60, test, this);
     }
 
     var turtleIndices = function(){
@@ -83,12 +121,7 @@ function mainGame() {
     }
 
     function update() {
-        if(startButton.justPressed()) {
-            var indices = turtleIndices();
 
-            var t1 = turtles.getAt(indices[0]);
-            var t2 = turtles.getAt(indices[1]);
-        }
     }
 
     function render() {
