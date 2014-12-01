@@ -30,6 +30,7 @@ function mainGame() {
 
     var turtles;
     var turtleKey = 'pear';
+    var turtleDove;
 
     var NUM_TURTLES = 5;
     var INSET_PERCENTAGE = 0.25;
@@ -38,7 +39,9 @@ function mainGame() {
     var max;
     var range;
 
-    var startButton;
+    var selectButton;
+
+    var ready = false;
 
     function preload () {
         this.load.image('background', 'img/one/background.png');
@@ -66,6 +69,10 @@ function mainGame() {
             var turtle = turtles.create(xPos, yPos, turtleKey);
             turtle.anchor.setTo(0.5, 0.5);
         }
+
+        var turtleDoveIndex = game.rnd.integerInRange(0, NUM_TURTLES - 1);
+        log(turtleDoveIndex);
+        turtleDove = turtles.getAt(turtleDoveIndex);
 
         startButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
@@ -98,9 +105,13 @@ function mainGame() {
                 }
                 count++;
             }
+
+            ready = true;
         });
 
         game.time.events.loop(Phaser.Timer.SECOND / 60, test, this);
+
+        selectButton = game.input.mousePointer;
     }
 
     var turtleIndices = function(){
@@ -121,7 +132,16 @@ function mainGame() {
     }
 
     function update() {
-
+        if(ready)
+        {
+            if(selectButton.justPressed(0))
+            {
+                if(selectButton.targetObject == turtleDove)
+                    log('nice!');
+                else
+                    log('wrong!');
+            }
+        }
     }
 
     function render() {
