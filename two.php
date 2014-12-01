@@ -1,5 +1,5 @@
 <?php 
-	$page_title = "turtle doves";
+	$page_title = "two turtle doves";
 ?>
 <?php include("includes/head.html");?>
 
@@ -11,7 +11,7 @@
 	<?php include("includes/navigation.html");?>
 
 		<div class="main-content center page-wrap">
-			<h1>turtle doves</h1>
+			<h1>two turtle doves</h1>
 
 			<div class="game" id="game-canvas">
 				<script type="text/javascript">

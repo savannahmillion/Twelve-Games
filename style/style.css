@@ -375,6 +375,11 @@ h1 {
   color: #e263a0;
   margin-top: 30px; }
 
+.homepage {
+  font-size: 92px;
+  line-height: 92px;
+  padding-top: 5%; }
+
 .bio-content h2, .bio-content p, .bio-content img {
   margin-top: 20px; }
 
