@@ -34,6 +34,13 @@ h1 {
 	padding-top: 5%;
 }
 
+span.emphasis {
+	font-family: georgia;
+	font-style: italic;
+	text-transform: none;
+	font-size: 72px;
+}
+
 .bio-content h2, .bio-content p, .bio-content img {
 	margin-top: 20px;
 }
@@ -79,15 +86,13 @@ body {
 .main-content {
 	width: 100%;
 	height: auto;
-	//padding-bottom: 40px;
-	//margin: 0 auto;
+	padding-bottom: 40px;
 }
 
 .about-content {
 	width: 1024px;
 	height: auto;
 	margin: 0 auto;
-	padding-bottom: 40px;
 	clear: both;
 }
 
