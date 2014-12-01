@@ -10,7 +10,7 @@
 	<?php include("includes/navigation.html");?>
 
 
-		<div class="main-content center">
+		<div class="main-content center page-wrap">
 			<h1>this is a test</h1>
 			<p>this is some content</p>
 		</div>
