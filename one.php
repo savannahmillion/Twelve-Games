@@ -10,7 +10,7 @@
 	<?php include("includes/header.html");?>
 	<?php include("includes/navigation.html");?>
 
-		<div class="main-content center">
+		<div class="main-content center page-wrap">
 			<h1>a partridge</h1>
 
 			<div class="game" id="game-canvas">

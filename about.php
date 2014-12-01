@@ -9,7 +9,7 @@
 	<?php include("includes/navigation.html");?>
 
 
-		<div class="main-content center">
+		<div class="main-content center page-wrap">
 			<h1>about</h1>
 
 			<div class="about-content">
