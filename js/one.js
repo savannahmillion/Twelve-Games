@@ -73,7 +73,8 @@ function mainGame() {
     }
 
     function update() {
-        if(flapButton.justPressed()) {
+        if(flapButton.justPressed(0.05)) {
+            log('hello');
             bird.body.velocity.y = -400;
             sfx_flap.play('flap');
         }

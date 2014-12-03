@@ -68,6 +68,8 @@ function mainGame() {
             var yPos = height / 2;
             var turtle = turtles.create(xPos, yPos, turtleKey);
             turtle.anchor.setTo(0.5, 0.5);
+            turtle.inputEnabled = true;
+            turtle.events.onInputDown.add(testTurtle, turtle);
         }
 
         var turtleDoveIndex = game.rnd.integerInRange(0, NUM_TURTLES - 1);
@@ -131,17 +133,22 @@ function mainGame() {
         return [firstIndex, secondIndex];
     }
 
-    function update() {
+    var testTurtle = function(turtle){
         if(ready)
         {
-            if(selectButton.justPressed(0))
+            if(turtle == turtleDove)
             {
-                if(selectButton.targetObject == turtleDove)
-                    log('nice!');
-                else
-                    log('wrong!');
+                log('nice');
+            }
+            else
+            {
+                log('wrong');       
             }
         }
+    }
+
+    function update() {
+
     }
 
     function render() {
