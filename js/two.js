@@ -29,8 +29,13 @@ function mainGame() {
     var game = new Phaser.Game(width, height, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
 
     var turtles;
+    var bodies;
+
     var turtleKey = 'shell';
     var turtleDove;
+    var turtleDoveIndex;
+
+    var wings;
 
     var NUM_TURTLES = 5;
     var INSET_PERCENTAGE = 0.15;
@@ -41,7 +46,7 @@ function mainGame() {
 
     var selectButton;
 
-    var ready = false;
+    var canSelect = false;
 
     function preload () {
         this.load.image('background', 'img/two/background.png');
@@ -63,38 +68,63 @@ function mainGame() {
         var max = width - (width * INSET_PERCENTAGE) - turtleWidth/2;
         var range = max - min;
 
-        var turtleDoveIndex = game.rnd.integerInRange(0, NUM_TURTLES - 1);
+        turtleDoveIndex = game.rnd.integerInRange(0, NUM_TURTLES - 1);
 
-        turtles = this.add.group();
+        //turtles = this.add.group();
         var stepSize = range/NUM_TURTLES;
+
+        var allSprites = this.add.group();
+
+        turtles = [];
+        bodies = [];
 
         for(i = 0; i < NUM_TURTLES; i++)
         {
             var xPos = min + stepSize/2 + (stepSize * i);
             var yPos = height / 2;
-            var turtle = turtles.create(xPos, yPos, turtleKey);
+            var turtle = game.add.sprite(xPos, yPos, turtleKey);
+            turtle.z = 0;
 
             turtle.anchor.setTo(0.5, 0.5);
             turtle.inputEnabled = true;
             turtle.events.onInputDown.add(testTurtle, turtle);
 
-            var body = game.add.sprite(0, 0, 'body');
+            var body = game.add.sprite(xPos, yPos, 'body');
             body.anchor.setTo(0.5, 0.5);
             turtle.addChild(body);
+
+            body.z = 10;
+
+            turtles.push(turtle);
+            bodies.push(body);
+
+            allSprites.addChild(turtle);
+            allSprites.addChild(body);
         }
+
+        allSprites.sort('z', Phaser.Group.SORT_DESCENDING);
+
+
         
-        turtleDove = turtles.getAt(turtleDoveIndex);
-        var wings = game.add.sprite(0, 0, 'wings');
+        turtleDove = turtles[turtleDoveIndex];
+        wings = game.add.sprite(0, 0, 'wings');
         wings.anchor.setTo(0.5, 0.5);
         turtleDove.addChild(wings);
 
         startButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
         var test = coroutine(function*(_) {
-            var SCALE_SPEED = 0.005;
+            
+            while(!startButton.justPressed(0.05))
+                yield _;
 
+            var SCALE_SPEED = 0.01;
             var NUM_ROTS = 7;
-            var count = 0;
+
+            while(delay > 0)
+            {
+
+            }
 
             var scale = 1;
             while(scale > 0)
@@ -103,19 +133,26 @@ function mainGame() {
                 scale -= SCALE_SPEED;
                 for(i = 0; i < NUM_TURTLES; i++)
                 {
-                    var t = turtles.getAt(i).getChildAt(0);
+                    var t = bodies[i];
                     t.scale.setTo(scale, scale);   
+
+                    if(i == turtleDoveIndex)
+                        wings.scale.setTo(scale, 1);
                 }
 
                 yield _;
             }
 
+            var count = 0;
             while(count < NUM_ROTS)
             {
                 var indices = turtleIndices();
 
-                var t1 = turtles.getAt(indices[0]);
-                var t2 = turtles.getAt(indices[1]);
+                var t1 = turtles[indices[0]];
+                var t2 = turtles[indices[1]];
+
+                var b1 = bodies[indices[0]];
+                var b2 = bodies[indices[1]];
 
                 var t1StartPos = t1.position;
                 var t2StartPos = t2.position;
@@ -131,7 +168,10 @@ function mainGame() {
                     var p2 = new Phaser.Point(t2StartPos.x, t2StartPos.y);
 
                     t1.position = Phaser.Point.rotate(p1, avgPos.x, avgPos.y, rotation, true);
+                    b1.position = t1.position;
+
                     t2.position = Phaser.Point.rotate(p2, avgPos.x, avgPos.y, rotation, true);
+                    b2.position = t2.position;
                 }
                 count++;
 
@@ -142,7 +182,7 @@ function mainGame() {
                 }
             }
 
-            ready = true;
+            canSelect = true;
         });
 
         game.time.events.loop(Phaser.Timer.SECOND / 60, test, this);
@@ -168,8 +208,28 @@ function mainGame() {
     }
 
     var testTurtle = function(turtle){
-        if(ready)
+        if(canSelect)
         {
+            var reveal = coroutine(function*(_) {
+                var REVEAL_SPEED = 0.02;
+
+                var selectionIndex = turtles.indexOf(turtle);
+                var body = bodies[selectionIndex];
+
+                var scale = 0;
+                while(scale < 1)
+                {
+                    body.scale.setTo(scale, scale);
+                    if(selectionIndex == turtleDoveIndex)
+                        wings.scale.setTo(scale, 1);
+
+                    scale += REVEAL_SPEED;
+                    yield _;
+                }
+            });
+
+            game.time.events.loop(Phaser.Timer.SECOND / 60, reveal, this);
+
             if(turtle == turtleDove)
             {
                 log('nice');
@@ -178,6 +238,8 @@ function mainGame() {
             {
                 log('wrong');       
             }
+
+            canSelect = false;
         }
     }
 
