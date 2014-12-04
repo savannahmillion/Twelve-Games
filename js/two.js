@@ -29,11 +29,11 @@ function mainGame() {
     var game = new Phaser.Game(width, height, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
 
     var turtles;
-    var turtleKey = 'pear';
+    var turtleKey = 'shell';
     var turtleDove;
 
     var NUM_TURTLES = 5;
-    var INSET_PERCENTAGE = 0.25;
+    var INSET_PERCENTAGE = 0.15;
 
     var min;
     var max;
@@ -44,8 +44,11 @@ function mainGame() {
     var ready = false;
 
     function preload () {
-        this.load.image('background', 'img/one/background.png');
-        this.load.image(turtleKey, 'img/one/pear.png');
+        this.load.image('background', 'img/two/background.png');
+        
+        this.load.image(turtleKey, 'img/two/turtle-shell.png');
+        this.load.image('body', 'img/two/turtle-body.png');
+        this.load.image('wings', 'img/two/turtle-wings.png');
 
         this.load.atlasJSONHash('bird', 'img/one/bird.png', 'img/one/bird_anim.json');
     }
@@ -60,6 +63,8 @@ function mainGame() {
         var max = width - (width * INSET_PERCENTAGE) - turtleWidth/2;
         var range = max - min;
 
+        var turtleDoveIndex = game.rnd.integerInRange(0, NUM_TURTLES - 1);
+
         turtles = this.add.group();
         var stepSize = range/NUM_TURTLES;
         for(i = 0; i < NUM_TURTLES; i++)
@@ -67,13 +72,23 @@ function mainGame() {
             var xPos = min + stepSize/2 + (stepSize * i);
             var yPos = height / 2;
             var turtle = turtles.create(xPos, yPos, turtleKey);
+
             turtle.anchor.setTo(0.5, 0.5);
             turtle.inputEnabled = true;
             turtle.events.onInputDown.add(testTurtle, turtle);
-        }
 
-        var turtleDoveIndex = game.rnd.integerInRange(0, NUM_TURTLES - 1);
-        log(turtleDoveIndex);
+            var body = game.add.sprite(0, 0, 'body');
+            body.anchor.setTo(0.5, 0.5);
+            turtle.addChild(body);
+
+            if(i == turtleDoveIndex)
+            {
+                var wings = game.add.sprite(0, 0, 'wings');
+                wings.anchor.setTo(0.5, 0.5);
+                turtle.addChild(wings);
+            }
+        }
+        
         turtleDove = turtles.getAt(turtleDoveIndex);
 
         startButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
@@ -106,6 +121,12 @@ function mainGame() {
                     t2.position = Phaser.Point.rotate(p2, avgPos.x, avgPos.y, rotation, true);
                 }
                 count++;
+
+                var delay = 0;
+                while(delay < 12) {
+                    delay++;
+                    yield _;
+                }
             }
 
             ready = true;
