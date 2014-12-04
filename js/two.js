@@ -67,6 +67,7 @@ function mainGame() {
 
         turtles = this.add.group();
         var stepSize = range/NUM_TURTLES;
+
         for(i = 0; i < NUM_TURTLES; i++)
         {
             var xPos = min + stepSize/2 + (stepSize * i);
@@ -80,22 +81,34 @@ function mainGame() {
             var body = game.add.sprite(0, 0, 'body');
             body.anchor.setTo(0.5, 0.5);
             turtle.addChild(body);
-
-            if(i == turtleDoveIndex)
-            {
-                var wings = game.add.sprite(0, 0, 'wings');
-                wings.anchor.setTo(0.5, 0.5);
-                turtle.addChild(wings);
-            }
         }
         
         turtleDove = turtles.getAt(turtleDoveIndex);
+        var wings = game.add.sprite(0, 0, 'wings');
+        wings.anchor.setTo(0.5, 0.5);
+        turtleDove.addChild(wings);
 
         startButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
         var test = coroutine(function*(_) {
+            var SCALE_SPEED = 0.005;
+
             var NUM_ROTS = 7;
             var count = 0;
+
+            var scale = 1;
+            while(scale > 0)
+            {
+
+                scale -= SCALE_SPEED;
+                for(i = 0; i < NUM_TURTLES; i++)
+                {
+                    var t = turtles.getAt(i).getChildAt(0);
+                    t.scale.setTo(scale, scale);   
+                }
+
+                yield _;
+            }
 
             while(count < NUM_ROTS)
             {
