@@ -1,23 +1,12 @@
 function mainGame() {
 
-    function coroutine(f) {
-        var obj = f();
-        obj.next();
-        
-        return function(x) {
-            obj.next(x);
-        }
-    }
-
-    function log(msg){
-        setTimeout(function() {
-            throw new Error(msg);
-        }, 0);
-    };
-
     window.addEventListener("resize", function(event){
         var h = document.getElementById("game-canvas").clientHeight;
         var w = document.getElementById("game-canvas").clientWidth;
+
+        h = w * 9.0/16.0;
+
+        document.getElementById("game-canvas").style.height = h;
 
         game.scale.setupScale(w, h);
         game.scale.refresh();
@@ -26,7 +15,10 @@ function mainGame() {
     var width = document.getElementById("game-canvas").clientWidth;
     var height = document.getElementById("game-canvas").clientHeight;
 
-    var game = new Phaser.Game(width, height, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
+    height = width * 9.0/16.0;
+    document.getElementById("game-canvas").style.height = height;
+
+    var game = new Phaser.Game(800, 450, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
 
     var turtles;
     var bodies;
@@ -49,13 +41,14 @@ function mainGame() {
     var canSelect = false;
 
     function preload () {
+        game.scale.setupScale(width, height);
+        game.scale.refresh();
+
         this.load.image('background', 'img/two/background.png');
         
         this.load.image(turtleKey, 'img/two/turtle-shell.png');
         this.load.image('body', 'img/two/turtle-body.png');
         this.load.image('wings', 'img/two/turtle-wings.png');
-
-        this.load.atlasJSONHash('bird', 'img/one/bird.png', 'img/one/bird_anim.json');
     }
 
     function create () {
@@ -64,8 +57,8 @@ function mainGame() {
         background.anchor.setTo(0.5, 0.5);
 
         var turtleWidth = game.cache.getImage(turtleKey).width;
-        var min = width * INSET_PERCENTAGE + turtleWidth/2;
-        var max = width - (width * INSET_PERCENTAGE) - turtleWidth/2;
+        var min = 800 * INSET_PERCENTAGE + turtleWidth/2;
+        var max = 800 - (800 * INSET_PERCENTAGE) - turtleWidth/2;
         var range = max - min;
 
         turtleDoveIndex = game.rnd.integerInRange(0, NUM_TURTLES - 1);
@@ -81,7 +74,7 @@ function mainGame() {
         for(i = 0; i < NUM_TURTLES; i++)
         {
             var xPos = min + stepSize/2 + (stepSize * i);
-            var yPos = height / 2;
+            var yPos = 450 / 2;
             var turtle = game.add.sprite(xPos, yPos, turtleKey);
             turtle.z = 0;
 

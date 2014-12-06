@@ -1,14 +1,12 @@
 function mainGame() {
 
-    function log(msg){
-        setTimeout(function() {
-            throw new Error(msg);
-        }, 0);
-    };
-
     window.addEventListener("resize", function(event){
         var h = document.getElementById("game-canvas").clientHeight;
         var w = document.getElementById("game-canvas").clientWidth;
+
+        h = w * 9.0/16.0;
+
+        document.getElementById("game-canvas").style.height = h;
 
         game.scale.setupScale(w, h);
         game.scale.refresh();
@@ -16,8 +14,12 @@ function mainGame() {
 
     var width = document.getElementById("game-canvas").clientWidth;
     var height = document.getElementById("game-canvas").clientHeight;
+
+    height = width * 9.0/16.0;
+    document.getElementById("game-canvas").style.height = height;
     
-    var game = new Phaser.Game(width, height, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
+    var game = new Phaser.Game(800, 450, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
+
     var bird;
     var pears;
 
@@ -29,6 +31,9 @@ function mainGame() {
     var originalScale;
 
     function preload () {
+        game.scale.setupScale(width, height);
+        game.scale.refresh();
+
         this.load.image('background', 'img/one/background.png');
         this.load.image('pear', 'img/one/pear.png');
 
