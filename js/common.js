@@ -12,3 +12,6 @@ function log(msg){
         throw new Error(msg);
     }, 0);
 };
+
+var GAME_WIDTH = 800;
+var GAME_HEIGHT = 450;

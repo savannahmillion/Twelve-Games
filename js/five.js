@@ -19,7 +19,7 @@ function mainGame() {
     height = width * 9.0/16.0;
     document.getElementById("game-canvas").style.height = height;
 
-    var game = new Phaser.Game(800, 450, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
+    var game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
 
 
     var fingerLocations = [320, 360, 400, 440, 490];
@@ -53,7 +53,7 @@ function mainGame() {
 
         var allSprites = this.add.group();
 
-        var handSprite = game.add.sprite(400, 450, 'hand');
+        var handSprite = game.add.sprite(GAME_WIDTH/2, GAME_HEIGHT, 'hand');
         handSprite.anchor.setTo(0.5, 0.85);
         handSprite.z = 1;
 
