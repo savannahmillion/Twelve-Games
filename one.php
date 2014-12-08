@@ -3,20 +3,24 @@
 ?>
 <?php include("includes/head.html");?>
 
-<body>
-<div class="page-wrap">
+<script src="js/one.js"></script>
+
+<body id="one">
 
 	<?php include("includes/header.html");?>
 	<?php include("includes/navigation.html");?>
 
-		<div class="main-content center">
+		<div class="main-content center page-wrap">
 			<h1>a partridge</h1>
-			<p>this is some content</p>
-			<div class="game"></div>
-		</div>
+
+			<div class="game" id="game-canvas">
+				<script type="text/javascript">
+					window.addEventListener("load", mainGame);
+				</script>
+			</div>
+		</div>	
 
 	<?php include("includes/footer.html");?>
-</div>
 
 </body>
 

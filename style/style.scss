@@ -6,53 +6,138 @@ $morningGlory: #93CFD6; // blue
 $shocking: #EA8EBA; // pink
 
 /* you're the angel FONTop of my christmas tree */
-$sans-serif: Helvetica;
+$sans-serif: "brandon-grotesque", helvetica, sans-serif;
+body {
+	font-family: $sans-serif;
+	font-size: 18px;
+	line-height: 26px;
+	color: darken($morningGlory, 40%);
+	a {
+		color: darken($shocking, 10%);
+		text-decoration: none;
+		border-bottom: 1px solid darken($shocking, 10%);
+	}
+}
 
-h1 { font-weight: 200; }
-footer p { padding-top: 160px; }
+h1 { 
+	font-weight: 200; 
+	font-size: 18px; 
+	letter-spacing: 2px; 
+	text-transform: uppercase;
+	color: darken($shocking, 10%);
+	margin-top: 30px;
+}
+
+.homepage {
+	font-size: 92px;
+	line-height: 92px;
+	padding-top: 5%;
+}
+
+.banner-img {
+	margin: 30px 0px 40px 0px;
+}
+
+.background-pattern {
+	background-image: url("../img/background.png");
+}
+
+span.emphasis {
+	font-family: georgia;
+	font-style: italic;
+	text-transform: none;
+	font-size: 72px;
+}
+
+.bio-content h2, .bio-content p, .bio-content img {
+	margin-top: 20px;
+}
+
+header p a {
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	font-size: 12px;
+	color: lighten($morningGlory, 20%);
+}
+
+footer p { 
+	//padding-top: 160px;
+	font-size: .8em;
+	color: lighten($morningGlory, 20%);
+}
 
 /* and they shouted LAYOUT with glee */
 html {
-	position: relative;
-	min-height: 100%;
+	height: 100%;
 }
 
 body {
 	background-color: $alabaster;
-	font-family: $sans-serif;
-	margin: 0 0 260px;
+	height: 100%;
+}
+
+* {
+	margin: 0 auto;
+}
+
+.page-wrap {
+	min-height: 90%;
+	margin-bottom: -280px;
+}
+
+.page-wrap:after {
+  content: "";
+  display: block;
+  height: 280px;
 }
 
 .main-content {
 	width: 100%;
+	height: auto;
 	padding-bottom: 40px;
+}
+
+.about-content {
+	width: 1024px;
+	height: auto;
 	margin: 0 auto;
+	clear: both;
+}
+
+.bio-content {
+	width: 46%;
+	height: auto;
+	margin: 20px 20px 0 20px;
+	float: left;
 }
 
 .game {
 	width: 800px;
 	height: 450px;
 	margin: 30px auto 0 auto;
-	background-color: $morningGlory;
+	border: 3px solid $morningGlory;
 }
 
 header {
 	width: 100%;
-	height: 40px;
+	height: 30px;
 	text-align: center;
 	background-color: darken($morningGlory, 30%);
+	padding-top: 3px;
 }
 
 footer {
 	width: 100%;
-	height: 260px;
+	height: 120px;
+	padding-top: 160px;
 	text-align: center;
-	//padding-top: 160px;
-	position: absolute;
-	left: 0;
-	bottom: 0;
+	clear: both;
 	background-image: url("../img/repeating-trees.png");
 	background-repeat: repeat-x;
+}
+
+a.img-link {
+	border-bottom: none;
 }
 
 .center {
@@ -67,7 +152,6 @@ nav {
 	ul {
 		margin: 0 auto;
 		width: 1024px;
-		padding-top: 10px;
 		list-style-type: none;
 		li {
 			display: block;
@@ -75,8 +159,10 @@ nav {
 			text-align: center;
 			width: 8.3333%;
 			height: 55px;
+			padding-top: 10px;
 			&:hover {
 					border-bottom: 5px solid $shocking;
+					background-color: lighten($morningGlory, 5%);
 				}
 			a {
 				text-decoration: none;
@@ -91,4 +177,54 @@ nav {
 	}
 }
 
+body#one li#onenav,
+body#two li#twonav {
+	border-bottom: 5px solid darken($morningGlory, 10%);
+}
+
 /* Responsive */
+
+@media (max-width: 1024px) {
+	nav {
+		ul {
+			margin-left: -40px;
+			width: 100%;
+		}
+	}
+
+	.game, .about-content, .bio-content {
+		width: 90%;
+		height: auto;
+	}
+
+	.banner-img {
+		width: 90%;
+		height: auto;
+	}
+}
+
+@media (max-width: 800px) {
+	nav {
+		height: 140px;
+		ul {
+			li {
+				width: 16.33333%;
+				&:hover {
+					border-bottom: none;
+					background-color: $morningGlory;
+				}
+			}
+		}
+	}
+
+	body#one li#onenav,
+	body#two li#twonav {
+		border-bottom: none;
+	}
+
+	body#one img#onenavimg,
+	body#two img#twonavimg {
+		border: solid 3px darken($morningGlory, 10%);
+	}
+
+}
