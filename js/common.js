@@ -23,7 +23,7 @@ var GAME_HEIGHT = 450;
 var today = new Date();
 var unlock;
 
-var START_DAY = 1;
+var START_DAY = 14;
 var unlockDates = [
 	new Date(2014, 11, START_DAY, 0, 0, 0, 0),    //1
 	new Date(2014, 11, START_DAY+1, 0, 0, 0, 0),  //2

@@ -22,245 +22,80 @@ function mainGame() {
 
     var game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
 
-    var turtles;
-    var bodies;
-
-    var turtleKey = 'shell';
-    var turtleDove;
-    var turtleDoveIndex;
-
-    var wings;
-
-    var NUM_TURTLES = 5;
-    var INSET_PERCENTAGE = 0.15;
-
-    var min;
-    var max;
-    var range;
-
-    var selectButton;
-
-    var canSelect = false;
-    var restart = false;
-
     function preload () {
         game.scale.setupScale(width, height);
         game.scale.refresh();
 
         this.load.image('background', 'img/two/background.png');
+        this.load.image('hen', 'img/two/turtle-shell.png');
+    }
+
+    //hen sprites
+    var NUM_HENS = 3;
+    var hens;
+
+    //integer array containing sequence
+    var sequence;
+
+    var score;
+    var progressIter;
+
+    function initGame(){
+        score = 0;
+        sequence = [];
         
-        this.load.image(turtleKey, 'img/two/turtle-shell.png');
-        this.load.image('body', 'img/two/turtle-body.png');
-        this.load.image('wings', 'img/two/turtle-wings.png');
+        startNextRound();
     }
 
     function create () {
-
         var background = this.add.sprite(this.world.centerX, this.world.centerY, 'background');
         background.anchor.setTo(0.5, 0.5);
 
-        var turtleWidth = game.cache.getImage(turtleKey).width;
-        var min = GAME_WIDTH * INSET_PERCENTAGE + turtleWidth/2;
-        var max = GAME_WIDTH - (GAME_WIDTH * INSET_PERCENTAGE) - turtleWidth/2;
-        var range = max - min;
+        var yPos = GAME_HEIGHT/2.0;
 
-        //turtles = this.add.group();
-        var stepSize = range/NUM_TURTLES;
-
-        var allSprites = this.add.group();
-
-        turtles = [];
-        bodies = [];
-
-        for(i = 0; i < NUM_TURTLES; i++)
+        hens = [];
+        for(i = 0; i < NUM_HENS; i++)
         {
-            var xPos = min + stepSize/2 + (stepSize * i);
-            var yPos = 450 / 2;
-            var turtle = game.add.sprite(xPos, yPos, turtleKey);
-            turtle.z = 0;
+            var hen = this.add.sprite(200 * (i + 1), yPos, 'hen');
+            hen.anchor.setTo(0.5, 0.5);
+            hen.inputEnabled = true;
+            hen.events.onInputDown.add(testHen, hen);
 
-            turtle.anchor.setTo(0.5, 0.5);
-            turtle.inputEnabled = true;
-            turtle.events.onInputDown.add(testTurtle, turtle);
-
-            var body = game.add.sprite(xPos, yPos, 'body');
-            body.anchor.setTo(0.5, 0.5);
-            turtle.addChild(body);
-
-            body.z = 10;
-
-            turtles.push(turtle);
-            bodies.push(body);
-
-            allSprites.addChild(turtle);
-            allSprites.addChild(body);
+            hens.push(hen);
         }
 
-        allSprites.sort('z', Phaser.Group.SORT_DESCENDING);
-
-        turtleDoveIndex = game.rnd.integerInRange(0, NUM_TURTLES - 1);
-        turtleDove = turtles[turtleDoveIndex];
-        
-        wings = game.add.sprite(0, 0, 'wings');
-        wings.anchor.setTo(0.5, 0.5);
-        turtleDove.addChild(wings);
-
-        startButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-
-        var test = coroutine(function*(_) {
-            while(true)
-            {
-                restart = false;
-                while(!startButton.justPressed(0.05))
-                    yield _;
-
-                var SCALE_SPEED = 0.01;
-                var NUM_ROTS = 7;
-
-                var scale = 1;
-                while(scale > 0)
-                {
-
-                    scale -= SCALE_SPEED;
-                    for(i = 0; i < NUM_TURTLES; i++)
-                    {
-                        var t = bodies[i];
-                        t.scale.setTo(scale, scale);   
-
-                        if(i == turtleDoveIndex)
-                            wings.scale.setTo(scale, 1);
-                    }
-
-                    yield _;
-                }
-
-                var count = 0;
-                while(count < NUM_ROTS)
-                {
-                    var indices = turtleIndices();
-
-                    var t1 = turtles[indices[0]];
-                    var t2 = turtles[indices[1]];
-
-                    var b1 = bodies[indices[0]];
-                    var b2 = bodies[indices[1]];
-
-                    var t1StartPos = t1.position;
-                    var t2StartPos = t2.position;
-                    var avgPos = Phaser.Point.interpolate(t1StartPos, t2StartPos, 0.5);
-
-                    var rotation = 0;
-                    while(rotation < 180) {
-                        yield _;
-
-                        rotation += 5;
-
-                        var p1 = new Phaser.Point(t1StartPos.x, t1StartPos.y);
-                        var p2 = new Phaser.Point(t2StartPos.x, t2StartPos.y);
-
-                        t1.position = Phaser.Point.rotate(p1, avgPos.x, avgPos.y, rotation, true);
-                        b1.position = t1.position;
-
-                        t2.position = Phaser.Point.rotate(p2, avgPos.x, avgPos.y, rotation, true);
-                        b2.position = t2.position;
-                    }
-                    count++;
-
-                    var delay = 0;
-                    while(delay < 12) {
-                        delay++;
-                        yield _;
-                    }
-                }
-
-                canSelect = true;
-                while(!restart)
-                    yield _;
-            }
-        });
-
-        game.time.events.loop(Phaser.Timer.SECOND / 60, test, this);
-
-        selectButton = game.input.mousePointer;
+        initGame();
     }
 
-    var turtleIndices = function(){
-        var indices = [];
-        for(i = 0; i < NUM_TURTLES; i++)
-            indices.push(i);
+    function startNextRound(){
+        var nextNumber = getNextSequenceNumber();
+                
+        sequence.push(nextNumber);
+        progressIter = 0;
 
-        var firstIndex = indices[game.rnd.integerInRange(0, indices.length - 1)];
-
-        var indices2 = [];
-        for(i = 0; i < NUM_TURTLES; i++)
-            if(i != firstIndex)
-                indices2.push(i);
-
-        var secondIndex = indices2[game.rnd.integerInRange(0, indices2.length - 1)];
-
-        return [firstIndex, secondIndex];
+        log('add another: ' + nextNumber.toString());
     }
 
-    var testTurtle = function(turtle){
-        if(canSelect)
+    var testHen = function(hen){
+        var selectionIndex = hens.indexOf(hen);
+
+        if(selectionIndex == sequence[progressIter])
         {
-            var reveal = coroutine(function*(_) {
-                var REVEAL_SPEED = 0.02;
-
-                var selectionIndex = turtles.indexOf(turtle);
-                var body = bodies[selectionIndex];
-
-                var scale = 0;
-                while(scale < 1)
-                {
-                    body.scale.setTo(scale, scale);
-                    if(selectionIndex == turtleDoveIndex)
-                        wings.scale.setTo(scale, 1);
-
-                    scale += REVEAL_SPEED;
-                    yield _;
-                }
-
-                var delay = 0;
-                while(delay < 12) {
-                    delay++;
-                    yield _;
-                }
-
-                scale = 0;
-                while(scale < 1)
-                {
-                    for(i = 0; i < NUM_TURTLES; i++)
-                    {
-                        if(i == selectionIndex)
-                            continue;
-
-                        bodies[i].scale.setTo(scale, scale);
-                    }
-
-                    if(selectionIndex != turtleDoveIndex)
-                        wings.scale.setTo(scale, 1);
-
-                    scale += REVEAL_SPEED;
-                    yield _;
-                }
-
-                restart = true;
-            });
-
-            game.time.events.loop(Phaser.Timer.SECOND / 60, reveal, this);
-
-            if(turtle == turtleDove)
+            progressIter++;
+            if(progressIter >= sequence.length)
             {
-                log('nice');
+                //repeat sequence and add another!
+                startNextRound();
             }
-            else
-            {
-                log('wrong');       
-            }
-
-            canSelect = false;
         }
+        else
+        {
+            log('YOU LOSE');
+        }
+    }
+
+    function getNextSequenceNumber(){
+        return game.rnd.integerInRange(0, hens.length - 1);
     }
 
     function update() {

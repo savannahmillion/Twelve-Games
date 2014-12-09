@@ -38,8 +38,6 @@ function mainGame() {
     var max;
     var range;
 
-    var selectButton;
-
     var canSelect = false;
     var restart = false;
     var waitingToStart = true;
@@ -188,8 +186,6 @@ function mainGame() {
         });
 
         game.time.events.loop(Phaser.Timer.SECOND / 60, test, this);
-
-        selectButton = game.input.mousePointer;
     }
 
     var turtleIndices = function(){
