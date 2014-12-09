@@ -39,6 +39,7 @@ function mainGame() {
     var selectButton;
 
     var canSelect = false;
+    var restart = false;
 
     function preload () {
         game.scale.setupScale(width, height);
@@ -60,8 +61,6 @@ function mainGame() {
         var min = GAME_WIDTH * INSET_PERCENTAGE + turtleWidth/2;
         var max = GAME_WIDTH - (GAME_WIDTH * INSET_PERCENTAGE) - turtleWidth/2;
         var range = max - min;
-
-        turtleDoveIndex = game.rnd.integerInRange(0, NUM_TURTLES - 1);
 
         //turtles = this.add.group();
         var stepSize = range/NUM_TURTLES;
@@ -97,9 +96,9 @@ function mainGame() {
 
         allSprites.sort('z', Phaser.Group.SORT_DESCENDING);
 
-
-        
+        turtleDoveIndex = game.rnd.integerInRange(0, NUM_TURTLES - 1);
         turtleDove = turtles[turtleDoveIndex];
+        
         wings = game.add.sprite(0, 0, 'wings');
         wings.anchor.setTo(0.5, 0.5);
         turtleDove.addChild(wings);
@@ -107,75 +106,75 @@ function mainGame() {
         startButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
         var test = coroutine(function*(_) {
-            
-            while(!startButton.justPressed(0.05))
-                yield _;
-
-            var SCALE_SPEED = 0.01;
-            var NUM_ROTS = 7;
-
-            while(delay > 0)
+            while(true)
             {
+                restart = false;
+                while(!startButton.justPressed(0.05))
+                    yield _;
 
-            }
+                var SCALE_SPEED = 0.01;
+                var NUM_ROTS = 7;
 
-            var scale = 1;
-            while(scale > 0)
-            {
-
-                scale -= SCALE_SPEED;
-                for(i = 0; i < NUM_TURTLES; i++)
+                var scale = 1;
+                while(scale > 0)
                 {
-                    var t = bodies[i];
-                    t.scale.setTo(scale, scale);   
 
-                    if(i == turtleDoveIndex)
-                        wings.scale.setTo(scale, 1);
-                }
+                    scale -= SCALE_SPEED;
+                    for(i = 0; i < NUM_TURTLES; i++)
+                    {
+                        var t = bodies[i];
+                        t.scale.setTo(scale, scale);   
 
-                yield _;
-            }
+                        if(i == turtleDoveIndex)
+                            wings.scale.setTo(scale, 1);
+                    }
 
-            var count = 0;
-            while(count < NUM_ROTS)
-            {
-                var indices = turtleIndices();
-
-                var t1 = turtles[indices[0]];
-                var t2 = turtles[indices[1]];
-
-                var b1 = bodies[indices[0]];
-                var b2 = bodies[indices[1]];
-
-                var t1StartPos = t1.position;
-                var t2StartPos = t2.position;
-                var avgPos = Phaser.Point.interpolate(t1StartPos, t2StartPos, 0.5);
-
-                var rotation = 0;
-                while(rotation < 180) {
-                    yield _;
-
-                    rotation += 5;
-
-                    var p1 = new Phaser.Point(t1StartPos.x, t1StartPos.y);
-                    var p2 = new Phaser.Point(t2StartPos.x, t2StartPos.y);
-
-                    t1.position = Phaser.Point.rotate(p1, avgPos.x, avgPos.y, rotation, true);
-                    b1.position = t1.position;
-
-                    t2.position = Phaser.Point.rotate(p2, avgPos.x, avgPos.y, rotation, true);
-                    b2.position = t2.position;
-                }
-                count++;
-
-                var delay = 0;
-                while(delay < 12) {
-                    delay++;
                     yield _;
                 }
-            }
 
-            canSelect = true;
+                var count = 0;
+                while(count < NUM_ROTS)
+                {
+                    var indices = turtleIndices();
+
+                    var t1 = turtles[indices[0]];
+                    var t2 = turtles[indices[1]];
+
+                    var b1 = bodies[indices[0]];
+                    var b2 = bodies[indices[1]];
+
+                    var t1StartPos = t1.position;
+                    var t2StartPos = t2.position;
+                    var avgPos = Phaser.Point.interpolate(t1StartPos, t2StartPos, 0.5);
+
+                    var rotation = 0;
+                    while(rotation < 180) {
+                        yield _;
+
+                        rotation += 5;
+
+                        var p1 = new Phaser.Point(t1StartPos.x, t1StartPos.y);
+                        var p2 = new Phaser.Point(t2StartPos.x, t2StartPos.y);
+
+                        t1.position = Phaser.Point.rotate(p1, avgPos.x, avgPos.y, rotation, true);
+                        b1.position = t1.position;
+
+                        t2.position = Phaser.Point.rotate(p2, avgPos.x, avgPos.y, rotation, true);
+                        b2.position = t2.position;
+                    }
+                    count++;
+
+                    var delay = 0;
+                    while(delay < 12) {
+                        delay++;
+                        yield _;
+                    }
+                }
+
+                canSelect = true;
+                while(!restart)
+                    yield _;
+            }
         });
 
         game.time.events.loop(Phaser.Timer.SECOND / 60, test, this);
@@ -219,6 +218,32 @@ function mainGame() {
                     scale += REVEAL_SPEED;
                     yield _;
                 }
+
+                var delay = 0;
+                while(delay < 12) {
+                    delay++;
+                    yield _;
+                }
+
+                scale = 0;
+                while(scale < 1)
+                {
+                    for(i = 0; i < NUM_TURTLES; i++)
+                    {
+                        if(i == selectionIndex)
+                            continue;
+
+                        bodies[i].scale.setTo(scale, scale);
+                    }
+
+                    if(selectionIndex != turtleDoveIndex)
+                        wings.scale.setTo(scale, 1);
+
+                    scale += REVEAL_SPEED;
+                    yield _;
+                }
+
+                restart = true;
             });
 
             game.time.events.loop(Phaser.Timer.SECOND / 60, reveal, this);

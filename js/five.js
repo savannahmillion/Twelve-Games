@@ -61,7 +61,7 @@ function mainGame() {
 
         for(i = 0; i < NUM_RINGS; i++)
         {
-            var xPos = -40; //fingerLocations[i];
+            var xPos = fingerLocations[i];
             var yPos = 50;
 
             var spriteName = 'ring' + (i + 1);//game.rnd.integerInRange(1, 5);
