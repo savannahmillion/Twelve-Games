@@ -1,4 +1,4 @@
-unlock = new Date(2014, 11, 17, 0, 0, 0, 0);
+unlock = unlockDates[3];
 
 function mainGame() {
 
