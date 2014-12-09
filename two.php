@@ -15,7 +15,7 @@
 
 			<div class="game" id="game-canvas">
 				<script type="text/javascript">
-					window.addEventListener("load", mainGame);
+					loadGameIfDateIsValid();
 				</script>
 			</div>
 		</div>	

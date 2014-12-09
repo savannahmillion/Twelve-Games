@@ -15,3 +15,17 @@ function log(msg){
 
 var GAME_WIDTH = 800;
 var GAME_HEIGHT = 450;
+
+var today = new Date();
+var unlock;
+
+function loadGameIfDateIsValid() {
+	if(today > unlock)
+	{
+		window.addEventListener("load", mainGame);
+	}
+	else
+	{
+		//Display present!
+	}
+}
