@@ -32,7 +32,7 @@ function mainGame() {
     var wings;
 
     var NUM_TURTLES = 5;
-    var INSET_PERCENTAGE = 0.15;
+    var INSET_PERCENTAGE = 0.1;
 
     var min;
     var max;
@@ -42,6 +42,7 @@ function mainGame() {
 
     var canSelect = false;
     var restart = false;
+    var waitingToStart = true;
 
     function preload () {
         game.scale.setupScale(width, height);
@@ -105,13 +106,18 @@ function mainGame() {
         wings.anchor.setTo(0.5, 0.5);
         turtleDove.addChild(wings);
 
-        startButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        var onTouch = function(pointer) {
+            if(!restart && !canSelect && waitingToStart)
+                waitingToStart = false;
+        }
+
+        game.input.onDown.add(onTouch, this);
 
         var test = coroutine(function*(_) {
             while(true)
             {
                 restart = false;
-                while(!startButton.justPressed(0.05))
+                while(waitingToStart)
                     yield _;
 
                 var SCALE_SPEED = 0.01;
@@ -176,6 +182,8 @@ function mainGame() {
                 canSelect = true;
                 while(!restart)
                     yield _;
+
+                waitingToStart = true;
             }
         });
 
