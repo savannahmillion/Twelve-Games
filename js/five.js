@@ -3,7 +3,7 @@ unlock = unlockDates[4];
 function mainGame() {
 
     updateSize();
-    var game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
+    game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
 
     var fingerLocations = [320, 360, 400, 440, 490];
     

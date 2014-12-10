@@ -3,7 +3,7 @@ unlock = unlockDates[2];
 function mainGame() {
 
     updateSize();
-    var game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
+    game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
 
     function preload () {
         var height = document.getElementById("game-canvas").clientHeight;

@@ -1,12 +1,3 @@
-function coroutine(f) {
-    var obj = f();
-    obj.next();
-    
-    return function(x) {
-        obj.next(x);
-    }
-}
-
 function log(msg){
     setTimeout(function() {
         throw new Error(msg);
@@ -47,7 +38,7 @@ function updateSize(){
 
     document.getElementById("game-canvas").style.height = h;
 
-    if(game != undefined)
+    if(game)
     {
 	    game.scale.setupScale(w, h);
 	    game.scale.refresh();
@@ -55,9 +46,6 @@ function updateSize(){
 }
 
 var game;
-window.addEventListener("resize", function(event){
-    updateSize();
-});
 
 function updateNav() {
 	for(i = 0; i < unlockDates.length; i++)
@@ -71,10 +59,11 @@ function updateNav() {
 function loadGameIfDateIsValid() {
 	if(today > unlock)
 	{
-		window.addEventListener("load", mainGame);
+		window.addEventListener('resize', updateSize);
+		window.addEventListener('load', mainGame);
 	}
 	else
 	{
-		updateSize();
+		window.addEventListener('resize', updateSize);
 	}
 }
