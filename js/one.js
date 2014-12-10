@@ -2,24 +2,7 @@ unlock = unlockDates[0];
 
 function mainGame() {
 
-    window.addEventListener("resize", function(event){
-        var h = document.getElementById("game-canvas").clientHeight;
-        var w = document.getElementById("game-canvas").clientWidth;
-
-        h = w * 9.0/16.0;
-
-        document.getElementById("game-canvas").style.height = h;
-
-        game.scale.setupScale(w, h);
-        game.scale.refresh();
-    });
-
-    var width = document.getElementById("game-canvas").clientWidth;
-    var height = document.getElementById("game-canvas").clientHeight;
-
-    height = width * 9.0/16.0;
-    document.getElementById("game-canvas").style.height = height;
-    
+    updateSize();
     var game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
 
     var bird;
@@ -35,6 +18,9 @@ function mainGame() {
     var originalScale;
 
     function preload () {
+        var height = document.getElementById("game-canvas").clientHeight;
+        var width = document.getElementById("game-canvas").clientWidth;
+
         game.scale.setupScale(width, height);
         game.scale.refresh();
 

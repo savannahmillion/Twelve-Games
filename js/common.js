@@ -23,7 +23,7 @@ var GAME_HEIGHT = 450;
 var today = new Date();
 var unlock;
 
-var START_DAY = 14;
+var START_DAY = 1;
 var unlockDates = [
 	new Date(2014, 11, START_DAY, 0, 0, 0, 0),    //1
 	new Date(2014, 11, START_DAY+1, 0, 0, 0, 0),  //2
@@ -39,6 +39,26 @@ var unlockDates = [
 	new Date(2014, 11, START_DAY+11, 0, 0, 0, 0), //12
 ];
 
+function updateSize(){
+	var h = document.getElementById("game-canvas").clientHeight;
+    var w = document.getElementById("game-canvas").clientWidth;
+
+    h = w * 9.0/16.0;
+
+    document.getElementById("game-canvas").style.height = h;
+
+    if(game != undefined)
+    {
+	    game.scale.setupScale(w, h);
+	    game.scale.refresh();
+	}
+}
+
+var game;
+window.addEventListener("resize", function(event){
+    updateSize();
+});
+
 function updateNav() {
 	for(i = 0; i < unlockDates.length; i++)
 	{
@@ -48,22 +68,6 @@ function updateNav() {
  	}
 }
 
-function displayPresent() {
-	function updateSize(){
-		var h = document.getElementById("game-canvas").clientHeight;
-	    var w = document.getElementById("game-canvas").clientWidth;
-
-	    h = w * 9.0/16.0;
-
-	    document.getElementById("game-canvas").style.height = h;
-	}
-
-	updateSize();
-	window.addEventListener("resize", function(event){
-		updateSize();
-	});
-}
-
 function loadGameIfDateIsValid() {
 	if(today > unlock)
 	{
@@ -71,6 +75,6 @@ function loadGameIfDateIsValid() {
 	}
 	else
 	{
-		displayPresent();
+		updateSize();
 	}
 }
