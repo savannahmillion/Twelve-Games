@@ -107,6 +107,14 @@ function mainGame() {
                 state = SELECTING;
 
                 bubbles[0].visible = true;
+
+                for(i = 0; i < 4; i++)
+                {
+                    for(item = 0; item < NUM_ITEMS; item++)
+                        roulettes[i][item].visible = false;
+                }
+
+                displayItem();
                 currentLoopingEvent = game.time.events.loop(Phaser.Timer.SECOND / 60, loopItems, this);
             }
         }
@@ -133,6 +141,18 @@ function mainGame() {
 
             initGame();
         }
+        else
+        {
+            displayItem();
+        }
+    }
+
+    function displayItem(){
+        var cycle = roulettes[rouletteIndex];
+        for(i = 0; i < NUM_ITEMS; i++)
+        {
+            cycle[i].visible = (i == displayIndex); 
+        }
     }
 
     function loopItems() {
@@ -144,12 +164,7 @@ function mainGame() {
 
         delayCount = 0;
 
-        var cycle = roulettes[rouletteIndex];
-        for(i = 0; i < NUM_ITEMS; i++)
-        {
-            cycle[i].visible = (i == displayIndex); 
-        }
-
+        displayItem();
         displayIndex = (displayIndex + 1) % NUM_ITEMS;
     }
 
@@ -160,6 +175,7 @@ function mainGame() {
         {
             var item = game.add.sprite(xpos, ypos, 'item' + i);
             item.anchor.setTo(0.5, 0.5);
+            item.visible = false;
             set.push(item);
         }
 
