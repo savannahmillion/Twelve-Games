@@ -12,6 +12,8 @@ function mainGame() {
         game.scale.setupScale(width, height);
         game.scale.refresh();
 
+        this.load.atlasJSONHash('bird', 'img/one/bird.png', 'img/one/bird_anim.json');
+
         this.load.image('background', 'img/two/background.png');
         this.load.image('hen', 'img/two/turtle-shell.png');
     }
@@ -26,31 +28,56 @@ function mainGame() {
     var score;
     var progressIter;
 
-    function initGame(){
+    var FRAME_DELAY = 30;
+    var delayCount;
+
+    var sequenceIter;
+
+    var currentLoopingEvent;
+
+    var NOT_PLAYING = 0;
+    var PLAYBACK = 1;
+    var SELECTION = 2;
+
+    var state = NOT_PLAYING;
+
+    function initGame() {
         score = 0;
         sequence = [];
+
+        delayCount = 0;
+        progressIter = 0;
         
         startNextRound();
     }
 
     function create () {
+        state = NOT_PLAYING;
+
         var background = this.add.sprite(this.world.centerX, this.world.centerY, 'background');
         background.anchor.setTo(0.5, 0.5);
+
+        var onTouch = function(pointer) {
+            if(state == NOT_PLAYING) {
+                initGame();
+            }
+        }
+
+        game.input.onDown.add(onTouch, this);
 
         var yPos = GAME_HEIGHT/2.0;
 
         hens = [];
-        for(i = 0; i < NUM_HENS; i++)
-        {
-            var hen = this.add.sprite(200 * (i + 1), yPos, 'hen');
+        for(i = 0; i < NUM_HENS; i++) {
+            var hen = this.add.sprite(200 * (i + 1), yPos, 'bird');
             hen.anchor.setTo(0.5, 0.5);
             hen.inputEnabled = true;
             hen.events.onInputDown.add(testHen, hen);
 
+            hen.animations.add('flap');
+
             hens.push(hen);
         }
-
-        initGame();
     }
 
     function startNextRound(){
@@ -58,25 +85,57 @@ function mainGame() {
                 
         sequence.push(nextNumber);
         progressIter = 0;
+        sequenceIter = 0;
 
-        log('add another: ' + nextNumber.toString());
+        currentLoopingEvent = game.time.events.loop(Phaser.Timer.SECOND / 60, replaySequence, this);
+        state = PLAYBACK;
+    }
+
+    function replaySequence() {
+        if(state == PLAYBACK) {
+            if(delayCount < FRAME_DELAY) {
+                delayCount++;
+                return;
+            }
+
+            log(Number(sequence[sequenceIter]));
+
+            var henIndex = sequence[sequenceIter];
+            var hen = hens[henIndex];
+            hen.animations.play('flap', 10, true);
+
+            delayCount = 0;
+
+            sequenceIter++;
+            if(sequenceIter >= sequence.length) {
+
+                sequenceIter = 0;
+                game.time.events.remove(currentLoopingEvent);
+
+                state = SELECTION;
+            }
+        }
     }
 
     var testHen = function(hen){
-        var selectionIndex = hens.indexOf(hen);
+        if(state == SELECTION) {
+            var selectionIndex = hens.indexOf(hen);
 
-        if(selectionIndex == sequence[progressIter])
-        {
-            progressIter++;
-            if(progressIter >= sequence.length)
+            if(selectionIndex == sequence[progressIter])
             {
-                //repeat sequence and add another!
-                startNextRound();
+                log('correct');
+                progressIter++;
+                if(progressIter >= sequence.length)
+                {
+                    //repeat sequence and add another!
+                    startNextRound();
+                }
             }
-        }
-        else
-        {
-            log('YOU LOSE');
+            else
+            {
+                log('lose  ' + Number(selectionIndex) + ', ' + Number(sequence[progressIter]));
+                state = NOT_PLAYING;
+            }
         }
     }
 
