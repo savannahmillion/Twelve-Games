@@ -23,14 +23,6 @@ function mainGame() {
     var restart = false;
     var waitingToStart = true;
 
-    function preload () {
-        this.load.image('background', 'img/two/background.png');
-        
-        this.load.image(turtleKey, 'img/two/turtle-shell.png');
-        this.load.image('body', 'img/two/turtle-body.png');
-        this.load.image('wings', 'img/two/turtle-wings.png');
-    }
-
     var currentLoopingEvent;
 
     var NOT_PLAYING = 0;
@@ -65,6 +57,81 @@ function mainGame() {
     var rotValuesSet = false;
 
     var selectedTurtle;
+    
+    function preload () {
+        this.load.image('background', 'img/two/background.png');
+        
+        this.load.image(turtleKey, 'img/two/turtle-shell.png');
+        this.load.image('body', 'img/two/turtle-body.png');
+        this.load.image('wings', 'img/two/turtle-wings.png');
+    }
+    
+    function create () {
+        setupGameScaling();
+        updateSize();
+
+        var background = this.add.sprite(this.world.centerX, this.world.centerY, 'background');
+        background.anchor.setTo(0.5, 0.5);
+
+        var turtleWidth = game.cache.getImage(turtleKey).width;
+        var min = GAME_WIDTH * INSET_PERCENTAGE + turtleWidth/2;
+        var max = GAME_WIDTH - (GAME_WIDTH * INSET_PERCENTAGE) - turtleWidth/2;
+        var range = max - min;
+
+        //turtles = this.add.group();
+        var stepSize = range/NUM_TURTLES;
+
+        var allSprites = this.add.group();
+
+        turtles = [];
+        bodies = [];
+
+        for(i = 0; i < NUM_TURTLES; i++)
+        {
+            var xPos = min + stepSize/2 + (stepSize * i);
+            var yPos = 450 / 2;
+            var turtle = game.add.sprite(xPos, yPos, turtleKey);
+            turtle.z = 0;
+
+            turtle.anchor.setTo(0.5, 0.5);
+            turtle.inputEnabled = true;
+            turtle.events.onInputDown.add(testTurtle, this);
+
+            var body = game.add.sprite(xPos, yPos, 'body');
+            body.anchor.setTo(0.5, 0.5);
+            turtle.addChild(body);
+
+            body.z = 10;
+
+            turtles.push(turtle);
+            bodies.push(body);
+
+            allSprites.addChild(turtle);
+            allSprites.addChild(body);
+        }
+
+        allSprites.sort('z', Phaser.Group.SORT_DESCENDING);
+
+        turtleDoveIndex = game.rnd.integerInRange(0, NUM_TURTLES - 1);
+        turtleDove = turtles[turtleDoveIndex];
+        
+        wings = game.add.sprite(0, 0, 'wings');
+        wings.anchor.setTo(0.5, 0.5);
+        turtleDove.addChild(wings);
+
+        var onTouch = function(pointer) {
+            
+            if(state == NOT_PLAYING)
+            {
+                state = START_SCALE;
+
+                numRotations = 0;
+                currentLoopingEvent = game.time.events.loop(Phaser.Timer.SECOND / 60, scaleDown, this);
+            }
+        }
+
+        game.input.onDown.add(onTouch, this);
+    }
 
     function shuffleTurtles(){
         if(state == SHUFFLING)
@@ -127,8 +194,6 @@ function mainGame() {
 
         var selectionIndex = turtles.indexOf(selectedTurtle);
         var body = bodies[selectionIndex];
-
-        log(selectionIndex + ', ' + turtleDoveIndex);
 
         if(state == REVEALING)
         {
@@ -218,73 +283,6 @@ function mainGame() {
                 currentLoopingEvent = game.time.events.loop(Phaser.Timer.SECOND / 60, shuffleTurtles, this);
             }
         }
-    }
-
-    function create () {
-        setupGameScaling();
-        updateSize();
-
-        var background = this.add.sprite(this.world.centerX, this.world.centerY, 'background');
-        background.anchor.setTo(0.5, 0.5);
-
-        var turtleWidth = game.cache.getImage(turtleKey).width;
-        var min = GAME_WIDTH * INSET_PERCENTAGE + turtleWidth/2;
-        var max = GAME_WIDTH - (GAME_WIDTH * INSET_PERCENTAGE) - turtleWidth/2;
-        var range = max - min;
-
-        //turtles = this.add.group();
-        var stepSize = range/NUM_TURTLES;
-
-        var allSprites = this.add.group();
-
-        turtles = [];
-        bodies = [];
-
-        for(i = 0; i < NUM_TURTLES; i++)
-        {
-            var xPos = min + stepSize/2 + (stepSize * i);
-            var yPos = 450 / 2;
-            var turtle = game.add.sprite(xPos, yPos, turtleKey);
-            turtle.z = 0;
-
-            turtle.anchor.setTo(0.5, 0.5);
-            turtle.inputEnabled = true;
-            turtle.events.onInputDown.add(testTurtle, this);
-
-            var body = game.add.sprite(xPos, yPos, 'body');
-            body.anchor.setTo(0.5, 0.5);
-            turtle.addChild(body);
-
-            body.z = 10;
-
-            turtles.push(turtle);
-            bodies.push(body);
-
-            allSprites.addChild(turtle);
-            allSprites.addChild(body);
-        }
-
-        allSprites.sort('z', Phaser.Group.SORT_DESCENDING);
-
-        turtleDoveIndex = game.rnd.integerInRange(0, NUM_TURTLES - 1);
-        turtleDove = turtles[turtleDoveIndex];
-        
-        wings = game.add.sprite(0, 0, 'wings');
-        wings.anchor.setTo(0.5, 0.5);
-        turtleDove.addChild(wings);
-
-        var onTouch = function(pointer) {
-            
-            if(state == NOT_PLAYING)
-            {
-                state = START_SCALE;
-
-                numRotations = 0;
-                currentLoopingEvent = game.time.events.loop(Phaser.Timer.SECOND / 60, scaleDown, this);
-            }
-        }
-
-        game.input.onDown.add(onTouch, this);
     }
 
     var turtleIndices = function(){
