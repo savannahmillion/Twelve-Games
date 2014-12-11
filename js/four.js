@@ -6,6 +6,7 @@ function mainGame() {
     game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
 
     var birds;
+    var bubbles;
     var roulettes;
 
     var NUM_ITEMS = 4;
@@ -33,10 +34,10 @@ function mainGame() {
         this.load.image('background', 'img/four/background.png');
 
         this.load.image('goose', 'img/four/goose.png');
-        this.load.image('goose-hightlight', 'img/four/goose-highlight.png');
+        this.load.image('goose-highlight', 'img/four/goose-highlight.png');
 
         this.load.image('partridge', 'img/four/partridge.png');
-        this.load.image('patridge-hightlight', 'img/four/partridge-highlight.png');
+        this.load.image('partridge-highlight', 'img/four/partridge-highlight.png');
 
         this.load.image('swan', 'img/four/swan.png');
         this.load.image('swan-highlight', 'img/four/swan-highlight.png');
@@ -59,17 +60,28 @@ function mainGame() {
 
         var goose = this.add.sprite(inset, this.world.centerY, 'goose');
         goose.anchor.setTo(0.5, 1.0);
+        var gooseBubble = this.add.sprite(290, 82, 'goose-highlight');
+        gooseBubble.anchor.setTo(0.5, 0.5);
+
 
         var partridge = this.add.sprite(GAME_WIDTH - inset, this.world.centerY, 'partridge');
         partridge.anchor.setTo(0.5, 1.0);
+        var partidgeBubble = this.add.sprite(510, 82, 'partridge-highlight');
+        partidgeBubble.anchor.setTo(0.5, 0.5);
+
 
         var swan = this.add.sprite(GAME_WIDTH - inset, GAME_HEIGHT, 'swan');
         swan.anchor.setTo(0.5, 1.0);
+        var swanBubble = this.add.sprite(510, 308, 'swan-highlight');
+        swanBubble.anchor.setTo(0.5, 0.5);
 
         var parrot = this.add.sprite(inset, GAME_HEIGHT, 'parrot');
         parrot.anchor.setTo(0.5, 1.0);
+        var parrotBubble = this.add.sprite(290, 308, 'parrot-highlight');
+        parrotBubble.anchor.setTo(0.5, 0.5);
         
         birds = [goose, partridge, swan, parrot];
+        bubbles = [gooseBubble, partidgeBubble, swanBubble, parrotBubble];
 
         roulettes = [
             createRoulette(300, GAME_HEIGHT/6),
@@ -78,9 +90,15 @@ function mainGame() {
             createRoulette(300, GAME_HEIGHT * 2/3)
         ];
 
-        delayCount = 0;
-        rouletteIndex = 0;
-        displayIndex = 0;
+        initGame();
+
+        for(i = 0; i < bubbles.length; i++)
+        {
+            var bubble = bubbles[i];
+            bubble.visible = false;
+            bubble.inputEnabled = true;
+            bubble.events.onInputDown.add(bubblePressed, bubble);
+        }
 
         var onTouch = function(pointer) {
             
@@ -88,11 +106,33 @@ function mainGame() {
             {
                 state = SELECTING;
 
+                bubbles[0].visible = true;
                 currentLoopingEvent = game.time.events.loop(Phaser.Timer.SECOND / 60, loopItems, this);
             }
         }
 
         game.input.onDown.add(onTouch, this);
+    }
+
+    function initGame() {
+        delayCount = 0;
+        rouletteIndex = 0;
+        displayIndex = 0;
+    }
+
+    var bubblePressed = function(bubble){
+        rouletteIndex++;
+        
+        for(i = 0; i < bubbles.length; i++)
+            bubbles[i].visible = (i == rouletteIndex);
+
+        if(rouletteIndex >= 4)
+        {
+            state = NOT_PLAYING;
+            game.time.events.remove(currentLoopingEvent);
+
+            initGame();
+        }
     }
 
     function loopItems() {
@@ -103,8 +143,6 @@ function mainGame() {
         }
 
         delayCount = 0;
-
-        log(displayIndex);
 
         var cycle = roulettes[rouletteIndex];
         for(i = 0; i < NUM_ITEMS; i++)
