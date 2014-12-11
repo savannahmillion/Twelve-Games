@@ -24,6 +24,7 @@ function mainGame() {
     var waitingToStart = true;
 
     function preload () {
+
         this.load.image('background', 'img/two/background.png');
         
         this.load.image(turtleKey, 'img/two/turtle-shell.png');
@@ -128,8 +129,6 @@ function mainGame() {
         var selectionIndex = turtles.indexOf(selectedTurtle);
         var body = bodies[selectionIndex];
 
-        log(selectionIndex + ', ' + turtleDoveIndex);
-
         if(state == REVEALING)
         {
             currentScale += REVEAL_SPEED;
@@ -139,10 +138,7 @@ function mainGame() {
 
                 body.scale.setTo(currentScale, currentScale);
                 if(selectionIndex == turtleDoveIndex)
-                {
-                    wings.visible = true;
                     wings.scale.setTo(currentScale, 1);
-                }
 
                 if(delayCount < FRAME_DELAY)
                 {
@@ -152,17 +148,14 @@ function mainGame() {
                 else
                 {
                     state = RESET;
-                    currentScale = 0.1;
+                    currentScale = 0;
                 }
             }
             else
             {
                 body.scale.setTo(currentScale, currentScale);
                 if(selectionIndex == turtleDoveIndex)
-                {
-                    wings.visible = true;
                     wings.scale.setTo(currentScale, 1);
-                }
             }
         }
         else if(state == RESET)
@@ -183,10 +176,7 @@ function mainGame() {
             }
 
             if(selectionIndex != turtleDoveIndex)
-            {
-                wings.visible = true;
                 wings.scale.setTo(currentScale, 1);
-            }
         }
     }
 
@@ -194,8 +184,8 @@ function mainGame() {
         if(state == START_SCALE)
         {
             currentScale -= SCALE_SPEED;
-            if(currentScale <= 0.1)
-                currentScale = 0.1;
+            if(currentScale <= 0)
+                currentScale = 0;
 
             for(i = 0; i < NUM_TURTLES; i++)
             {
@@ -206,9 +196,8 @@ function mainGame() {
                     wings.scale.setTo(currentScale, 1);
             }
 
-            if(currentScale == 0.1)
+            if(currentScale == 0)
             {
-                wings.visible = false;
                 state = SHUFFLING;
                 currentScale = 0;
 
@@ -249,7 +238,7 @@ function mainGame() {
 
             turtle.anchor.setTo(0.5, 0.5);
             turtle.inputEnabled = true;
-            turtle.events.onInputDown.add(testTurtle, this);
+            turtle.events.onInputDown.add(testTurtle, turtle);
 
             var body = game.add.sprite(xPos, yPos, 'body');
             body.anchor.setTo(0.5, 0.5);
@@ -282,6 +271,9 @@ function mainGame() {
                 numRotations = 0;
                 currentLoopingEvent = game.time.events.loop(Phaser.Timer.SECOND / 60, scaleDown, this);
             }
+
+            //if(!restart && !canSelect && waitingToStart)
+            //    waitingToStart = false;
         }
 
         game.input.onDown.add(onTouch, this);
@@ -304,25 +296,23 @@ function mainGame() {
         return [firstIndex, secondIndex];
     }
 
-    var testTurtle = function(chosenSprite, pointer){
-        log(pointer.x + ', ' + pointer.y);
-
+    var testTurtle = function(turtle){
         if(state == CHOOSING)
         {
-            selectedTurtle = chosenSprite;
+            selectedTurtle = turtle;
             state = REVEALING;
 
-            currentScale = 0.1;
+            currentScale = 0;
             delayCount = 0;
             currentLoopingEvent = game.time.events.loop(Phaser.Timer.SECOND / 60, revealTurtles, this);
         }
     }
 
     function update() {
-
+        
     }
 
     function render() {
-        
+
     }
 };

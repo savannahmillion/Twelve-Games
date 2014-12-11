@@ -1,17 +1,17 @@
 <?php 
-	$page_title = "five golden rings";
+	$page_title = "four calling birds";
 ?>
 <?php include("includes/head.html");?>
 
-<script src="js/five.js"></script>
+<script src="js/four.js"></script>
 
-<body id="five">
+<body id="three">
 
 	<?php include("includes/header.html");?>
 	<?php include("includes/navigation.html");?>
 
 		<div class="main-content center page-wrap">
-			<h1>five golden rings</h1>
+			<h1>four calling birds</h1>
 
 			<div class="game" id="game-canvas">
 				<script type="text/javascript">

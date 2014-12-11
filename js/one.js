@@ -1,24 +1,7 @@
+unlock = unlockDates[0];
+
 function mainGame() {
-
-    window.addEventListener("resize", function(event){
-        var h = document.getElementById("game-canvas").clientHeight;
-        var w = document.getElementById("game-canvas").clientWidth;
-
-        h = w * 9.0/16.0;
-
-        document.getElementById("game-canvas").style.height = h;
-
-        game.scale.setupScale(w, h);
-        game.scale.refresh();
-    });
-
-    var width = document.getElementById("game-canvas").clientWidth;
-    var height = document.getElementById("game-canvas").clientHeight;
-
-    height = width * 9.0/16.0;
-    document.getElementById("game-canvas").style.height = height;
-    
-    var game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
+    game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
 
     var bird;
     var pears;
@@ -26,11 +9,16 @@ function mainGame() {
     var cursors;
     var flapButton;
 
+    var birdSpeed = 300;
+
     var sfx_flap;
 
     var originalScale;
 
     function preload () {
+        var height = document.getElementById("game-canvas").clientHeight;
+        var width = document.getElementById("game-canvas").clientWidth;
+
         game.scale.setupScale(width, height);
         game.scale.refresh();
 
@@ -43,7 +31,9 @@ function mainGame() {
     }
 
     function create () {
-        
+        setupGameScaling();
+        updateSize();
+
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.arcade.gravity.y = 1200;
 
@@ -74,30 +64,95 @@ function mainGame() {
         bird.animations.play('flap', 10, true);
 
         cursors = game.input.keyboard.createCursorKeys();
-        flapButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
+        if(game.device.desktop)
+        {
+            flapButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        }
+        else
+        {
+            var onTouch = function(pointer) {
+                flap();
+            }
+
+            game.input.onDown.add(onTouch, this);
+
+            var handleOrientation = function(e) {
+                var val = 0;
+                var orientation = window.orientation;
+
+                if(orientation == 0)
+                {
+                    val = e.gamma;
+                }
+                else if(orientation == 90)
+                {
+                    val = e.beta;
+                }
+                else if(orientation == -90)
+                {
+                    val = -e.beta;
+                }
+
+                if(val > 1)
+                    moveRight();
+                else if (val < 1)
+                    moveLeft();
+                else
+                    stopMoving();
+            };
+
+            window.addEventListener('deviceorientation', handleOrientation);
+        }
     }
 
-    function update() {
+    function flap(){
+        bird.body.velocity.y = -400;
+        sfx_flap.play('flap');
+    }
+
+    function moveLeft(){
+        bird.body.velocity.x = -birdSpeed;
+        bird.scale.x = originalScale;
+    }
+
+    function moveRight(){
+        bird.body.velocity.x = birdSpeed;
+        bird.scale.x = -originalScale;
+    }
+
+    function stopMoving(){
+        bird.body.velocity.x = 0;
+    }
+
+    function desktopInput(){
         if(flapButton.justPressed(0.05)) {
-            log('hello');
-            bird.body.velocity.y = -400;
-            sfx_flap.play('flap');
+            flap();
         }
 
         if(cursors.left.isDown)
         {
-            bird.body.velocity.x = -300;
-            bird.scale.x = originalScale;
+            moveLeft();
         }
         else if (cursors.right.isDown)
         {
-            bird.body.velocity.x = 300;
-            bird.scale.x = -originalScale;
+            moveRight();
         }
         else
         {
-            bird.body.velocity.x = 0;
+            stopMoving();
         }
+    }
+
+    function mobileInput(){
+
+    }
+
+    function update() {
+        if(game.device.desktop)
+            desktopInput();
+        else
+            mobileInput();
 
         for(var i = pears.length - 1; i >= 0; i--)
         {

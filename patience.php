@@ -11,7 +11,7 @@
 
 		<div class="main-content center">
 			<h1>patience is a virtue</h1>
-			<p>this is some content</p>
+			<p>We are posting a new game every day. Please come back to us later!</p>
 		</div>
 
 	<?php include("includes/footer.html");?>
