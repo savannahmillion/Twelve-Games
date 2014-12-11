@@ -276,9 +276,6 @@ function mainGame() {
                 numRotations = 0;
                 currentLoopingEvent = game.time.events.loop(Phaser.Timer.SECOND / 60, scaleDown, this);
             }
-
-            //if(!restart && !canSelect && waitingToStart)
-            //    waitingToStart = false;
         }
 
         game.input.onDown.add(onTouch, this);
