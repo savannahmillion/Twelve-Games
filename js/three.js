@@ -1,8 +1,6 @@
 unlock = unlockDates[2];
 
 function mainGame() {
-
-    updateSize();
     game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
 
     function preload () {
@@ -52,6 +50,9 @@ function mainGame() {
     }
 
     function create () {
+        setupGameScaling();
+        updateSize();
+
         state = NOT_PLAYING;
 
         var background = this.add.sprite(this.world.centerX, this.world.centerY, 'background');

@@ -1,9 +1,6 @@
 unlock = unlockDates[0];
 
 function mainGame() {
-
-    updateSize();
-
     game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
 
     var bird;
@@ -34,6 +31,9 @@ function mainGame() {
     }
 
     function create () {
+        setupGameScaling();
+        updateSize();
+
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.arcade.gravity.y = 1200;
 

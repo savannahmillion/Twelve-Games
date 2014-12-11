@@ -1,8 +1,6 @@
 unlock = unlockDates[1];
 
 function mainGame() {
-
-    updateSize();
     game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
 
     var turtles;
@@ -26,12 +24,6 @@ function mainGame() {
     var waitingToStart = true;
 
     function preload () {
-        var height = document.getElementById("game-canvas").clientHeight;
-        var width = document.getElementById("game-canvas").clientWidth;
-
-        game.scale.setupScale(width, height);
-        game.scale.refresh();
-
         this.load.image('background', 'img/two/background.png');
         
         this.load.image(turtleKey, 'img/two/turtle-shell.png');
@@ -136,6 +128,8 @@ function mainGame() {
         var selectionIndex = turtles.indexOf(selectedTurtle);
         var body = bodies[selectionIndex];
 
+        log(selectionIndex + ', ' + turtleDoveIndex);
+
         if(state == REVEALING)
         {
             currentScale += REVEAL_SPEED;
@@ -145,7 +139,10 @@ function mainGame() {
 
                 body.scale.setTo(currentScale, currentScale);
                 if(selectionIndex == turtleDoveIndex)
+                {
+                    wings.visible = true;
                     wings.scale.setTo(currentScale, 1);
+                }
 
                 if(delayCount < FRAME_DELAY)
                 {
@@ -155,14 +152,17 @@ function mainGame() {
                 else
                 {
                     state = RESET;
-                    currentScale = 0;
+                    currentScale = 0.1;
                 }
             }
             else
             {
                 body.scale.setTo(currentScale, currentScale);
                 if(selectionIndex == turtleDoveIndex)
+                {
+                    wings.visible = true;
                     wings.scale.setTo(currentScale, 1);
+                }
             }
         }
         else if(state == RESET)
@@ -183,7 +183,10 @@ function mainGame() {
             }
 
             if(selectionIndex != turtleDoveIndex)
+            {
+                wings.visible = true;
                 wings.scale.setTo(currentScale, 1);
+            }
         }
     }
 
@@ -191,8 +194,8 @@ function mainGame() {
         if(state == START_SCALE)
         {
             currentScale -= SCALE_SPEED;
-            if(currentScale <= 0)
-                currentScale = 0;
+            if(currentScale <= 0.1)
+                currentScale = 0.1;
 
             for(i = 0; i < NUM_TURTLES; i++)
             {
@@ -203,8 +206,9 @@ function mainGame() {
                     wings.scale.setTo(currentScale, 1);
             }
 
-            if(currentScale == 0)
+            if(currentScale == 0.1)
             {
+                wings.visible = false;
                 state = SHUFFLING;
                 currentScale = 0;
 
@@ -217,6 +221,8 @@ function mainGame() {
     }
 
     function create () {
+        setupGameScaling();
+        updateSize();
 
         var background = this.add.sprite(this.world.centerX, this.world.centerY, 'background');
         background.anchor.setTo(0.5, 0.5);
@@ -243,7 +249,7 @@ function mainGame() {
 
             turtle.anchor.setTo(0.5, 0.5);
             turtle.inputEnabled = true;
-            turtle.events.onInputDown.add(testTurtle, turtle);
+            turtle.events.onInputDown.add(testTurtle, this);
 
             var body = game.add.sprite(xPos, yPos, 'body');
             body.anchor.setTo(0.5, 0.5);
@@ -298,23 +304,25 @@ function mainGame() {
         return [firstIndex, secondIndex];
     }
 
-    var testTurtle = function(turtle){
+    var testTurtle = function(chosenSprite, pointer){
+        log(pointer.x + ', ' + pointer.y);
+
         if(state == CHOOSING)
         {
-            selectedTurtle = turtle;
+            selectedTurtle = chosenSprite;
             state = REVEALING;
 
-            currentScale = 0;
+            currentScale = 0.1;
             delayCount = 0;
             currentLoopingEvent = game.time.events.loop(Phaser.Timer.SECOND / 60, revealTurtles, this);
         }
     }
 
     function update() {
-        
+
     }
 
     function render() {
-
+        
     }
 };
