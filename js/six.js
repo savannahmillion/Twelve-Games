@@ -1,8 +1,6 @@
 unlock = unlockDates[1];
 
 function mainGame() {
-
-    updateSize();
     game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
 
     var turtles;
@@ -26,11 +24,6 @@ function mainGame() {
     var waitingToStart = true;
 
     function preload () {
-        var height = document.getElementById("game-canvas").clientHeight;
-        var width = document.getElementById("game-canvas").clientWidth;
-
-        game.scale.setupScale(width, height);
-        game.scale.refresh();
 
         this.load.image('background', 'img/two/background.png');
         
@@ -217,6 +210,8 @@ function mainGame() {
     }
 
     function create () {
+        setupGameScaling();
+        updateSize();
 
         var background = this.add.sprite(this.world.centerX, this.world.centerY, 'background');
         background.anchor.setTo(0.5, 0.5);

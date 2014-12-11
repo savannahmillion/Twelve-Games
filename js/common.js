@@ -30,19 +30,31 @@ var unlockDates = [
 	new Date(2014, 11, START_DAY+11, 0, 0, 0, 0), //12
 ];
 
+function setupGameScaling(){
+	game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    game.scale.minWidth = 80;
+    game.scale.maxWidth = GAME_WIDTH;
+
+    game.scale.minHeight = 45;
+    game.scale.maxHeight = GAME_HEIGHT;
+}
+
 function updateSize(){
-	var h = document.getElementById("game-canvas").clientHeight;
-    var w = document.getElementById("game-canvas").clientWidth;
+	var canvasElement = document.getElementById("game-canvas");
+
+	var h = canvasElement.clientHeight;
+    var w = canvasElement.clientWidth;
 
     h = w * 9.0/16.0;
 
-    document.getElementById("game-canvas").style.height = h;
+    canvasElement.style.height = h;
 
     if(game)
     {
-	    game.scale.setupScale(w, h);
-	    game.scale.refresh();
-	}
+    	game.scale.maxWidth = w;
+    	game.scale.maxHeight = h;
+    	game.scale.refresh();
+    }
 }
 
 var game;
