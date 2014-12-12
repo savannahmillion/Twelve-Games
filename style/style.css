@@ -458,7 +458,8 @@ body {
   width: 800px;
   height: 450px;
   margin: 30px auto 0 auto;
-  border: 3px solid #93CFD6; }
+  border: 3px solid #93CFD6;
+  background: url("../img/patience.png"); }
 
 .about-game {
   width: 800px;
