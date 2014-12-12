@@ -17,14 +17,26 @@ function mainGame() {
 
     var currentLoopingEvent;
 
-    var NOT_PLAYING = 0;
-    var SELECTING = 1;
+    var canRestart = false;
+
+    var GAME_OVER = 0;
+    var NOT_PLAYING = 1;
+    var SELECTING = 2;
 
     var state = NOT_PLAYING;
+
+    var selections;
+
+    var win;
+    var lose;
+    var tween;
 
     function preload () {
         var height = document.getElementById("game-canvas").clientHeight;
         var width = document.getElementById("game-canvas").clientWidth;
+
+        this.load.image('nice', 'img/nice.png');
+        this.load.image('naughty', 'img/naughty.png');
 
         this.load.image('background', 'img/four/background.png');
 
@@ -114,18 +126,55 @@ function mainGame() {
                 displayItem();
                 currentLoopingEvent = game.time.events.loop(Phaser.Timer.SECOND / 60, loopItems, this);
             }
+
+            if(state == GAME_OVER && canRestart)
+            {
+                canRestart = false;
+
+                if(lose.visible)
+                {
+                    tween = game.add.tween(lose).to( {y: -GAME_HEIGHT/2}, 500, Phaser.Easing.Quadratic.In, true);
+                    tween.onComplete.add(dropOutComplete, this);
+                }
+                else if(win.visible)
+                {
+                    tween = game.add.tween(win).to( {y: -GAME_HEIGHT/2}, 500, Phaser.Easing.Quadratic.In, true);
+                    tween.onComplete.add(dropOutComplete, this);   
+                }
+
+                initGame();
+            }
         }
 
         game.input.onDown.add(onTouch, this);
+
+        win = game.add.sprite(game.world.centerX, -GAME_HEIGHT/2, 'nice');
+        win.anchor.setTo(0.5, 0.5);
+        win.visible = false;
+        
+        lose = game.add.sprite(game.world.centerX, -GAME_HEIGHT/2, 'naughty');
+        lose.anchor.setTo(0.5, 0.5);
+        lose.visible = false;
     }
 
     function initGame() {
         delayCount = 0;
         rouletteIndex = 0;
         displayIndex = 0;
+
+        selections = [0, 0, 0, 0];
+
+        for(i = 0; i < 4; i++)
+        {
+            for(item = 0; item < NUM_ITEMS; item++)
+                roulettes[i][item].visible = false;
+        }
     }
 
     var bubblePressed = function(bubble){
+
+        selections[rouletteIndex] = displayIndex;
+
         rouletteIndex++;
         
         for(i = 0; i < bubbles.length; i++)
@@ -133,10 +182,24 @@ function mainGame() {
 
         if(rouletteIndex >= 4)
         {
-            state = NOT_PLAYING;
+            var test = selections[0];
+            var wins = true;
+            for(s = 1; s < selections.length; s++)
+            {
+                if(test != selections[s])
+                {
+                    wins = false;
+                }
+            }
+
+            state = GAME_OVER;
+
             game.time.events.remove(currentLoopingEvent);
 
-            initGame();
+            if(wins)
+                playerWin();
+            else
+                playerLose();
         }
         else
         {
@@ -178,6 +241,32 @@ function mainGame() {
 
         return set;
     }
+
+    function playerWin(){
+        win.visible = true;
+
+        tween = game.add.tween(win).to( {y: GAME_HEIGHT/2}, 2000, Phaser.Easing.Bounce.Out, true);
+        tween.onComplete.add(dropInComplete, this);
+    }
+
+    function playerLose(){
+        lose.visible = true;
+
+        tween = game.add.tween(lose).to( {y: GAME_HEIGHT/2}, 2000, Phaser.Easing.Bounce.Out, true);
+        tween.onComplete.add(dropInComplete, this);
+    }
+
+    function dropInComplete(){
+        canRestart = true;
+    }
+
+    function dropOutComplete(){
+        state = NOT_PLAYING;
+
+        lose.visible = false;
+        win.visible = false;
+    }
+
 
     function update() {
 

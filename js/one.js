@@ -123,9 +123,12 @@ function mainGame() {
                     val = -e.beta;
                 }
 
-                if(val > 1)
+                //log(Number(val));
+
+                var THRESHOLD = 5;
+                if(val > THRESHOLD)
                     moveRight();
-                else if (val < 1)
+                else if (val < -THRESHOLD)
                     moveLeft();
                 else
                     stopMoving();
@@ -133,14 +136,12 @@ function mainGame() {
 
             window.addEventListener('deviceorientation', handleOrientation);
         }
-        
-        var SPLASH_BOUNCE = 0.55;
 
-        win = this.add.sprite(this.world.centerX, -GAME_HEIGHT/2, 'nice');
+        win = game.add.sprite(game.world.centerX, -GAME_HEIGHT/2, 'nice');
         win.anchor.setTo(0.5, 0.5);
         win.visible = false;
         
-        lose = this.add.sprite(this.world.centerX, -GAME_HEIGHT/2, 'naughty');
+        lose = game.add.sprite(game.world.centerX, -GAME_HEIGHT/2, 'naughty');
         lose.anchor.setTo(0.5, 0.5);
         lose.visible = false;
     }

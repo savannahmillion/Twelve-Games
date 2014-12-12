@@ -25,12 +25,15 @@ function mainGame() {
 
     var currentLoopingEvent;
 
-    var NOT_PLAYING = 0;
-    var START_SCALE = 1;
-    var SHUFFLING = 2;
-    var CHOOSING = 3;
-    var REVEALING = 4;
-    var RESET = 5;
+    var canRestart = false;
+
+    var GAME_OVER = 0
+    var NOT_PLAYING = 1;
+    var START_SCALE = 2;
+    var SHUFFLING = 3;
+    var CHOOSING = 4;
+    var REVEALING = 5;
+    var RESET = 6;
 
     var state = NOT_PLAYING;
 
@@ -57,8 +60,15 @@ function mainGame() {
     var rotValuesSet = false;
 
     var selectedTurtle;
+
+    var win;
+    var lose;
+    var tween;
     
     function preload () {
+        this.load.image('nice', 'img/nice.png');
+        this.load.image('naughty', 'img/naughty.png');
+
         this.load.image('background', 'img/two/background.png');
         
         this.load.image(turtleKey, 'img/two/turtle-shell.png');
@@ -120,8 +130,22 @@ function mainGame() {
         turtleDove.addChild(wings);
 
         var onTouch = function(pointer) {
-            
-            if(state == NOT_PLAYING)
+            if(state == GAME_OVER && canRestart)
+            {
+                canRestart = false;
+
+                if(lose.visible)
+                {
+                    tween = game.add.tween(lose).to( {y: -GAME_HEIGHT/2}, 500, Phaser.Easing.Quadratic.In, true);
+                    tween.onComplete.add(dropOutComplete, this);
+                }
+                else if(win.visible)
+                {
+                    tween = game.add.tween(win).to( {y: -GAME_HEIGHT/2}, 500, Phaser.Easing.Quadratic.In, true);
+                    tween.onComplete.add(dropOutComplete, this);   
+                }
+            }
+            else if(state == NOT_PLAYING)
             {
                 state = START_SCALE;
 
@@ -131,6 +155,43 @@ function mainGame() {
         }
 
         game.input.onDown.add(onTouch, this);
+
+        win = game.add.sprite(game.world.centerX, -GAME_HEIGHT/2, 'nice');
+        win.anchor.setTo(0.5, 0.5);
+        win.visible = false;
+        
+        lose = game.add.sprite(game.world.centerX, -GAME_HEIGHT/2, 'naughty');
+        lose.anchor.setTo(0.5, 0.5);
+        lose.visible = false;
+    }
+
+    function playerWin(){
+        win.visible = true;
+
+        tween = game.add.tween(win).to( {y: GAME_HEIGHT/2}, 2000, Phaser.Easing.Bounce.Out, true);
+        tween.onComplete.add(dropInComplete, this);
+
+        state = GAME_OVER;
+    }
+
+    function playerLose(){
+        lose.visible = true;
+
+        tween = game.add.tween(lose).to( {y: GAME_HEIGHT/2}, 2000, Phaser.Easing.Bounce.Out, true);
+        tween.onComplete.add(dropInComplete, this);
+
+        state = GAME_OVER;
+    }
+
+    function dropInComplete(){
+        canRestart = true;
+    }
+
+    function dropOutComplete(){
+        state = NOT_PLAYING;
+
+        lose.visible = false;
+        win.visible = false;
     }
 
     function shuffleTurtles(){
@@ -237,7 +298,11 @@ function mainGame() {
             {
                 currentScale = 1;
                 game.time.events.remove(currentLoopingEvent);
-                state = NOT_PLAYING;
+                
+                if(selectionIndex == turtleDoveIndex)
+                    playerWin();
+                else
+                    playerLose();
             }
             for(i = 0; i < NUM_TURTLES; i++)
             {
