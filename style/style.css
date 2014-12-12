@@ -537,6 +537,10 @@ body#twelve li#twelvenav {
     margin-left: -40px;
     width: 100%; }
 
+  .game, .about-content, .bio-content, .about-game, .mobile-padding {
+    width: 90%;
+    height: auto; }
+
   .banner-img {
     display: none; }
 

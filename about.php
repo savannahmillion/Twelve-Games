@@ -22,7 +22,7 @@
 						<a href="http://david-laskey.com/">david laskey</a>
 					</h2>
 					<p>
-						David is an independent game developer in Chicago. He is a cofounder of <a href="http://theamiable.com/">The Amiable</a>, currently working on their premier cooperative action game, <a href="http://tetrapulse.com/">Tetrapulse</a>. He did all the programming for Twelve Games.
+						David is an independent game developer in Chicago. He is a cofounder of <a href="http://theamiable.com/">The Amiable</a>, currently working on their premier cooperative action game, <a href="http://tetrapulse.com/">Tetrapulse</a>. He did all of the game programming for Twelve Games.
 					</p>
 					<a class="img-link" href="https://twitter.com/david_laskey"><img class="twitter" src="img/twitter.png"></a>
 				</div>
@@ -32,7 +32,7 @@
 						<a href="http://sava.nnah.rocks/">savannah million</a>
 					</h2>
 					<p>
-						Savannah is an interaction &amp; visual designer in Chicago. She is currently re-designing and building internet for a marketing technology software company. She did the illustrations and web design for Twelve Games.
+						Savannah is an interaction &amp; visual designer in Chicago. She is currently re-designing and building internet for a marketing technology software company. She did the illustrations, web design &amp; development for Twelve Games.
 					</p>
 					<a class="img-link" href="https://twitter.com/savannahmillion"><img class="twitter" src="img/twitter.png"></a>
 				</div>
