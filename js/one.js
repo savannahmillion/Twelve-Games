@@ -18,10 +18,13 @@ function mainGame() {
     
     var win;
     var lose;
+    var tween;
 
     var GAME_OVER = 0;
     var PLAYING = 1;
     var state = PLAYING;
+
+    var canRestart = false;
 
     function preload () {
         this.load.image('nice', 'img/nice.png');
@@ -53,26 +56,8 @@ function mainGame() {
         //Create Group
         pears = this.add.group();
         ornaments = this.add.group();
-        for(y = 0; y < 5; y++)
-        {
-            var ornamentIndex = game.rnd.integerInRange(1, 9);
-            for(x = 0; x < 10; x++)
-            {
-                var xOffset = -180 + x * 40;
-                var yOffset = 5 - y * 35;
-                
-                if(x == ornamentIndex)
-                {
-                    var ornament = ornaments.create(this.world.centerX + xOffset, this.world.centerY + yOffset, 'ornament');
-                    game.physics.enable(ornament, Phaser.Physics.ARCADE);
-                    ornament.body.allowGravity = false;
-                    ornament.body.collideWorldBounds = true;
-                    ornament.body.setSize(16,16,3,8);   
-                }
-                else
-                    pears.create(this.world.centerX + xOffset, this.world.centerY + yOffset, 'pear');
-            }
-        }
+
+        generateGameObjects();
 
         bird = game.add.sprite(625, 625, 'bird');
         originalScale = bird.scale.x;
@@ -93,9 +78,22 @@ function mainGame() {
                     flap();
             }
 
-            if(state == GAME_OVER)
+            if(state == GAME_OVER && canRestart)
             {
-                state = PLAYING;
+                canRestart = false;
+
+                if(lose.visible)
+                {
+                    tween = game.add.tween(lose).to( {y: -GAME_HEIGHT/2}, 500, Phaser.Easing.Quadratic.In, true);
+                    tween.onComplete.add(dropOutComplete, this);
+                }
+                else if(win.visible)
+                {
+                    tween = game.add.tween(win).to( {y: -GAME_HEIGHT/2}, 500, Phaser.Easing.Quadratic.In, true);
+                    tween.onComplete.add(dropOutComplete, this);   
+                }
+
+                generateGameObjects();
             }
         }
 
@@ -135,21 +133,42 @@ function mainGame() {
             window.addEventListener('deviceorientation', handleOrientation);
         }
         
-        var SPLASH_BOUNCE = 0.7;
+        var SPLASH_BOUNCE = 0.55;
 
         win = this.add.sprite(this.world.centerX, -GAME_HEIGHT/2, 'nice');
         win.anchor.setTo(0.5, 0.5);
-        game.physics.enable(win, Phaser.Physics.ARCADE);
-        win.body.bounce.y = SPLASH_BOUNCE;
-        win.body.allowGravity = false;
         win.visible = false;
         
         lose = this.add.sprite(this.world.centerX, -GAME_HEIGHT/2, 'naughty');
         lose.anchor.setTo(0.5, 0.5);
-        game.physics.enable(lose, Phaser.Physics.ARCADE);
-        lose.body.bounce.y = SPLASH_BOUNCE;
-        lose.body.allowGravity = false;
         lose.visible = false;
+    }
+
+    function generateGameObjects () {
+
+        ornaments.removeAll(true, true);
+        pears.removeAll(true, true);
+
+        for(y = 0; y < 5; y++)
+        {
+            var ornamentIndex = game.rnd.integerInRange(1, 9);
+            for(x = 0; x < 10; x++)
+            {
+                var xOffset = -180 + x * 40;
+                var yOffset = 5 - y * 35;
+                
+                if(x == ornamentIndex)
+                {
+                    var ornament = ornaments.create(game.world.centerX + xOffset, game.world.centerY + yOffset, 'ornament');
+                    game.physics.enable(ornament, Phaser.Physics.ARCADE);
+                    ornament.body.allowGravity = false;
+                    ornament.body.collideWorldBounds = true;
+                    ornament.body.setSize(16,16,3,8);   
+                }
+                else
+                    pears.create(game.world.centerX + xOffset, game.world.centerY + yOffset, 'pear');
+            }
+        }
     }
 
     function flap(){
@@ -202,14 +221,26 @@ function mainGame() {
 
         if(state == PLAYING)
         {
-            for(var i = pears.length - 1; i >= 0; i--)
+            if(pears.length > 0)
             {
-                var pear = pears.getAt(i);
-                if(Phaser.Rectangle.intersects(bird.getBounds(), pear.getBounds()))
+                for(var i = pears.length - 1; i >= 0; i--)
                 {
-                   pears.remove(pear);
-                   pear.destroy();
+                    var pear = pears.getAt(i);
+                    if(Phaser.Rectangle.intersects(bird.getBounds(), pear.getBounds()))
+                    {
+                       pears.remove(pear);
+                       pear.destroy();
+                    }
                 }
+            }
+            else
+            {
+                win.visible = true;
+
+                tween = game.add.tween(lose).to( {y: 0}, 2000, Phaser.Easing.Bounce.Out, true);
+                tween.onComplete.add(dropInComplete, this);
+
+                state = GAME_OVER;
             }
             
             for(var orn = ornaments.length - 1; orn >= 0; orn--)
@@ -227,32 +258,23 @@ function mainGame() {
                     if(ornament.body.position.y > 420)
                     {
                         lose.visible = true;
-                        lose.body.allowGravity = true;
+
+                        tween = game.add.tween(lose).to( {y: GAME_HEIGHT/2}, 2000, Phaser.Easing.Bounce.Out, true);
+                        tween.onComplete.add(dropInComplete, this);
 
                         state = GAME_OVER;
                     }
                 }
             }
         }
+    }
 
-        if(win.body.allowGravity)
-        {
-            if(win.body.position.y > 0)
-            { 
-                win.body.velocity.y *= -win.body.bounce.y;
-                win.body.blocked.bottom = true;
-                win.body.position.y = 0;
-            }
-        }
-        else if(lose.body.allowGravity)
-        {
-            if(lose.body.position.y > 0)
-            {
-                lose.body.velocity.y *= -lose.body.bounce.y;
-                lose.body.blocked.bottom = true;
-                lose.body.position.y = 0;
-            }
-        }
+    function dropInComplete(){
+        canRestart = true;
+    }
+
+    function dropOutComplete(){
+        state = PLAYING;
     }
 
     function render() {
