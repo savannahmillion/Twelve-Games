@@ -260,14 +260,14 @@ function mainGame() {
     }
 
     function render() {
-        for(i = 0; i < triggers.length; i++)
-        {
+        //for(i = 0; i < triggers.length; i++)
+        //{
             //game.debug.body(triggers[i]);
-        }
+        //}
         
-        for(r = 0; r < rings.length; r++)
-        {
+        //for(r = 0; r < rings.length; r++)
+        //{
             //game.debug.body(rings[r].sprite);
-        }
+        //}
     }
 };

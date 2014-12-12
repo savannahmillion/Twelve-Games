@@ -19,6 +19,10 @@ function mainGame() {
     var win;
     var lose;
 
+    var GAME_OVER = 0;
+    var PLAYING = 1;
+    var state = PLAYING;
+
     function preload () {
         this.load.image('nice', 'img/nice.png');
         this.load.image('naughty', 'img/naughty.png');
@@ -62,7 +66,8 @@ function mainGame() {
                     var ornament = ornaments.create(this.world.centerX + xOffset, this.world.centerY + yOffset, 'ornament');
                     game.physics.enable(ornament, Phaser.Physics.ARCADE);
                     ornament.body.allowGravity = false;
-                    ornament.body.collideWorldBounds = true;   
+                    ornament.body.collideWorldBounds = true;
+                    ornament.body.setSize(16,16,3,8);   
                 }
                 else
                     pears.create(this.world.centerX + xOffset, this.world.centerY + yOffset, 'pear');
@@ -81,18 +86,27 @@ function mainGame() {
 
         cursors = game.input.keyboard.createCursorKeys();
 
+        var onTouch = function(pointer) {
+            if(!game.device.desktop)
+            {
+                if(state == PLAYING)
+                    flap();
+            }
+
+            if(state == GAME_OVER)
+            {
+                state = PLAYING;
+            }
+        }
+
+        game.input.onDown.add(onTouch, this);
+
         if(game.device.desktop)
         {
             flapButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         }
         else
         {
-            var onTouch = function(pointer) {
-                flap();
-            }
-
-            game.input.onDown.add(onTouch, this);
-
             var handleOrientation = function(e) {
                 var val = 0;
                 var orientation = window.orientation;
@@ -121,15 +135,21 @@ function mainGame() {
             window.addEventListener('deviceorientation', handleOrientation);
         }
         
+        var SPLASH_BOUNCE = 0.7;
+
         win = this.add.sprite(this.world.centerX, -GAME_HEIGHT/2, 'nice');
         win.anchor.setTo(0.5, 0.5);
         game.physics.enable(win, Phaser.Physics.ARCADE);
-        win.body.bounce.y = 0.6;
+        win.body.bounce.y = SPLASH_BOUNCE;
+        win.body.allowGravity = false;
+        win.visible = false;
         
-        lose = this.add.sprite(this.world.centerX, this.world.centerY, 'naughty');
+        lose = this.add.sprite(this.world.centerX, -GAME_HEIGHT/2, 'naughty');
         lose.anchor.setTo(0.5, 0.5);
+        game.physics.enable(lose, Phaser.Physics.ARCADE);
+        lose.body.bounce.y = SPLASH_BOUNCE;
+        lose.body.allowGravity = false;
         lose.visible = false;
-
     }
 
     function flap(){
@@ -180,28 +200,41 @@ function mainGame() {
         else
             mobileInput();
 
-        for(var i = pears.length - 1; i >= 0; i--)
+        if(state == PLAYING)
         {
-            var pear = pears.getAt(i);
-            if(Phaser.Rectangle.intersects(bird.getBounds(), pear.getBounds()))
+            for(var i = pears.length - 1; i >= 0; i--)
             {
-               pears.remove(pear);
-               pear.destroy();
-            }
-        }
-        
-        for(var orn = ornaments.length - 1; orn >= 0; orn--)
-        {
-            var ornament = ornaments.getAt(orn);
-            if(!ornament.body.allowGravity)
-            {
-                if(Phaser.Rectangle.intersects(bird.getBounds(), ornament.getBounds()))
+                var pear = pears.getAt(i);
+                if(Phaser.Rectangle.intersects(bird.getBounds(), pear.getBounds()))
                 {
-                    ornament.body.allowGravity = true;
+                   pears.remove(pear);
+                   pear.destroy();
+                }
+            }
+            
+            for(var orn = ornaments.length - 1; orn >= 0; orn--)
+            {
+                var ornament = ornaments.getAt(orn);
+                if(!ornament.body.allowGravity)
+                {
+                    if(Phaser.Rectangle.intersects(bird.getBounds(), ornament.getBounds()))
+                    {
+                        ornament.body.allowGravity = true;
+                    }
+                }
+                else
+                {
+                    if(ornament.body.position.y > 420)
+                    {
+                        lose.visible = true;
+                        lose.body.allowGravity = true;
+
+                        state = GAME_OVER;
+                    }
                 }
             }
         }
-        
+
         if(win.body.allowGravity)
         {
             if(win.body.position.y > 0)
@@ -211,9 +244,23 @@ function mainGame() {
                 win.body.position.y = 0;
             }
         }
+        else if(lose.body.allowGravity)
+        {
+            if(lose.body.position.y > 0)
+            {
+                lose.body.velocity.y *= -lose.body.bounce.y;
+                lose.body.blocked.bottom = true;
+                lose.body.position.y = 0;
+            }
+        }
     }
 
     function render() {
+        //game.debug.body(bird);
 
+        for(var orn = ornaments.length - 1; orn >= 0; orn--)
+        {
+            //game.debug.body(ornaments.getAt(orn));
+        }
     }
 };
