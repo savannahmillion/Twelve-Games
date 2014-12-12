@@ -123,9 +123,12 @@ function mainGame() {
                     val = -e.beta;
                 }
 
-                if(val > 1)
+                //log(Number(val));
+
+                var THRESHOLD = 5;
+                if(val > THRESHOLD)
                     moveRight();
-                else if (val < 1)
+                else if (val < -THRESHOLD)
                     moveLeft();
                 else
                     stopMoving();
