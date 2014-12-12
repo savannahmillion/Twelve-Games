@@ -65,6 +65,7 @@ function mainGame() {
 
         game.physics.enable(bird, Phaser.Physics.ARCADE);
         bird.body.collideWorldBounds = true;
+        bird.body.setSize(36, 28, 0, 0);
 
         bird.animations.add('flap');
         bird.animations.play('flap', 10, true);
@@ -149,13 +150,19 @@ function mainGame() {
         ornaments.removeAll(true, true);
         pears.removeAll(true, true);
 
-        for(y = 0; y < 5; y++)
+        var firstHalf = (game.rnd.integerInRange(0, 2) == 1);
+
+        for(y = 0; y < 4; y++)
         {
-            var ornamentIndex = game.rnd.integerInRange(1, 9);
+            if(firstHalf)
+                var ornamentIndex = game.rnd.integerInRange(1, 4);
+            else
+                var ornamentIndex = game.rnd.integerInRange(5, 9);
+
             for(x = 0; x < 10; x++)
             {
                 var xOffset = -180 + x * 40;
-                var yOffset = 5 - y * 35;
+                var yOffset = 5 - y * 50;
                 
                 if(x == ornamentIndex)
                 {
@@ -163,11 +170,13 @@ function mainGame() {
                     game.physics.enable(ornament, Phaser.Physics.ARCADE);
                     ornament.body.allowGravity = false;
                     ornament.body.collideWorldBounds = true;
-                    ornament.body.setSize(16,16,3,8);   
+                    ornament.body.setSize(8,8,6,12);   
                 }
                 else
                     pears.create(game.world.centerX + xOffset, game.world.centerY + yOffset, 'pear');
             }
+
+            firstHalf = !firstHalf;
         }
     }
 
@@ -237,7 +246,7 @@ function mainGame() {
             {
                 win.visible = true;
 
-                tween = game.add.tween(lose).to( {y: 0}, 2000, Phaser.Easing.Bounce.Out, true);
+                tween = game.add.tween(win).to( {y: GAME_HEIGHT/2}, 2000, Phaser.Easing.Bounce.Out, true);
                 tween.onComplete.add(dropInComplete, this);
 
                 state = GAME_OVER;
@@ -275,14 +284,17 @@ function mainGame() {
 
     function dropOutComplete(){
         state = PLAYING;
+
+        lose.visible = false;
+        win.visible = false;
     }
 
     function render() {
         //game.debug.body(bird);
 
-        for(var orn = ornaments.length - 1; orn >= 0; orn--)
-        {
-            //game.debug.body(ornaments.getAt(orn));
-        }
+        // for(var orn = ornaments.length - 1; orn >= 0; orn--)
+        // {
+        //     game.debug.body(ornaments.getAt(orn));
+        // }
     }
 };
