@@ -524,9 +524,9 @@ body#two li#twonav {
     margin-left: -40px;
     width: 100%; }
 
-  /*.main-content {
-  	width: 100%;
-  }*/
+  .main-content {
+    width: 100%; }
+
   /*.game, .about-content, .bio-content, .about-game {
   	width: 90%;
   	height: auto;
