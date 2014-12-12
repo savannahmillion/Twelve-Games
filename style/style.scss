@@ -45,11 +45,19 @@ h3 {
 }
 
 .banner-img {
-	margin: 30px 0px 40px 0px;
+	margin-top: 30px;
+	margin-bottom: 40px;
+	width: 100%;
+	height: auto;
 }
 
 .banner-img-small {
 	display: none;
+}
+
+.banner-image-container {
+	width: 1000px;
+	height: auto;
 }
 
 .background-pattern {
@@ -238,6 +246,11 @@ body#twelve li#twelvenav {
 		display: block;
 		margin: 20px auto 20px auto;
 		width: 90%;
+	}
+
+	.banner-image-container {
+		width: 100%;
+		height: auto;
 	}
 }
 

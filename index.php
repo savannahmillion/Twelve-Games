@@ -17,8 +17,10 @@
 
 
 		<div class="main-content center page-wrap mobile-padding">
-			<img class="banner-img" src="img/twelvegames-banner.png">
-			<img class="banner-img-small" src="img/twelvegames-banner-small.png">
+			<div class="banner-image-container">
+				<img class="banner-img" src="img/twelvegames-banner.png">
+				<img class="banner-img-small" src="img/twelvegames-banner-small.png">
+			</div>
 			<!--<div class="homepage-banner-small"></div>
 			<div class="homepage-banner"></div>-->
 			<!--<img class="banner-img" src="img/twelvegames-banner.png">-->
