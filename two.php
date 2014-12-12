@@ -16,7 +16,7 @@
 			<div class="game" id="game-canvas">
 			</div>
 
-			<div class="about-game">
+			<div class="about-game" id="about-game">
 				<h3>about this game</h3>
 				<p>
 					In A Partridge, use the spacebar and arrow keys to grab pears. Try to avoid breaking the ornaments. A Partridge also works on mobile. Steer the bird by tilting your phone, and tap to fly up.<br/>
