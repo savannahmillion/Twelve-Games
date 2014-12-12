@@ -151,7 +151,7 @@ function mainGame() {
             ring.caught = false;
             
             ring.sprite.x = game.rnd.integerInRange(50, 750);
-            ring.sprite.y = 0;
+            ring.sprite.y = -30;
             
             ring.destination = -1;
         }
