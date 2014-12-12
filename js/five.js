@@ -3,7 +3,11 @@ unlock = unlockDates[4];
 function mainGame() {
     game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
 
-    var fingerLocations;
+    var fingerBaseYOffsets = [85, 110, 120, 110, 70];
+    var fingerYIncrements = [20, 20, 20, 20, 15];
+    
+    var fingerBaseXOffsets = [22, 5, 0, 0, -5];
+    var fingerXIncrements = [-4, 0, 0, 0, 2];
     
     var hand;
     var moveSpeed = 5;
@@ -13,7 +17,8 @@ function mainGame() {
     var ringIndex = 0;
     
     var triggers = [];
-
+    var triggerCollisionCount = [];
+    
     var NOT_PLAYING = 0;
     var CATCH_RINGS = 0;
     var state = NOT_PLAYING;
@@ -36,17 +41,30 @@ function mainGame() {
         this.band.z = 2;
         
         this.caught = false;
+        
+        this.destination = -1;
+        this.offset = 0;
     }
     
     Ring.prototype.update = function() {
-        this.band.x = this.sprite.x;
-        this.band.y = this.sprite.y;
-
         if(this.sprite.body.allowGravity && !this.caught)
+        {
             for(t = 0; t < triggers.length; t++)
                 game.physics.arcade.collide(this.sprite, triggers[t], collisionHandler, null, game);
+        }
+        else if(this.caught && this.destination > -1)
+        {
+            var triggerPos = triggers[this.destination].body.position;
+            
+            var dest = new Phaser.Point(triggerPos.x + fingerBaseXOffsets[this.destination] + (this.offset * fingerXIncrements[this.destination]), 
+                                        triggerPos.y + fingerBaseYOffsets[this.destination] - (this.offset * fingerYIncrements[this.destination]));
+            this.sprite.position = Phaser.Point.interpolate(this.sprite.position, dest, 0.7);
+        }
+        
+        this.band.x = this.sprite.x;
+        this.band.y = this.sprite.y;
     }
-    
+
     function preload () {
         var height = document.getElementById("game-canvas").clientHeight;
         var width = document.getElementById("game-canvas").clientWidth;
@@ -62,18 +80,6 @@ function mainGame() {
         this.load.image('ring5', 'img/five/ring5.png');
 
         this.load.image('ringBottom', 'img/five/ring-bottom.png');
-    }
-    
-    function initGame(){
-        for(r = 0; r < rings.length; r++){
-            var ring = rings[r];
-            
-            ring.sprite.body.allowGravity = false;
-            ring.caught = false;
-            
-            ring.sprite.x = game.rnd.integerInRange(50, 750);
-            ring.sprite.y = 0;
-        }
     }
 
     function create () {
@@ -136,11 +142,22 @@ function mainGame() {
         game.input.onDown.add(onTouch, this);
     }
     
-    function getRingFromSprite(sprite){
-        for(i = 0; i < rings.length; i++)
-        {
-            if(rings[i].sprite == sprite)
-                return rings[i];
+    function initGame(){
+        for(r = 0; r < rings.length; r++){
+            var ring = rings[r];
+            
+            ring.sprite.body.allowGravity = false;
+            
+            ring.caught = false;
+            
+            ring.sprite.x = game.rnd.integerInRange(50, 750);
+            ring.sprite.y = 0;
+            
+            ring.destination = -1;
+        }
+        
+        for(t = 0; t < triggerCollisionCount.length; t++){
+            triggerCollisionCount[t] = 0;   
         }
     }
     
@@ -148,14 +165,23 @@ function mainGame() {
         ring.body.allowGravity = false;
         ring.body.velocity.y = 0;
         
-        var ringObj = getRingFromSprite(ring);
-        
-        ringObj.caught = true;
-        
-        trigger.body.velocity.y = 0;
         var triggerIndex = triggers.indexOf(trigger);
         
-        var localPos = ring.position - hand.position;
+        var ringObj = getRingFromSprite(ring);
+        ringObj.caught = true;
+        ringObj.destination = triggerIndex;
+        ringObj.offset = triggerCollisionCount[triggerIndex];
+        
+        trigger.body.velocity.y = 0;
+        triggerCollisionCount[triggerIndex]++;
+    }
+    
+    function getRingFromSprite(sprite){
+        for(i = 0; i < rings.length; i++)
+        {
+            if(rings[i].sprite == sprite)
+                return rings[i];
+        }
     }
     
     function dropRings(){
@@ -188,6 +214,7 @@ function mainGame() {
         trigger.body.kinematic = false;
         
         triggers.push(trigger);
+        triggerCollisionCount.push(0);
         
         hand.addChild(trigger);
     }
@@ -235,12 +262,12 @@ function mainGame() {
     function render() {
         for(i = 0; i < triggers.length; i++)
         {
-            game.debug.body(triggers[i]);
+            //game.debug.body(triggers[i]);
         }
         
         for(r = 0; r < rings.length; r++)
         {
-            game.debug.body(rings[r].sprite);
+            //game.debug.body(rings[r].sprite);
         }
     }
 };

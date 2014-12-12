@@ -63,8 +63,8 @@ function updateNav() {
 	for(i = 0; i < unlockDates.length; i++)
 	{
 		var element = document.getElementById("nav" + (i + 1));
-		if(today > unlockDates[i])
-			element.src = "img/1_pear.png";
+		if(today < unlockDates[i])
+			element.src = "img/present.png";
  	}
 }
 
