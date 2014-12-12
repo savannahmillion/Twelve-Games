@@ -32,7 +32,7 @@
 						<a href="http://sava.nnah.rocks/">savannah million</a>
 					</h2>
 					<p>
-						Savannah is an interaction designer in Chicago. She is currently re-designing and building internet for <a href="http://kenshoo.com/">Kenshoo</a>, a marketing technology company. She did the illustrations and web design for Twelve Games.
+						Savannah is an interaction &amp; visual designer in Chicago. She is currently re-designing and building internet for a marketing technology software company. She did the illustrations and web design for Twelve Games.
 					</p>
 					<a class="img-link" href="https://twitter.com/savannahmillion"><img class="twitter" src="img/twitter.png"></a>
 				</div>

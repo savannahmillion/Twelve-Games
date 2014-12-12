@@ -17,7 +17,10 @@
 
 
 		<div class="main-content center page-wrap mobile-padding">
-			<div class="homepage-banner"></div>
+			<img class="banner-img" src="img/twelvegames-banner.png">
+			<img class="banner-img-small" src="img/twelvegames-banner-small.png">
+			<!--<div class="homepage-banner-small"></div>
+			<div class="homepage-banner"></div>-->
 			<!--<img class="banner-img" src="img/twelvegames-banner.png">-->
 			<!--<h1 class="homepage">twelve games<br/><span class="emphasis">of</span> xmas</h1>-->
 			<p>Starting on December 14, 2014, each day we will post a new micro game (based on the Christmas carol) until December 25th.<br/>

@@ -48,6 +48,10 @@ h3 {
 	margin: 30px 0px 40px 0px;
 }
 
+.banner-img-small {
+	display: none;
+}
+
 .background-pattern {
 	background-image: url("../img/background.png");
 }
@@ -71,7 +75,6 @@ header p a {
 }
 
 footer p { 
-	//padding-top: 160px;
 	font-size: .8em;
 	color: lighten($morningGlory, 20%);
 }
@@ -84,12 +87,6 @@ html {
 body {
 	background-color: $alabaster;
 	height: 100%;
-}
-
-.homepage-banner {
-	background: url("../img/twelvegames-banner.png");
-	width: 1200px;
-	height: 600px;
 }
 
 * {
@@ -204,7 +201,17 @@ nav {
 }
 
 body#one li#onenav,
-body#two li#twonav {
+body#two li#twonav,
+body#three li#threenav,
+body#four li#fournav,
+body#five li#fivenav,
+body#six li#sixnav,
+body#seven li#sevennav,
+body#eight li#eightnav,
+body#nine li#ninenav,
+body#ten li#tennav,
+body#eleven li#elevennav,
+body#twelve li#twelvenav {
 	border-bottom: 5px solid darken($morningGlory, 10%);
 }
 
@@ -218,14 +225,14 @@ body#two li#twonav {
 		}
 	}
 
-	/*.game, .about-content, .bio-content, .about-game {
-		width: 90%;
-		height: auto;
-	}*/
-
 	.banner-img {
+		display: none;
+	}
+
+	.banner-img-small {
+		display: block;
+		margin: 20px auto 20px auto;
 		width: 90%;
-		height: auto;
 	}
 }
 
@@ -269,18 +276,18 @@ body#two li#twonav {
 		border-bottom: none;
 	}
 
-	body#one img#onenavimg,
-	body#two img#twonavimg,
-	body#three img#threenavimg,
-	body#four img#fournavimg,
-	body#five img#fivenavimg,
-	body#six img#sixnavimg,
-	body#seven img#sevennavimg,
-	body#eight img#eightnavimg,
-	body#nine img#ninenavimg,
-	body#ten img#tennavimg,
-	body#eleven img#elevennavimg,
-	body#twelve img#twelvenavimg, {
+	body#one img#nav1,
+	body#two img#nav2,
+	body#three img#nav3,
+	body#four img#nav4,
+	body#five img#nav5,
+	body#six img#nav6,
+	body#seven img#nav7,
+	body#eight img#nav8,
+	body#nine img#nav9,
+	body#ten img#nav10,
+	body#eleven img#nav11,
+	body#twelve img#nav12, {
 		border: solid 3px darken($morningGlory, 10%);
 	}
 
