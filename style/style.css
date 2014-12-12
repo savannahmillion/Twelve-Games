@@ -458,8 +458,7 @@ body {
   width: 800px;
   height: 450px;
   margin: 30px auto 0 auto;
-  border: 3px solid #93CFD6;
-  background: url("../img/patience.png"); }
+  border: 3px solid #93CFD6; }
 
 .about-game {
   width: 800px;
@@ -553,11 +552,6 @@ body#twelve li#twelvenav {
       nav ul li:hover {
         border-bottom: none;
         background-color: #93CFD6; }
-
-  .homepage-banner {
-    background: url("../img/twelvegames-banner-small.png");
-    width: 800px;
-    height: 700px; }
 
   .game, .about-content, .bio-content, .about-game, .mobile-padding {
     width: 90%;

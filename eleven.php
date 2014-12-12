@@ -1,17 +1,17 @@
 <?php 
-	$page_title = "four calling birds";
+	$page_title = "eleven pipers piping";
 ?>
 <?php include("includes/head.html");?>
 
-<script src="js/four.js"></script>
+<script src="js/eleven.js"></script>
 
-<body id="four">
+<body id="eleven">
 
 	<?php include("includes/header.html");?>
 	<?php include("includes/navigation.html");?>
 
 		<div class="main-content center page-wrap">
-			<h1>four calling birds</h1>
+			<h1>eleven pipers piping</h1>
 
 			<div class="game" id="game-canvas">
 			</div>
@@ -23,7 +23,7 @@
 				</p>
 				<small>Released December 14th, 2014</small>
 			</div>
-			
+
 		</div>	
 
 	<?php include("includes/footer.html");?>

@@ -73,11 +73,23 @@ function loadGameIfDateIsValid() {
 
 	if(today > unlock)
 	{
-		document.getElementById("game-canvas").src = "";
 		window.addEventListener('load', mainGame);
 	}
 	else
 	{
+		function preload(){
+			this.load.image('background', 'img/patience.png');
+		}
+
+		function create(){
+			setupGameScaling();
+        		updateSize();
+
+        		var background = this.add.sprite(this.world.centerX, this.world.centerY, 'background');
+        		background.anchor.setTo(0.5, 0.5);
+		}
+
+		game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.CANVAS, 'game-canvas', {preload: preload, create: create});
 		document.getElementById("about-game").style.display = "none";
 	}
 }
