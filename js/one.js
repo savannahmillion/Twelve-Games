@@ -5,6 +5,7 @@ function mainGame() {
 
     var bird;
     var pears;
+    var ornaments;
 
     var cursors;
     var flapButton;
@@ -14,16 +15,17 @@ function mainGame() {
     var sfx_flap;
 
     var originalScale;
+    
+    var win;
+    var lose;
 
     function preload () {
-        var height = document.getElementById("game-canvas").clientHeight;
-        var width = document.getElementById("game-canvas").clientWidth;
-
-        game.scale.setupScale(width, height);
-        game.scale.refresh();
-
+        this.load.image('nice', 'img/nice.png');
+        this.load.image('naughty', 'img/naughty.png');
+        
         this.load.image('background', 'img/one/background.png');
         this.load.image('pear', 'img/one/pear.png');
+        this.load.image('ornament', 'img/one/ornament.png');
 
         this.load.atlasJSONHash('bird', 'img/one/bird.png', 'img/one/bird_anim.json');
 
@@ -36,28 +38,42 @@ function mainGame() {
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.arcade.gravity.y = 1200;
-
+        
         var background = this.add.sprite(this.world.centerX, this.world.centerY, 'background');
         background.anchor.setTo(0.5, 0.5);
-
+        
         sfx_flap = game.add.audio('sfx');
 
         sfx_flap.addMarker('flap', 0.0, 1.0);
-
+        
         //Create Group
         pears = this.add.group();
-        for(i = 0; i < 20; i++)
+        ornaments = this.add.group();
+        for(y = 0; y < 5; y++)
         {
-            var xOffset = this.rnd.integerInRange(-200, 200);
-            var yOffset = this.rnd.integerInRange(0, -175);
-            pears.create(this.world.centerX + xOffset, this.world.centerY + yOffset, 'pear');
+            var ornamentIndex = game.rnd.integerInRange(1, 9);
+            for(x = 0; x < 10; x++)
+            {
+                var xOffset = -180 + x * 40;
+                var yOffset = 5 - y * 35;
+                
+                if(x == ornamentIndex)
+                {
+                    var ornament = ornaments.create(this.world.centerX + xOffset, this.world.centerY + yOffset, 'ornament');
+                    game.physics.enable(ornament, Phaser.Physics.ARCADE);
+                    ornament.body.allowGravity = false;
+                    ornament.body.collideWorldBounds = true;   
+                }
+                else
+                    pears.create(this.world.centerX + xOffset, this.world.centerY + yOffset, 'pear');
+            }
         }
 
         bird = game.add.sprite(625, 625, 'bird');
         originalScale = bird.scale.x;
         bird.anchor.setTo(0.5, 0.5);
 
-        game.physics.enable(bird, Phaser.Physics.ARCADE, true);
+        game.physics.enable(bird, Phaser.Physics.ARCADE);
         bird.body.collideWorldBounds = true;
 
         bird.animations.add('flap');
@@ -104,6 +120,16 @@ function mainGame() {
 
             window.addEventListener('deviceorientation', handleOrientation);
         }
+        
+        win = this.add.sprite(this.world.centerX, -GAME_HEIGHT/2, 'nice');
+        win.anchor.setTo(0.5, 0.5);
+        game.physics.enable(win, Phaser.Physics.ARCADE);
+        win.body.bounce.y = 0.6;
+        
+        lose = this.add.sprite(this.world.centerX, this.world.centerY, 'naughty');
+        lose.anchor.setTo(0.5, 0.5);
+        lose.visible = false;
+
     }
 
     function flap(){
@@ -161,6 +187,28 @@ function mainGame() {
             {
                pears.remove(pear);
                pear.destroy();
+            }
+        }
+        
+        for(var orn = ornaments.length - 1; orn >= 0; orn--)
+        {
+            var ornament = ornaments.getAt(orn);
+            if(!ornament.body.allowGravity)
+            {
+                if(Phaser.Rectangle.intersects(bird.getBounds(), ornament.getBounds()))
+                {
+                    ornament.body.allowGravity = true;
+                }
+            }
+        }
+        
+        if(win.body.allowGravity)
+        {
+            if(win.body.position.y > 0)
+            { 
+                win.body.velocity.y *= -win.body.bounce.y;
+                win.body.blocked.bottom = true;
+                win.body.position.y = 0;
             }
         }
     }
