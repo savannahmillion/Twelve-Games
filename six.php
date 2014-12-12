@@ -14,9 +14,6 @@
 			<h1>six geese laying</h1>
 
 			<div class="game" id="game-canvas">
-				<script type="text/javascript">
-					loadGameIfDateIsValid();
-				</script>
 			</div>
 
 			<div class="about-game" id="about-game">
