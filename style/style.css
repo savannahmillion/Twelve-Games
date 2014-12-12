@@ -539,11 +539,11 @@ body#twelve li#twelvenav {
   border-bottom: 5px solid #6ebfc8; }
 
 /* Responsive */
-@media (max-width: 1024px) {
+@media (max-width: 1064px) {
   nav ul {
     margin-left: -40px;
-    width: 100%; }
-
+    width: 100%; } }
+@media (max-width: 1024px) {
   .game, .about-content, .bio-content, .about-game, .mobile-padding {
     width: 90%;
     height: auto; }
