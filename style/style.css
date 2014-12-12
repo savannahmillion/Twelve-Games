@@ -422,6 +422,11 @@ body {
   background-color: #F2F3E4;
   height: 100%; }
 
+.homepage-banner {
+  background: url("../img/twelvegames-banner.png");
+  width: 1200px;
+  height: 600px; }
+
 * {
   margin: 0 auto; }
 
@@ -524,9 +529,6 @@ body#two li#twonav {
     margin-left: -40px;
     width: 100%; }
 
-  .main-content {
-    width: 100%; }
-
   /*.game, .about-content, .bio-content, .about-game {
   	width: 90%;
   	height: auto;
@@ -543,7 +545,12 @@ body#two li#twonav {
         border-bottom: none;
         background-color: #93CFD6; }
 
-  .game, .about-content, .bio-content, .about-game {
+  .homepage-banner {
+    background: url("../img/twelvegames-banner-small.png");
+    width: 800px;
+    height: 700px; }
+
+  .game, .about-content, .bio-content, .about-game, .mobile-padding {
     width: 90%;
     height: auto; }
 
