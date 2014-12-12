@@ -14,9 +14,6 @@
 			<h1>a partridge</h1>
 
 			<div class="game" id="game-canvas">
-				<script type="text/javascript">
-					loadGameIfDateIsValid();
-				</script>
 			</div>
 
 			<div class="about-game" id="about-game">
@@ -29,6 +26,10 @@
 		</div>	
 
 	<?php include("includes/footer.html");?>
+	
+	<script type="text/javascript">
+		loadGameIfDateIsValid();
+	</script>
 
 </body>
 
