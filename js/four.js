@@ -32,9 +32,6 @@ function mainGame() {
     var tween;
 
     function preload () {
-        var height = document.getElementById("game-canvas").clientHeight;
-        var width = document.getElementById("game-canvas").clientWidth;
-
         this.load.image('nice', 'img/nice.png');
         this.load.image('naughty', 'img/naughty.png');
 

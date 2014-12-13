@@ -13,6 +13,12 @@ function mainGame() {
     var birdSpeed = 300;
 
     var sfx_flap;
+    var sfx_pickup;
+    var sfx_bells;
+    var sfx_thump;
+
+    var endSoundCount = 0;
+    var END_SOUND_MAX = 3;
 
     var originalScale;
     
@@ -36,7 +42,10 @@ function mainGame() {
 
         this.load.atlasJSONHash('bird', 'img/one/bird.png', 'img/one/bird_anim.json');
 
-        this.load.audio('sfx', 'sfx/one/flap.wav');
+        this.load.audio('sfx_flap', 'sfx/one/flap.wav');
+        this.load.audio('sfx_pickup', 'sfx/one/pickup.wav');
+        this.load.audio('sfx_bells', 'sfx/bells.wav');
+        this.load.audio('sfx_thump', 'sfx/thump.wav');
     }
 
     function create () {
@@ -49,9 +58,18 @@ function mainGame() {
         var background = this.add.sprite(this.world.centerX, this.world.centerY, 'background');
         background.anchor.setTo(0.5, 0.5);
         
-        sfx_flap = game.add.audio('sfx');
-
+        sfx_flap = game.add.audio('sfx_flap');
         sfx_flap.addMarker('flap', 0.0, 1.0);
+
+        sfx_pickup = game.add.audio('sfx_pickup');
+        sfx_pickup.addMarker('pickup', 0.0, 1.0);
+
+        sfx_bells = game.add.audio('sfx_bells');
+        sfx_bells.addMarker('bells', 0.0, 1.0);
+
+        sfx_thump = game.add.audio('sfx_thump');
+        sfx_thump.addMarker('thump', 0.0, 1.0);
+
         
         //Create Group
         pears = this.add.group();
@@ -95,6 +113,7 @@ function mainGame() {
                 }
 
                 generateGameObjects();
+                endSoundCount = 0;
             }
         }
 
@@ -158,7 +177,7 @@ function mainGame() {
             if(firstHalf)
                 var ornamentIndex = game.rnd.integerInRange(1, 4);
             else
-                var ornamentIndex = game.rnd.integerInRange(5, 9);
+                var ornamentIndex = game.rnd.integerInRange(5, 8);
 
             for(x = 0; x < 10; x++)
             {
@@ -177,13 +196,14 @@ function mainGame() {
                     pears.create(game.world.centerX + xOffset, game.world.centerY + yOffset, 'pear');
             }
 
-            firstHalf = !firstHalf;
+            if(y == 1)
+                firstHalf = !firstHalf;
         }
     }
 
     function flap(){
         bird.body.velocity.y = -400;
-        sfx_flap.play('flap');
+        sfx_flap.play('flap', 0, 0.1);
     }
 
     function moveLeft(){
@@ -238,8 +258,9 @@ function mainGame() {
                     var pear = pears.getAt(i);
                     if(Phaser.Rectangle.intersects(bird.getBounds(), pear.getBounds()))
                     {
-                       pears.remove(pear);
-                       pear.destroy();
+                        sfx_pickup.play('pickup', 0, 0.25);
+                        pears.remove(pear);
+                        pear.destroy();
                     }
                 }
             }
@@ -249,6 +270,7 @@ function mainGame() {
 
                 tween = game.add.tween(win).to( {y: GAME_HEIGHT/2}, 2000, Phaser.Easing.Bounce.Out, true);
                 tween.onComplete.add(dropInComplete, this);
+                tween.onUpdateCallback(tweenUpdate, this);
 
                 state = GAME_OVER;
             }
@@ -271,11 +293,58 @@ function mainGame() {
 
                         tween = game.add.tween(lose).to( {y: GAME_HEIGHT/2}, 2000, Phaser.Easing.Bounce.Out, true);
                         tween.onComplete.add(dropInComplete, this);
+                        tween.onUpdateCallback(tweenUpdate, this);
 
                         state = GAME_OVER;
                     }
                 }
             }
+        }
+    }
+
+    var prevY;
+    var testPos = false;
+
+    function tweenUpdate(){
+        var sprite;
+        var playerWins = false;
+        if(win.visible)
+        {
+            sprite = win;
+            playerWins = true;
+        }
+        else if (lose.visible)
+            sprite = lose;
+        else
+            return;
+
+        if(sprite.visible){
+            if(testPos)
+            {
+                if(prevY > sprite.position.y)
+                {
+                    if(endSoundCount < END_SOUND_MAX)
+                    {
+                        if(playerWins)
+                            sfx_bells.play('bells', 0, 0.3);
+                        else
+                            sfx_thump.play('thump', 0, 0.5);
+
+                        endSoundCount++;
+                        testPos = false;
+                    }
+                }
+            }
+            else
+            {
+                if(endSoundCount < END_SOUND_MAX)
+                {
+                    if(prevY < sprite.position.y)
+                        testPos = true;
+                }
+            }
+            
+            prevY = sprite.position.y;
         }
     }
 
