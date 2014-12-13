@@ -20,6 +20,10 @@ function mainGame() {
     var endSoundCount = 0;
     var END_SOUND_MAX = 3;
 
+    //for tweenUpdate
+    var prevY;
+    var testPos = false;
+
     var originalScale;
     
     var win;
@@ -301,9 +305,6 @@ function mainGame() {
             }
         }
     }
-
-    var prevY;
-    var testPos = false;
 
     function tweenUpdate(){
         var sprite;

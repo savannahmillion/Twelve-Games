@@ -64,6 +64,13 @@ function mainGame() {
     var win;
     var lose;
     var tween;
+
+    var sfx_slide;
+    var sfx_bells;
+    var sfx_thump;
+
+    var prevY;
+    var testPos = false;
     
     function preload () {
         this.load.image('nice', 'img/nice.png');
@@ -74,6 +81,10 @@ function mainGame() {
         this.load.image(turtleKey, 'img/two/turtle-shell.png');
         this.load.image('body', 'img/two/turtle-body.png');
         this.load.image('wings', 'img/two/turtle-wings.png');
+
+        this.load.audio('sfx_slide', 'sfx/two/slide.wav');
+        this.load.audio('sfx_bells', 'sfx/bells.wav');
+        this.load.audio('sfx_thump', 'sfx/thump.wav');
     }
     
     function create () {
@@ -92,6 +103,15 @@ function mainGame() {
         var stepSize = range/NUM_TURTLES;
 
         var allSprites = this.add.group();
+
+        sfx_slide = game.add.audio('sfx_slide');
+        sfx_slide.addMarker('slide', 0.0, 1.0);
+
+        sfx_bells = game.add.audio('sfx_bells');
+        sfx_bells.addMarker('bells', 0.0, 1.0);
+
+        sfx_thump = game.add.audio('sfx_thump');
+        sfx_thump.addMarker('thump', 0.0, 1.0);
 
         turtles = [];
         bodies = [];
@@ -218,6 +238,8 @@ function mainGame() {
                 avgPos = Phaser.Point.interpolate(t1StartPos, t2StartPos, 0.5);
 
                 rotValuesSet = true;
+
+                sfx_slide.play('slide', 0.0, 0.2);
             }
 
             currentRotation += 5;
@@ -378,6 +400,49 @@ function mainGame() {
             currentScale = 0.1;
             delayCount = 0;
             currentLoopingEvent = game.time.events.loop(Phaser.Timer.SECOND / 60, revealTurtles, this);
+        }
+    }
+
+    function tweenUpdate(){
+        var sprite;
+        var playerWins = false;
+        if(win.visible)
+        {
+            sprite = win;
+            playerWins = true;
+        }
+        else if (lose.visible)
+            sprite = lose;
+        else
+            return;
+
+        if(sprite.visible){
+            if(testPos)
+            {
+                if(prevY > sprite.position.y)
+                {
+                    if(endSoundCount < END_SOUND_MAX)
+                    {
+                        if(playerWins)
+                            sfx_bells.play('bells', 0, 0.3);
+                        else
+                            sfx_thump.play('thump', 0, 0.5);
+
+                        endSoundCount++;
+                        testPos = false;
+                    }
+                }
+            }
+            else
+            {
+                if(endSoundCount < END_SOUND_MAX)
+                {
+                    if(prevY < sprite.position.y)
+                        testPos = true;
+                }
+            }
+            
+            prevY = sprite.position.y;
         }
     }
 
