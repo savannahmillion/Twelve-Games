@@ -22,7 +22,7 @@
 					Goal: catch all five rings on your hand!<br/><br/>
 
 					Desktop: click to start and move with the arrow keys.<br/>
-					Mobile: tap to start and tilt to move<br/>
+					Mobile: tap to start and tilt to move.<br/>
 				</p>
 				<small>Released December 18th, 2014</small>
 			</div>

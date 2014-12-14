@@ -69,6 +69,9 @@ function mainGame() {
     var sfx_bells;
     var sfx_thump;
 
+    var endSoundCount = 0;
+    var END_SOUND_MAX = 3;
+
     var prevY;
     var testPos = false;
     
@@ -164,6 +167,8 @@ function mainGame() {
                     tween = game.add.tween(win).to( {y: -GAME_HEIGHT/2}, 500, Phaser.Easing.Quadratic.In, true);
                     tween.onComplete.add(dropOutComplete, this);   
                 }
+
+                endSoundCount = 0;
             }
             else if(state == NOT_PLAYING)
             {
@@ -190,6 +195,7 @@ function mainGame() {
 
         tween = game.add.tween(win).to( {y: GAME_HEIGHT/2}, 2000, Phaser.Easing.Bounce.Out, true);
         tween.onComplete.add(dropInComplete, this);
+        tween.onUpdateCallback(tweenUpdate, this);
 
         state = GAME_OVER;
     }
@@ -199,6 +205,7 @@ function mainGame() {
 
         tween = game.add.tween(lose).to( {y: GAME_HEIGHT/2}, 2000, Phaser.Easing.Bounce.Out, true);
         tween.onComplete.add(dropInComplete, this);
+        tween.onUpdateCallback(tweenUpdate, this);
 
         state = GAME_OVER;
     }
@@ -258,9 +265,9 @@ function mainGame() {
                 currentRotation = 0;
                 numRotations++;
 
+                rotValuesSet = false;
                 if(numRotations < NUM_ROTS)
                 {
-                    rotValuesSet = false;
                     delayCount = 0;
                 }
                 else
