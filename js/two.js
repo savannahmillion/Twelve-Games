@@ -69,6 +69,9 @@ function mainGame() {
     var sfx_bells;
     var sfx_thump;
 
+    var sfx_right;
+    var sfx_wrong;
+
     var endSoundCount = 0;
     var END_SOUND_MAX = 3;
 
@@ -86,6 +89,9 @@ function mainGame() {
         this.load.image('wings', 'img/two/turtle-wings.png');
 
         this.load.audio('sfx_slide', 'sfx/two/slide.wav');
+        this.load.audio('sfx_right', 'sfx/two/correct.wav');
+        this.load.audio('sfx_wrong', 'sfx/two/wrong.wav');
+
         this.load.audio('sfx_bells', 'sfx/bells.wav');
         this.load.audio('sfx_thump', 'sfx/thump.wav');
     }
@@ -109,6 +115,12 @@ function mainGame() {
 
         sfx_slide = game.add.audio('sfx_slide');
         sfx_slide.addMarker('slide', 0.0, 1.0);
+
+        sfx_right = game.add.audio('sfx_right');
+        sfx_right.addMarker('right', 0.0, 1.0);
+
+        sfx_wrong = game.add.audio('sfx_wrong');
+        sfx_wrong.addMarker('wrong', 0.0, 1.0);
 
         sfx_bells = game.add.audio('sfx_bells');
         sfx_bells.addMarker('bells', 0.0, 1.0);
@@ -402,6 +414,16 @@ function mainGame() {
         if(state == CHOOSING)
         {
             selectedTurtle = chosenSprite;
+
+            if(selectedTurtle == turtleDove)
+            {
+                sfx_right.play('right', 0, 0.3);
+            }
+            else
+            {
+                sfx_wrong.play('wrong', 0, 0.3);
+            }
+
             state = REVEALING;
 
             currentScale = 0.1;
