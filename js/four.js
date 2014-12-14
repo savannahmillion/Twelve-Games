@@ -200,6 +200,8 @@ function mainGame() {
     var bubblePressed = function(bubble){
 
         selections[rouletteIndex] = displayIndex;
+        displayIndex = game.rnd.integerInRange(0, NUM_ITEMS - 1);
+        delayCount = 0;
 
         rouletteIndex++;
 
