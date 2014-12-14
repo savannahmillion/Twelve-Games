@@ -16,6 +16,7 @@ function mainGame() {
     var sfx_pickup;
     var sfx_bells;
     var sfx_thump;
+    var sfx_crash;
 
     var endSoundCount = 0;
     var END_SOUND_MAX = 3;
@@ -48,6 +49,8 @@ function mainGame() {
 
         this.load.audio('sfx_flap', 'sfx/one/flap.wav');
         this.load.audio('sfx_pickup', 'sfx/one/pickup.wav');
+        this.load.audio('sfx_crash', 'sfx/one/crash.wav');
+
         this.load.audio('sfx_bells', 'sfx/bells.wav');
         this.load.audio('sfx_thump', 'sfx/thump.wav');
     }
@@ -73,6 +76,9 @@ function mainGame() {
 
         sfx_thump = game.add.audio('sfx_thump');
         sfx_thump.addMarker('thump', 0.0, 1.0);
+
+        sfx_crash = game.add.audio('sfx_crash');
+        sfx_crash.addMarker('crash', 0.0, 1.0);
 
         
         //Create Group
@@ -293,6 +299,8 @@ function mainGame() {
                 {
                     if(ornament.body.position.y > 420)
                     {
+                        sfx_crash.play('crash', 0, 0.25);
+
                         lose.visible = true;
 
                         tween = game.add.tween(lose).to( {y: GAME_HEIGHT/2}, 2000, Phaser.Easing.Bounce.Out, true);
