@@ -34,6 +34,16 @@ function mainGame() {
     var tween;
 
     var canRestart = false;
+
+    var sfx_ring;
+    var sfx_bells;
+    var sfx_thump;
+
+    var endSoundCount = 0;
+    var END_SOUND_MAX = 3;
+
+    var prevY;
+    var testPos = false;
     
     function Ring (spriteName) {
         this.sprite = game.add.sprite(0, 0, spriteName);
@@ -95,11 +105,25 @@ function mainGame() {
         this.load.image('ring5', 'img/five/ring5.png');
 
         this.load.image('ringBottom', 'img/five/ring-bottom.png');
+
+        this.load.audio('sfx_bells', 'sfx/bells.wav');
+        this.load.audio('sfx_thump', 'sfx/thump.wav');
+
+        this.load.audio('sfx_ring', 'sfx/five/ring.wav');
     }
 
     function create () {
         setupGameScaling();
         updateSize();
+
+        sfx_ring = game.add.audio('sfx_ring');
+        sfx_ring.addMarker('ring', 0.0, 1.0);
+
+        sfx_bells = game.add.audio('sfx_bells');
+        sfx_bells.addMarker('bells', 0.0, 1.0);
+
+        sfx_thump = game.add.audio('sfx_thump');
+        sfx_thump.addMarker('thump', 0.0, 1.0);
         
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.arcade.gravity.y = 100;
@@ -161,6 +185,7 @@ function mainGame() {
                 {
                     tween = game.add.tween(lose).to( {y: -GAME_HEIGHT/2}, 500, Phaser.Easing.Quadratic.In, true);
                     tween.onComplete.add(dropOutComplete, this);
+
                 }
                 else if(win.visible)
                 {
@@ -217,6 +242,8 @@ function mainGame() {
     function initGame(){
         ringIndex = 0;
 
+        endSoundCount = 0;
+
         for(r = 0; r < rings.length; r++){
             var ring = rings[r];
             
@@ -249,6 +276,8 @@ function mainGame() {
         
         trigger.body.velocity.y = 0;
         triggerCollisionCount[triggerIndex]++;
+
+        sfx_ring.play('ring', 0, 0.7);
     }
     
     function getRingFromSprite(sprite){
@@ -362,6 +391,7 @@ function mainGame() {
 
         tween = game.add.tween(win).to( {y: GAME_HEIGHT/2}, 2000, Phaser.Easing.Bounce.Out, true);
         tween.onComplete.add(dropInComplete, this);
+        tween.onUpdateCallback(tweenUpdate, this);
     }
 
     function playerLose(){
@@ -369,6 +399,7 @@ function mainGame() {
 
         tween = game.add.tween(lose).to( {y: GAME_HEIGHT/2}, 2000, Phaser.Easing.Bounce.Out, true);
         tween.onComplete.add(dropInComplete, this);
+        tween.onUpdateCallback(tweenUpdate, this);
     }
 
     function dropInComplete(){
@@ -380,6 +411,49 @@ function mainGame() {
 
         lose.visible = false;
         win.visible = false;
+    }
+
+    function tweenUpdate(){
+        var sprite;
+        var playerWins = false;
+        if(win.visible)
+        {
+            sprite = win;
+            playerWins = true;
+        }
+        else if (lose.visible)
+            sprite = lose;
+        else
+            return;
+
+        if(sprite.visible){
+            if(testPos)
+            {
+                if(prevY > sprite.position.y)
+                {
+                    if(endSoundCount < END_SOUND_MAX)
+                    {
+                        if(playerWins)
+                            sfx_bells.play('bells', 0, 0.3);
+                        else
+                            sfx_thump.play('thump', 0, 0.5);
+
+                        endSoundCount++;
+                        testPos = false;
+                    }
+                }
+            }
+            else
+            {
+                if(endSoundCount < END_SOUND_MAX)
+                {
+                    if(prevY < sprite.position.y)
+                        testPos = true;
+                }
+            }
+            
+            prevY = sprite.position.y;
+        }
     }
 
     function render() {
