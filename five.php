@@ -19,7 +19,7 @@
 			<div class="about-game" id="about-game">
 				<h3>about this game</h3>
 				<p>
-					Goal: Catch all five rings on your hand!<br/><br/>
+					Goal: catch all five rings on your hand!<br/><br/>
 
 					Desktop: click to start and move with the arrow keys.<br/>
 					Mobile: tap to start and tilt to move<br/>

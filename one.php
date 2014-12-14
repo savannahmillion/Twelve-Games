@@ -19,7 +19,7 @@
 			<div class="about-game" id="about-game">
 				<h3>about this game</h3>
 				<p>
-					Goal: Avoid hitting the ornaments and collect all the pears!<br/><br/>
+					Goal: avoid hitting the ornaments and collect all the pears!<br/><br/>
 
 					Desktop: flap with spacebar and move with the arrow keys.<br/>
 					Mobile: tap to flap and tilt to move.<br/>

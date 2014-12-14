@@ -19,7 +19,7 @@
 			<div class="about-game" id="about-game">
 				<h3>about this game</h3>
 				<p>
-					Goal: Find the turtle dove amidst the other turtles!<br/><br/>
+					Goal: find the turtle dove amidst the other turtles!<br/><br/>
 
 					Desktop: click to start the game and select a turtle.<br/>
 					Mobile: tap to start the game and select a turtle.<br/>

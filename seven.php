@@ -19,7 +19,7 @@
 			<div class="about-game" id="about-game">
 				<h3>about this game</h3>
 				<p>
-					Goal: Get all the swans across the water without hitting anything!<br/><br/>
+					Goal: get all the swans across the water without hitting anything!<br/><br/>
 
 					Desktop: move with the left and right arrow keys.<br/>
 					Mobile: tap left and right on the game screen to move.<br/>	

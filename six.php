@@ -19,7 +19,7 @@
 			<div class="about-game" id="about-game">
 				<h3>about this game</h3>
 				<p>
-					Goal: Time your hips swinging to keep the hula hoop from falling! (10 times)<br/><br/>
+					Goal: time your hips swinging to keep the hula hoop from falling! (10 times)<br/><br/>
 
 					Desktop: alternate pressing the left and right arrow key.<br/>
 					Mobile: alternate tapping the left and right side of the game screen.<br/>

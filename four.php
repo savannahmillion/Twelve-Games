@@ -19,7 +19,7 @@
 			<div class="about-game" id="about-game">
 				<h3>about this game</h3>
 				<p>
-					Goal: Make all of the birds talk about the same thing!<br/><br/>
+					Goal: make all of the birds talk about the same thing!<br/><br/>
 
 					Desktop: click to start and select the item in the highlighted bubble.<br/>
 					Mobile: tap to start and select the item in the highlighted bubble.<br/>
