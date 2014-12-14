@@ -19,7 +19,10 @@
 			<div class="about-game" id="about-game">
 				<h3>about this game</h3>
 				<p>
-					In A Partridge, use the spacebar and arrow keys to grab pears. Try to avoid breaking the ornaments. A Partridge also works on mobile. Steer the bird by tilting your phone, and tap to fly up.<br/>
+					Goal: Avoid hitting the ornaments and collect all the pears!<br/><br/>
+
+					Desktop: flap with spacebar and move with the arrow keys.<br/>
+					Mobile: tap to flap and tilt to move.<br/>
 				</p>
 				<small>Released December 14th, 2014</small>
 			</div>
