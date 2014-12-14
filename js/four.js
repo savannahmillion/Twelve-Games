@@ -31,6 +31,17 @@ function mainGame() {
     var lose;
     var tween;
 
+    var sfx_bells;
+    var sfx_thump;
+
+    var sfx_select;
+
+    var endSoundCount = 0;
+    var END_SOUND_MAX = 3;
+
+    var prevY;
+    var testPos = false;
+
     function preload () {
         this.load.image('nice', 'img/nice.png');
         this.load.image('naughty', 'img/naughty.png');
@@ -53,11 +64,25 @@ function mainGame() {
         this.load.image('item1', 'img/two/turtle-shell.png');
         this.load.image('item2', 'img/present.png');
         this.load.image('item3', 'img/five/ring3.png');
+
+        this.load.audio('sfx_bells', 'sfx/bells.wav');
+        this.load.audio('sfx_thump', 'sfx/thump.wav');
+
+        this.load.audio('sfx_select', 'sfx/four/select.wav');
     }
 
     function create () {
         setupGameScaling();
         updateSize();
+
+        sfx_bells = game.add.audio('sfx_bells');
+        sfx_bells.addMarker('bells', 0.0, 1.0);
+
+        sfx_thump = game.add.audio('sfx_thump');
+        sfx_thump.addMarker('thump', 0.0, 1.0);
+
+        sfx_select  = game.add.audio('sfx_select');
+        sfx_select.addMarker('select', 0.0, 1.0);
 
         var background = this.add.sprite(this.world.centerX, this.world.centerY, 'background');
         background.anchor.setTo(0.5, 0.5);
@@ -117,7 +142,9 @@ function mainGame() {
                 for(i = 0; i < 4; i++)
                 {
                     for(item = 0; item < NUM_ITEMS; item++)
+                    {
                         roulettes[i][item].visible = false;
+                    }
                 }
 
                 displayItem();
@@ -161,6 +188,8 @@ function mainGame() {
 
         selections = [0, 0, 0, 0];
 
+        endSoundCount = 0;
+
         for(i = 0; i < 4; i++)
         {
             for(item = 0; item < NUM_ITEMS; item++)
@@ -173,6 +202,8 @@ function mainGame() {
         selections[rouletteIndex] = displayIndex;
 
         rouletteIndex++;
+
+        sfx_select.play('select', 0, 0.075);
         
         for(i = 0; i < bubbles.length; i++)
             bubbles[i].visible = (i == rouletteIndex);
@@ -221,8 +252,8 @@ function mainGame() {
 
         delayCount = 0;
 
-        displayItem();
         displayIndex = (displayIndex + 1) % NUM_ITEMS;
+        displayItem();
     }
 
     function createRoulette(xpos, ypos) {
@@ -244,6 +275,7 @@ function mainGame() {
 
         tween = game.add.tween(win).to( {y: GAME_HEIGHT/2}, 2000, Phaser.Easing.Bounce.Out, true);
         tween.onComplete.add(dropInComplete, this);
+        tween.onUpdateCallback(tweenUpdate, this);
     }
 
     function playerLose(){
@@ -251,6 +283,7 @@ function mainGame() {
 
         tween = game.add.tween(lose).to( {y: GAME_HEIGHT/2}, 2000, Phaser.Easing.Bounce.Out, true);
         tween.onComplete.add(dropInComplete, this);
+        tween.onUpdateCallback(tweenUpdate, this);
     }
 
     function dropInComplete(){
@@ -264,12 +297,53 @@ function mainGame() {
         win.visible = false;
     }
 
+    function tweenUpdate(){
+        var sprite;
+        var playerWins = false;
+        if(win.visible)
+        {
+            sprite = win;
+            playerWins = true;
+        }
+        else if (lose.visible)
+            sprite = lose;
+        else
+            return;
+
+        if(sprite.visible){
+            if(testPos)
+            {
+                if(prevY > sprite.position.y)
+                {
+                    if(endSoundCount < END_SOUND_MAX)
+                    {
+                        if(playerWins)
+                            sfx_bells.play('bells', 0, 0.3);
+                        else
+                            sfx_thump.play('thump', 0, 0.5);
+
+                        endSoundCount++;
+                        testPos = false;
+                    }
+                }
+            }
+            else
+            {
+                if(endSoundCount < END_SOUND_MAX)
+                {
+                    if(prevY < sprite.position.y)
+                        testPos = true;
+                }
+            }
+            
+            prevY = sprite.position.y;
+        }
+    }
 
     function update() {
 
     }
 
     function render() {
-
     }
 };
