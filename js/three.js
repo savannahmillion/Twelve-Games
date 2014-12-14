@@ -12,7 +12,7 @@ function mainGame() {
 
         this.load.atlasJSONHash('bird', 'img/one/bird.png', 'img/one/bird_anim.json');
 
-        this.load.image('background', 'img/two/background.png');
+        this.load.image('background', 'img/three/background.png');
         this.load.image('hen', 'img/two/turtle-shell.png');
     }
 
