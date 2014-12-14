@@ -19,9 +19,12 @@
 			<div class="about-game" id="about-game">
 				<h3>about this game</h3>
 				<p>
-					In A Partridge, use the spacebar and arrow keys to grab pears. Try to avoid breaking the ornaments. A Partridge also works on mobile. Steer the bird by tilting your phone, and tap to fly up.<br/>
+					Goal: Get all the swans across the water without hitting anything!<br/><br/>
+
+					Desktop: move with the left and right arrow keys.<br/>
+					Mobile: tap left and right on the game screen to move.<br/>	
 				</p>
-				<small>Released December 14th, 2014</small>
+				<small>Released December 20th, 2014</small>
 			</div>
 
 		</div>	
