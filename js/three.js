@@ -3,20 +3,6 @@ unlock = unlockDates[2];
 function mainGame() {
     game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
 
-    function preload () {
-        var height = document.getElementById("game-canvas").clientHeight;
-        var width = document.getElementById("game-canvas").clientWidth;
-
-        game.scale.setupScale(width, height);
-        game.scale.refresh();
-
-        this.load.image('hen0', 'img/three/hen-cup.png');
-        this.load.image('hen1', 'img/three/hen-bread.png');
-        this.load.image('hen2', 'img/three/hen-paint.png');
-
-        this.load.image('background', 'img/three/background.png');
-    }
-
     //hen sprites
     var NUM_HENS = 3;
     var hens;
@@ -27,7 +13,7 @@ function mainGame() {
     var score;
     var progressIter;
 
-    var FRAME_DELAY = 30;
+    var FRAME_DELAY = 10;
     var delayCount;
 
     var sequenceIter;
@@ -35,29 +21,69 @@ function mainGame() {
     var currentLoopingEvent;
 
     var startHeight = GAME_HEIGHT/2;
-    var jumpHeight = 100;
+    var jumpHeight = 50;
     var waitingForJump = false;
 
-    var NOT_PLAYING = 0;
-    var PLAYBACK = 1;
-    var SELECTION = 2;
+    var GAME_OVER = 0;
+    var NOT_PLAYING = 1;
+    var PLAYBACK = 2;
+    var SELECTION = 3;
+    
+    var MAX_SEQUENCE = 8;
 
     var state = NOT_PLAYING;
 
-    function initGame() {
-        score = 0;
-        sequence = [];
+    var win;
+    var lose;
+    var tween;
+    
+    var canRestart = false;
+    
+    var sfx_correct;
+    var sfx_bounce;
+    
+    var sfx_bells;
+    var sfx_thump;
 
-        delayCount = 0;
-        progressIter = 0;
+    var endSoundCount = 0;
+    var END_SOUND_MAX = 3;
+
+    var prevY;
+    var testPos = false;
+
+    function preload () {
+        this.load.image('nice', 'img/nice.png');
+        this.load.image('naughty', 'img/naughty.png');
         
-        startNextRound();
+        this.load.image('hen0', 'img/three/hen-cup.png');
+        this.load.image('hen1', 'img/three/hen-bread.png');
+        this.load.image('hen2', 'img/three/hen-paint.png');
+
+        this.load.image('background', 'img/three/background.png');
+        
+        this.load.audio('sfx_correct', 'sfx/two/correct.wav');
+        this.load.audio('sfx_bounce', 'sfx/two/wrong.wav');
+        
+        this.load.audio('sfx_bells', 'sfx/bells.wav');
+        this.load.audio('sfx_thump', 'sfx/thump.wav');
     }
 
     function create () {
         setupGameScaling();
         updateSize();
+        
+        sfx_correct = game.add.audio('sfx_correct');
+        sfx_correct.addMarker('correct', 0.0, 1.0);
+        
+        sfx_bounce = game.add.audio('sfx_bounce');
+        sfx_bounce.addMarker('bounce', 0.0, 1.0);
 
+        sfx_bells = game.add.audio('sfx_bells');
+        sfx_bells.addMarker('bells', 0.0, 1.0);
+
+        sfx_thump = game.add.audio('sfx_thump');
+        sfx_thump.addMarker('thump', 0.0, 1.0);
+        
         state = NOT_PLAYING;
 
         var background = this.add.sprite(this.world.centerX, this.world.centerY, 'background');
@@ -66,6 +92,24 @@ function mainGame() {
         var onTouch = function(pointer) {
             if(state == NOT_PLAYING) {
                 initGame();
+            }
+            
+            if(state == GAME_OVER && canRestart) {
+                canRestart = false;
+
+                if(lose.visible)
+                {
+                    tween = game.add.tween(lose).to( {y: -GAME_HEIGHT/2}, 500, Phaser.Easing.Quadratic.In, true);
+                    tween.onComplete.add(dropOutComplete, this);
+
+                }
+                else if(win.visible)
+                {
+                    tween = game.add.tween(win).to( {y: -GAME_HEIGHT/2}, 500, Phaser.Easing.Quadratic.In, true);
+                    tween.onComplete.add(dropOutComplete, this);   
+                }
+                
+                state = NOT_PLAYING;
             }
         }
 
@@ -82,6 +126,24 @@ function mainGame() {
 
             hens.push(hen);
         }
+        
+        win = game.add.sprite(game.world.centerX, -GAME_HEIGHT/2, 'nice');
+        win.anchor.setTo(0.5, 0.5);
+        win.visible = false;
+        
+        lose = game.add.sprite(game.world.centerX, -GAME_HEIGHT/2, 'naughty');
+        lose.anchor.setTo(0.5, 0.5);
+        lose.visible = false;
+    }
+    
+    function initGame() {
+        score = 0;
+        sequence = [];
+
+        delayCount = 0;
+        progressIter = 0;
+        
+        startNextRound();
     }
 
     function startNextRound(){
@@ -100,7 +162,13 @@ function mainGame() {
             if(waitingForJump)
                 return;
 
-            if(delayCount < FRAME_DELAY) {
+            var delayMod = 1;
+            if(sequenceIter == 0 && sequence.length > 1)
+            {
+                delayMod = 5;
+            }
+            
+            if(delayCount < FRAME_DELAY * delayMod) {
                 delayCount++;
                 return;
             }
@@ -115,12 +183,10 @@ function mainGame() {
             else {
                 var henIndex = sequence[sequenceIter];
                 var hen = hens[henIndex];
-
-                log(henIndex);
                 
                 waitingForJump = true;
-                var tween1 = game.add.tween(hen).to({y: startHeight - jumpHeight}, 500, Phaser.Easing.Quadratic.Out);
-                var tween2 = game.add.tween(hen).to({y: startHeight}, 500, Phaser.Easing.Quadratic.In);
+                var tween1 = game.add.tween(hen).to({y: startHeight - jumpHeight}, 100, Phaser.Easing.Quadratic.Out);
+                var tween2 = game.add.tween(hen).to({y: startHeight}, 100, Phaser.Easing.Quadratic.In);
                 tween2.onComplete.add(onJumpComplete, this);
 
                 tween1.chain(tween2);
@@ -133,33 +199,135 @@ function mainGame() {
 
     function onJumpComplete(){
         waitingForJump = false;
-        sequenceIter++;
+        
+        if(state == PLAYBACK)
+        {
+            sequenceIter++;
+        }
+        else if(state == SELECTION)
+        {
+            if(progressIter >= sequence.length)
+            {
+                sfx_correct.play('correct', 0, 0.3);
+                
+                //repeat sequence and add another!
+                if(sequence.length >= MAX_SEQUENCE)
+                {
+                    //end game!
+                    playerWin();
+                    state = GAME_OVER;
+                }
+                else
+                {
+                    startNextRound();
+                }
+            }
+        }
     }
 
     var testHen = function(hen){
+        if(waitingForJump)
+            return;
+        
         if(state == SELECTION) {
             var selectionIndex = hens.indexOf(hen);
 
             if(selectionIndex == sequence[progressIter])
             {
-                log('correct');
+                waitingForJump = true;
+                
+                sfx_bounce.play('bounce', 0, 0.3);
+                
+                var tween1 = game.add.tween(hen).to({y: startHeight - jumpHeight}, 100, Phaser.Easing.Quadratic.Out);
+                var tween2 = game.add.tween(hen).to({y: startHeight}, 100, Phaser.Easing.Quadratic.In);
+                tween2.onComplete.add(onJumpComplete, this);
+
+                tween1.chain(tween2);
+                tween1.start();
+                
                 progressIter++;
-                if(progressIter >= sequence.length)
-                {
-                    //repeat sequence and add another!
-                    startNextRound();
-                }
             }
             else
             {
-                log('lose  ' + Number(selectionIndex) + ', ' + Number(sequence[progressIter]));
-                state = NOT_PLAYING;
+                state = GAME_OVER;
+                
+                playerLose();
             }
         }
     }
 
     function getNextSequenceNumber(){
         return game.rnd.integerInRange(0, hens.length - 1);
+    }
+    
+    function playerWin(){
+        win.visible = true;
+
+        tween = game.add.tween(win).to( {y: GAME_HEIGHT/2}, 2000, Phaser.Easing.Bounce.Out, true);
+        tween.onComplete.add(dropInComplete, this);
+        tween.onUpdateCallback(tweenUpdate, this);
+    }
+
+    function playerLose(){
+        lose.visible = true;
+
+        tween = game.add.tween(lose).to( {y: GAME_HEIGHT/2}, 2000, Phaser.Easing.Bounce.Out, true);
+        tween.onComplete.add(dropInComplete, this);
+        tween.onUpdateCallback(tweenUpdate, this);
+    }
+
+    function dropInComplete(){
+        canRestart = true;
+    }
+
+    function dropOutComplete(){
+        state = NOT_PLAYING;
+
+        lose.visible = false;
+        win.visible = false;
+    }
+    
+    function tweenUpdate(){
+        var sprite;
+        var playerWins = false;
+        if(win.visible)
+        {
+            sprite = win;
+            playerWins = true;
+        }
+        else if (lose.visible)
+            sprite = lose;
+        else
+            return;
+
+        if(sprite.visible){
+            if(testPos)
+            {
+                if(prevY > sprite.position.y)
+                {
+                    if(endSoundCount < END_SOUND_MAX)
+                    {
+                        if(playerWins)
+                            sfx_bells.play('bells', 0, 0.3);
+                        else
+                            sfx_thump.play('thump', 0, 0.5);
+
+                        endSoundCount++;
+                        testPos = false;
+                    }
+                }
+            }
+            else
+            {
+                if(endSoundCount < END_SOUND_MAX)
+                {
+                    if(prevY < sprite.position.y)
+                        testPos = true;
+                }
+            }
+            
+            prevY = sprite.position.y;
+        }
     }
 
     function update() {
