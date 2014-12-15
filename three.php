@@ -19,7 +19,7 @@
 			<div class="about-game" id="about-game">
 				<h3>about this game</h3>
 				<p>
-					Goal: repeat the sequence that the hens create for you. (10 times)<br/><br/>
+					Goal: repeat the sequence that the hens create for you. (8 times)<br/><br/>
 
 					Desktop: click to start and select a hen.<br/>
 					Mobile: tap to start and select a hen.<br/>
