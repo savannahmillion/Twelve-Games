@@ -10,10 +10,11 @@ function mainGame() {
         game.scale.setupScale(width, height);
         game.scale.refresh();
 
-        this.load.atlasJSONHash('bird', 'img/one/bird.png', 'img/one/bird_anim.json');
+        this.load.image('hen0', 'img/three/hen-cup.png');
+        this.load.image('hen1', 'img/three/hen-bread.png');
+        this.load.image('hen2', 'img/three/hen-paint.png');
 
         this.load.image('background', 'img/three/background.png');
-        this.load.image('hen', 'img/two/turtle-shell.png');
     }
 
     //hen sprites
@@ -32,6 +33,10 @@ function mainGame() {
     var sequenceIter;
 
     var currentLoopingEvent;
+
+    var startHeight = GAME_HEIGHT/2;
+    var jumpHeight = 100;
+    var waitingForJump = false;
 
     var NOT_PLAYING = 0;
     var PLAYBACK = 1;
@@ -70,12 +75,10 @@ function mainGame() {
 
         hens = [];
         for(i = 0; i < NUM_HENS; i++) {
-            var hen = this.add.sprite(200 * (i + 1), yPos, 'bird');
+            var hen = this.add.sprite(150 + (250 * i), yPos, 'hen' + i);
             hen.anchor.setTo(0.5, 0.5);
             hen.inputEnabled = true;
             hen.events.onInputDown.add(testHen, hen);
-
-            hen.animations.add('flap');
 
             hens.push(hen);
         }
@@ -94,20 +97,14 @@ function mainGame() {
 
     function replaySequence() {
         if(state == PLAYBACK) {
+            if(waitingForJump)
+                return;
+
             if(delayCount < FRAME_DELAY) {
                 delayCount++;
                 return;
             }
 
-            log(Number(sequence[sequenceIter]));
-
-            var henIndex = sequence[sequenceIter];
-            var hen = hens[henIndex];
-            hen.animations.play('flap', 10, true);
-
-            delayCount = 0;
-
-            sequenceIter++;
             if(sequenceIter >= sequence.length) {
 
                 sequenceIter = 0;
@@ -115,7 +112,28 @@ function mainGame() {
 
                 state = SELECTION;
             }
+            else {
+                var henIndex = sequence[sequenceIter];
+                var hen = hens[henIndex];
+
+                log(henIndex);
+                
+                waitingForJump = true;
+                var tween1 = game.add.tween(hen).to({y: startHeight - jumpHeight}, 500, Phaser.Easing.Quadratic.Out);
+                var tween2 = game.add.tween(hen).to({y: startHeight}, 500, Phaser.Easing.Quadratic.In);
+                tween2.onComplete.add(onJumpComplete, this);
+
+                tween1.chain(tween2);
+                tween1.start();
+
+                delayCount = 0;
+            }
         }
+    }
+
+    function onJumpComplete(){
+        waitingForJump = false;
+        sequenceIter++;
     }
 
     var testHen = function(hen){
