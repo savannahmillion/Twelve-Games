@@ -21,7 +21,8 @@ function mainGame() {
     var currentLoopingEvent;
 
     var startHeight = GAME_HEIGHT/2;
-    var jumpHeight = 50;
+    var jumpHeight = 30;
+    var feetOffset = 20;
     var waitingForJump = false;
 
     var GAME_OVER = 0;
@@ -55,6 +56,7 @@ function mainGame() {
         this.load.image('nice', 'img/nice.png');
         this.load.image('naughty', 'img/naughty.png');
         
+        this.load.image('feet', 'img/three/hen-feet.png');
         this.load.image('hen0', 'img/three/hen-cup.png');
         this.load.image('hen1', 'img/three/hen-bread.png');
         this.load.image('hen2', 'img/three/hen-paint.png');
@@ -119,7 +121,12 @@ function mainGame() {
 
         hens = [];
         for(i = 0; i < NUM_HENS; i++) {
-            var hen = this.add.sprite(150 + (250 * i), yPos, 'hen' + i);
+            var xPos = 150 + (250 * i);
+            
+            var feet = this.add.sprite(xPos, yPos - feetOffset, 'feet');
+            feet.anchor.setTo(0.5, 0.5);
+            
+            var hen = this.add.sprite(xPos, yPos, 'hen' + i);
             hen.anchor.setTo(0.5, 0.5);
             hen.inputEnabled = true;
             hen.events.onInputDown.add(testHen, hen);
