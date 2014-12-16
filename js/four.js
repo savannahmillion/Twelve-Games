@@ -48,16 +48,20 @@ function mainGame() {
 
         this.load.image('background', 'img/four/background.png');
 
-        this.load.image('goose', 'img/four/goose.png');
+        //this.load.image('goose', 'img/four/goose.png');
+        this.load.atlasJSONHash('goose', 'img/four/goose-2.png', 'img/four/goose_anim.json');
         this.load.image('goose-highlight', 'img/four/goose-highlight.png');
 
-        this.load.image('partridge', 'img/four/partridge.png');
+        //this.load.image('partridge', 'img/four/partridge.png');
+        this.load.atlasJSONHash('partridge', 'img/four/partridge-2.png', 'img/four/partridge_anim.json');
         this.load.image('partridge-highlight', 'img/four/partridge-highlight.png');
 
-        this.load.image('swan', 'img/four/swan.png');
+        //this.load.image('swan', 'img/four/swan.png');
+        this.load.atlasJSONHash('swan', 'img/four/swan-2.png', 'img/four/swan_anim.json');
         this.load.image('swan-highlight', 'img/four/swan-highlight.png');
 
-        this.load.image('parrot', 'img/four/parrot.png');
+        //this.load.image('chicken', 'img/four/chicken.png');
+        this.load.atlasJSONHash('chicken', 'img/four/chicken-2.png', 'img/four/chicken_anim.json');
         this.load.image('parrot-highlight', 'img/four/parrot-highlight.png');
 
         this.load.image('item0', 'img/one/pear.png');
@@ -106,13 +110,13 @@ function mainGame() {
         var swanBubble = this.add.sprite(510, 308, 'swan-highlight');
         swanBubble.anchor.setTo(0.5, 0.5);
 
-        var parrot = this.add.sprite(inset, GAME_HEIGHT, 'parrot');
-        parrot.anchor.setTo(0.5, 1.0);
-        var parrotBubble = this.add.sprite(290, 308, 'parrot-highlight');
-        parrotBubble.anchor.setTo(0.5, 0.5);
+        var chicken = this.add.sprite(inset, GAME_HEIGHT, 'chicken');
+        chicken.anchor.setTo(0.5, 1.0);
+        var chickenBubble = this.add.sprite(290, 308, 'parrot-highlight');
+        chickenBubble.anchor.setTo(0.5, 0.5);
         
-        birds = [goose, partridge, swan, parrot];
-        bubbles = [gooseBubble, partidgeBubble, swanBubble, parrotBubble];
+        birds = [goose, partridge, swan, chicken];
+        bubbles = [gooseBubble, partidgeBubble, swanBubble, chickenBubble];
 
         roulettes = [
             createRoulette(300, GAME_HEIGHT/6),
@@ -129,6 +133,9 @@ function mainGame() {
             bubble.visible = false;
             bubble.inputEnabled = true;
             bubble.events.onInputDown.add(bubblePressed, bubble);
+
+            var bird = birds[i];
+            bird.animations.add('talk');
         }
 
         var onTouch = function(pointer) {
@@ -137,6 +144,7 @@ function mainGame() {
             {
                 state = SELECTING;
 
+                birds[0].animations.play('talk', 10, true);
                 bubbles[0].visible = true;
 
                 for(i = 0; i < 4; i++)
@@ -203,6 +211,8 @@ function mainGame() {
         displayIndex = game.rnd.integerInRange(0, NUM_ITEMS - 1);
         delayCount = 0;
 
+        birds[rouletteIndex].animations.stop();
+
         rouletteIndex++;
 
         sfx_select.play('select', 0, 0.075);
@@ -233,6 +243,7 @@ function mainGame() {
         }
         else
         {
+            birds[rouletteIndex].animations.play('talk', 10, true);
             displayItem();
         }
     }

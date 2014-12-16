@@ -1,0 +1,27 @@
+{"frames": [
+
+{
+	"filename": "bird00",
+	"frame": {"x":0,"y":0,"w":218,"h":204},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":218,"h":204},
+	"sourceSize": {"w":218,"h":204}
+},
+{
+	"filename": "bird01",
+	"frame": {"x":218,"y":0,"w":218,"h":204},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":52,"h":204},
+	"sourceSize": {"w":218,"h":204}
+}],
+"meta": {
+	"app": "http://www.texturepacker.com",
+	"version": "1.0",
+	"format": "RGBA8888",
+	"size": {"w":436,"h":204},
+	"scale": "1.0",
+	"smartupdate": "$TexturePacker:SmartUpdate:fb56f261b1eb04e3204824426595f64c$"
+}
+}
