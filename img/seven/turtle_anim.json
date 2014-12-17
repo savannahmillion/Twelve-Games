@@ -19,6 +19,20 @@
 	"rotated": false,
 	"trimmed": false,
 	"sourceSize": {"w":70,"h":45}
+},
+{
+	"filename": "bob3",
+	"frame": {"x":70,"y":0,"w":70,"h":45},
+	"rotated": false,
+	"trimmed": false,
+	"sourceSize": {"w":70,"h":45}
+},
+{
+	"filename": "bob4",
+	"frame": {"x":140,"y":0,"w":70,"h":45},
+	"rotated": false,
+	"trimmed": false,
+	"sourceSize": {"w":70,"h":45}
 }],
 "meta": {
 	"app": "http://www.texturepacker.com",

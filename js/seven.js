@@ -8,6 +8,9 @@ function mainGame() {
     var SWIMMING = 2;
     var state = NOT_PLAYING;
     
+    var delay = 0;
+    var TURTLE_FRAME_DELAY = 50;
+
     var currentLoopingEvent;
     
     var FRAME_DELAY = 50;
@@ -31,6 +34,7 @@ function mainGame() {
     var currentSwanIndex = 0;
 
     var obstacles = [];
+    var turtle;
 
     function Swan (xPos, yPos, spriteName) {
         this.sprite = game.add.sprite(xPos, yPos, spriteName);
@@ -52,7 +56,7 @@ function mainGame() {
         this.sprite.body.position.x = game.math.clamp(this.sprite.body.position.x + amt, STARTING_X, ENDING_X);
     }
 
-    function Obstacle (xPos, yPos, spriteName, speed, conditionalFrame) {
+    function Obstacle (xPos, yPos, spriteName, speed, conditionalFrames) {
         this.sprite = game.add.sprite(xPos, yPos, spriteName);
         this.sprite.anchor.setTo(0.5, 0.5);
         this.sprite.z = 1;
@@ -60,13 +64,13 @@ function mainGame() {
         game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
         this.sprite.body.allowGravity = false;
 
-        this.sprite.animations.add('bob');
+        this.anim = this.sprite.animations.add('bob');
         this.sprite.animations.play('bob', 1, true);
 
         this.moveSpeed = speed;
 
-        this.testFrame = conditionalFrame;
-        this.test = (this.testFrame == -1 || this.testFrame == this.sprite.animations.currentAnim.frame);
+        this.testFrames = conditionalFrames;
+        this.test = (this.testFrames.length == 0);
 
         obstacles.push(this);
     }
@@ -85,9 +89,17 @@ function mainGame() {
             this.sprite.y = halfHeight + GAME_HEIGHT;
         }
 
-        if(this.testFrame >= 0)
+        if(this.sprite.animations.currentAnim.isPlaying)
         {
-            this.test = (this.testFrame == this.sprite.animations.currentAnim.frame);
+            if(this.testFrames.length > 0)
+            {
+                var valid = true;
+                for(i = 0; i < this.testFrames.length; i++)
+                    if(this.testFrames[i] == this.sprite.animations.currentAnim.frame)
+                        valid = false;
+
+                this.test = valid;
+            }
         }
     }
 
@@ -105,7 +117,7 @@ function mainGame() {
 
         this.load.atlasJSONHash('ornament', 'img/seven/ornament-bob.png', 'img/seven/ornament_anim.json');
         this.load.atlasJSONHash('turtle', 'img/seven/turtle-peek.png', 'img/seven/turtle_anim.json');
-        //this.load.atlasJSONHash('log', 'img/seven/log-bob.png', 'img/four/log_anim.json');
+        this.load.atlasJSONHash('log', 'img/seven/log-bob.png', 'img/seven/log_anim.json');
 
         this.load.audio('sfx_bells', 'sfx/bells.wav');
         this.load.audio('sfx_thump', 'sfx/thump.wav');
@@ -134,10 +146,15 @@ function mainGame() {
 
         var allSprites = game.add.group();
 
-        var ornament = new Obstacle(204, getRandomHeight(), "ornament", 0.8, -1);
-        var ornament2 = new Obstacle(517, getRandomHeight(), "ornament", 0.8, -1);
+        var ornament = new Obstacle(204, getRandomHeight(), "ornament", 0.8, []);
+        var ornament2 = new Obstacle(517, getRandomHeight(), "ornament", 0.8, []);
 
-        var turtle = new Obstacle(410, getRandomHeight(), 'turtle', 0, 2);
+        turtle = new Obstacle(410, getRandomHeight(), 'turtle', 0, [0, 4]);
+        turtle.sprite.animations.stop();
+        enableTurtle();
+
+        var log = new Obstacle(307, getRandomHeight(), 'log', 1.5, []);
+        var log2 = new Obstacle(620, getRandomHeight(), 'log', 1.5, []);
 
         for(i = 0; i < 7; i++)
         {
@@ -198,6 +215,31 @@ function mainGame() {
         lose = game.add.sprite(game.world.centerX, -GAME_HEIGHT/2, 'naughty');
         lose.anchor.setTo(0.5, 0.5);
         lose.visible = false;
+
+        game.time.events.loop(Phaser.Timer.SECOND * 8, enableTurtle, this);
+    }
+
+    function enableTurtle(){
+        turtle.sprite.y = getRandomHeight();
+        turtle.anim = turtle.sprite.animations.play('bob', 1, false);
+        turtle.anim.onComplete.add(function() {
+            disableTurtle();
+        }, turtle.sprite);
+
+        turtle.sprite.visible = true;
+    }
+
+    function disableTurtle(){
+        turtle.sprite.visible = false;
+    }
+
+    function moveTurtle(){
+        delay++;
+        if(delay >= TURTLE_FRAME_DELAY)
+        {
+            enableTurtle();
+            delay = 0;
+        }
     }
     
     function collisionHandler(swan, obstacle){
@@ -208,7 +250,7 @@ function mainGame() {
         }
     }
 
-    function initGame(){
+    function initGame(){ 
         for(i = 0; i < 7; i++)
         {
             swans[i].sprite.x = STARTING_X;
@@ -236,7 +278,7 @@ function mainGame() {
     }
     
     function mobileInput(){
-        
+
     }
 
     function getRandomHeight(){
@@ -267,6 +309,14 @@ function mainGame() {
             {
                 if(obstacles[t].test)
                     game.physics.arcade.overlap(currentSwan.sprite, obstacles[t].sprite, collisionHandler, null, this);
+            }
+        }
+        else if (state == NOT_PLAYING)
+        {
+            if(game.device.desktop)
+            {
+                if(cursors.right.isDown || cursors.left.isDown)
+                    state = SWIMMING;
             }
         }
 
@@ -302,15 +352,15 @@ function mainGame() {
     }
 
     function render() {
-        for(s = 0; s < swans.length; s++)
-        {
-            game.debug.body(swans[s].sprite);
-        }
+        // for(s = 0; s < swans.length; s++)
+        // {
+        //     game.debug.body(swans[s].sprite);
+        // }
 
-        for(o = 0; o < obstacles.length; o++)
-        {
-            if(obstacles[o].test)
-                game.debug.body(obstacles[o].sprite);
-        }
+        // for(o = 0; o < obstacles.length; o++)
+        // {
+        //     if(obstacles[o].test)
+        //         game.debug.body(obstacles[o].sprite);
+        // }
     }
 };
