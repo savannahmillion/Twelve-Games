@@ -64,10 +64,10 @@ function mainGame() {
         this.load.atlasJSONHash('chicken', 'img/four/chicken-2.png', 'img/four/chicken_anim.json');
         this.load.image('parrot-highlight', 'img/four/parrot-highlight.png');
 
-        this.load.image('item0', 'img/one/pear.png');
-        this.load.image('item1', 'img/two/turtle-shell.png');
-        this.load.image('item2', 'img/present.png');
-        this.load.image('item3', 'img/five/ring3.png');
+        this.load.image('item0', 'img/four/item0.png');
+        this.load.image('item1', 'img/four/item1.png');
+        this.load.image('item2', 'img/four/item2.png');
+        this.load.image('item3', 'img/four/item3.png');
 
         this.load.audio('sfx_bells', 'sfx/bells.wav');
         this.load.audio('sfx_thump', 'sfx/thump.wav');

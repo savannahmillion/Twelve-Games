@@ -1,4 +1,4 @@
-unlock = unlockDates[1];
+unlock = unlockDates[5];
 
 function mainGame() {
     game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.CANVAS, 'game-canvas', { preload: preload, create: create, update: update, render: render});
