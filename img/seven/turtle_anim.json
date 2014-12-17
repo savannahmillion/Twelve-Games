@@ -1,0 +1,31 @@
+{"frames": [
+{
+	"filename": "bob0",
+	"frame": {"x":140,"y":0,"w":70,"h":45},
+	"rotated": false,
+	"trimmed": false,
+	"sourceSize": {"w":70,"h":45}
+},
+{
+	"filename": "bob1",
+	"frame": {"x":70,"y":0,"w":70,"h":45},
+	"rotated": false,
+	"trimmed": false,
+	"sourceSize": {"w":70,"h":45}
+},
+{
+	"filename": "bob2",
+	"frame": {"x":0,"y":0,"w":70,"h":45},
+	"rotated": false,
+	"trimmed": false,
+	"sourceSize": {"w":70,"h":45}
+}],
+"meta": {
+	"app": "http://www.texturepacker.com",
+	"version": "1.0",
+	"format": "RGBA8888",
+	"size": {"w":210,"h":45},
+	"scale": "1.0",
+	"smartupdate": "$TexturePacker:SmartUpdate:fb56f261b1eb04e3198824426595f64c$"
+}
+}

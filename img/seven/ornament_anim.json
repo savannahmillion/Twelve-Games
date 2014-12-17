@@ -1,0 +1,22 @@
+{"frames": [
+{
+	"frame": {"x":0,"y":0,"w":50,"h":55},
+	"rotated": false,
+	"trimmed": false,
+	"sourceSize": {"w":50,"h":55}
+},
+{
+	"frame": {"x":50,"y":0,"w":50,"h":55},
+	"rotated": false,
+	"trimmed": false,
+	"sourceSize": {"w":50,"h":55}
+}],
+"meta": {
+	"app": "http://www.texturepacker.com",
+	"version": "1.0",
+	"format": "RGBA8888",
+	"size": {"w":100,"h":55},
+	"scale": "1.0",
+	"smartupdate": "$TexturePacker:SmartUpdate:fb56f261b1eb04e3198824426595f64c$"
+}
+}
