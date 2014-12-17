@@ -44,6 +44,8 @@ function mainGame() {
 
     var prevY;
     var testPos = false;
+
+    var movement = 0;
     
     function Ring (spriteName) {
         this.sprite = game.add.sprite(0, 0, spriteName);
@@ -199,33 +201,35 @@ function mainGame() {
 
         if(!game.device.desktop)
         {
-            var handleOrientation = function(e) {
-                var val = 0;
-                var orientation = window.orientation;
+            // var handleOrientation = function(e) {
+            //     var val = 0;
+            //     var orientation = window.orientation;
 
-                if(orientation == 0)
-                {
-                    val = e.gamma;
-                }
-                else if(orientation == 90)
-                {
-                    val = e.beta;
-                }
-                else if(orientation == -90)
-                {
-                    val = -e.beta;
-                }
+            //     if(orientation == 0)
+            //     {
+            //         val = e.gamma;
+            //     }
+            //     else if(orientation == 90)
+            //     {
+            //         val = e.beta;
+            //     }
+            //     else if(orientation == -90)
+            //     {
+            //         val = -e.beta;
+            //     }
 
-                //log(Number(val));
+            //     //log(Number(val));
 
-                var THRESHOLD = 5;
-                if(val > THRESHOLD)
-                    moveRight();
-                else if (val < -THRESHOLD)
-                    moveLeft();
-            };
+            //     var THRESHOLD = 5;
+            //     if(val > THRESHOLD)
+            //         movement = 1;
+            //     else if (val < -THRESHOLD)
+            //         movement = -1;
+            //     else
+            //         movement = 0;
+            // };
 
-            window.addEventListener('deviceorientation', handleOrientation);
+            // window.addEventListener('deviceorientation', handleOrientation);
         }
         
         game.input.onDown.add(onTouch, this);
@@ -347,7 +351,13 @@ function mainGame() {
     }
     
     function mobileInput(){
-        
+        if(game.input.activePointer.isDown)
+        {
+            if(game.input.activePointer.x > GAME_WIDTH/2)
+                moveRight();
+            else
+                moveLeft();
+        }
     }
     
     function update() {

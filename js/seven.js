@@ -190,21 +190,6 @@ function mainGame() {
                 initGame();
             }
         }
-
-        if(!game.device.desktop)
-        {
-            var onHold = function(pointer) {
-                if(state == SWIMMING)
-                {
-                    if(pointer.clientX < GAME_HEIGHT/2)
-                        currentSwan.move(-moveSpeed);
-                    else
-                        currentSwan.move(moveSpeed);
-                }
-            }
-
-            game.input.onHold.add(onHold, this);
-        }
         
         game.input.onDown.add(onTouch, this);
 
@@ -278,7 +263,15 @@ function mainGame() {
     }
     
     function mobileInput(){
+        var currentSwan = swans[currentSwanIndex];
 
+        if(game.input.activePointer.isDown)
+        {
+            if(game.input.activePointer.x > GAME_WIDTH/2)
+                currentSwan.move(moveSpeed);
+            else
+                currentSwan.move(-moveSpeed);
+        }
     }
 
     function getRandomHeight(){
