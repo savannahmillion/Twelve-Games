@@ -22,34 +22,41 @@
 },
 {
 	"filename": "lei5",
-	"frame": {"x":490,"y":200,"w":490,"h":100},
+	"frame": {"x":0,"y":200,"w":490,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"sourceSize": {"w":490,"h":100}
 },
 {
 	"filename": "lei4",
-	"frame": {"x":0,"y":300,"w":490,"h":100},
+	"frame": {"x":490,"y":200,"w":490,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"sourceSize": {"w":490,"h":100}
 },
 {
 	"filename": "lei3",
-	"frame": {"x":490,"y":300,"w":490,"h":100},
+	"frame": {"x":0,"y":300,"w":490,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"sourceSize": {"w":490,"h":100}
 },
 {
 	"filename": "lei2",
-	"frame": {"x":0,"y":400,"w":490,"h":100},
+	"frame": {"x":490,"y":300,"w":490,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"sourceSize": {"w":490,"h":100}
 },
 {
 	"filename": "lei1",
+	"frame": {"x":0,"y":400,"w":490,"h":100},
+	"rotated": false,
+	"trimmed": false,
+	"sourceSize": {"w":490,"h":100}
+},
+{
+	"filename": "lei0",
 	"frame": {"x":490,"y":400,"w":490,"h":100},
 	"rotated": false,
 	"trimmed": false,

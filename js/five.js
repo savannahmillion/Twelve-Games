@@ -175,6 +175,7 @@ function mainGame() {
             if(state == NOT_PLAYING)
             {
                 state = CATCH_RINGS;
+                initGame();
                 
                 currentLoopingEvent = game.time.events.loop(Phaser.Timer.SECOND / 60, dropRings, this);
             }
@@ -194,42 +195,7 @@ function mainGame() {
                     tween = game.add.tween(win).to( {y: -GAME_HEIGHT/2}, 500, Phaser.Easing.Quadratic.In, true);
                     tween.onComplete.add(dropOutComplete, this);   
                 }
-
-                initGame();
             }
-        }
-
-        if(!game.device.desktop)
-        {
-            // var handleOrientation = function(e) {
-            //     var val = 0;
-            //     var orientation = window.orientation;
-
-            //     if(orientation == 0)
-            //     {
-            //         val = e.gamma;
-            //     }
-            //     else if(orientation == 90)
-            //     {
-            //         val = e.beta;
-            //     }
-            //     else if(orientation == -90)
-            //     {
-            //         val = -e.beta;
-            //     }
-
-            //     //log(Number(val));
-
-            //     var THRESHOLD = 5;
-            //     if(val > THRESHOLD)
-            //         movement = 1;
-            //     else if (val < -THRESHOLD)
-            //         movement = -1;
-            //     else
-            //         movement = 0;
-            // };
-
-            // window.addEventListener('deviceorientation', handleOrientation);
         }
         
         game.input.onDown.add(onTouch, this);
