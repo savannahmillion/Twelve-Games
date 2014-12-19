@@ -8,7 +8,8 @@ function mainGame() {
     var PLAYING = 2;
     var state = NOT_PLAYING;
 
-    var currentLoopingEvent;
+    var spawnMaidEvent;
+    var spawnChickenEvent;
 
     var win;
     var lose;
@@ -36,12 +37,17 @@ function mainGame() {
     var cursors;
     var milkButton;
 
-    var milks;
-    var chicken;
+    var allSprites;
+    var milkObjs = [];
+    var chickens = [];
+
+    var winCount = 0;
 
     function Milk () {
         this.sprite = game.add.sprite(cow.x, cow.y, 'milk');
         this.sprite.anchor.setTo(0.5, 0.5);
+        this.sprite.scale.x = 0.5;
+        this.sprite.scale.y = 0.5;
         this.sprite.z = -1;
 
         game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
@@ -50,12 +56,16 @@ function mainGame() {
 
         this.hit = false;
 
-        milks.addChild(this.sprite);
+        allSprites.addChild(this.sprite);
+        milkObjs.push(this);
     }
 
     function Maid(xPos, yPos, moveSpeed) {
         this.sprite = game.add.sprite(xPos, yPos, 'maid');
         this.sprite.anchor.setTo(0.5, 0.5);
+        this.sprite.scale.x = 0.5;
+        this.sprite.scale.y = 0.5;
+        this.sprite.z = -1;
 
         this.sprite.animations.add('walk');
         this.sprite.animations.play('walk', 10, true);
@@ -68,14 +78,22 @@ function mainGame() {
         else
             this.sprite.body.velocity.x = moveSpeed;
 
-        this.sprite.body.bounce = 1;
+        this.sprite.body.bounce.x = 1;
         this.hasMilk = false;
+
+        allSprites.addChild(this.sprite);
+        maids.push(this);
     }
 
-    Maid.prototype.update() function(){
-        if(this.hasMilk)
+    Maid.prototype.update = function(){
+        if(this.hasMilk || state == GAME_OVER)
         {
-            this.sprite.body.collideWorldBounds = true;
+            this.sprite.body.collideWorldBounds = false;
+            if(this.sprite.x < 0 || this.sprite.x > GAME_WIDTH)
+            {
+                this.sprite.destroy();
+                maids.splice(maids.indexOf(this), 1);
+            }
         }
         else
         {
@@ -86,29 +104,68 @@ function mainGame() {
         }
     }
 
-    function Chicken(xPos, yPos){
-        this.sprite = game.add.sprite(xPos, yPos, 'chicken');
+    function Chicken(){
+        this.sprite = game.add.sprite(-50, 420, 'chicken');
         this.sprite.anchor.setTo(0.5, 0.5);
+        this.sprite.scale.x = 0.5;
+        this.sprite.scale.y = 0.5;
 
         this.sprite.animations.add('walk');
         this.sprite.animations.play('walk', 10, true);
 
         game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
         this.sprite.body.allowGravity = false;
+
+        this.sprite.body.collideWorldBounds = false;
+        this.sprite.body.bounce.x = 1;
+
+        this.sprite.body.velocity.x = 300;
+
+        allSprites.addChild(this.sprite);
+        chickens.push(this);
     }
 
-    function milkHitOther(milk, other){
-        if(other == chicken)
-        {
-            log('hit chicken');
-        }
+    Chicken.prototype.update = function() {
+        if(this.sprite.body.velocity.x > 0)
+            this.sprite.scale.x = 1;
         else
+            this.sprite.scale.x = -1;
+
+        if(this.sprite.x > 50)
         {
-            log('hit maid');
-            other.hasMilk = true;
+            this.sprite.body.collideWorldBounds = true;
         }
 
-        milk.hit = true;
+        if(state == GAME_OVER)
+        {
+            this.sprite.body.collideWorldBounds = false; 
+        }
+    }
+
+    function milkHitChicken(milk, chicken){
+        state = GAME_OVER;
+        playerLose();
+    }
+
+    function milkHitMaid(milk, maid){
+        if(state == PLAYING)
+        {
+            for(i = 0; i < maids.length; i++)
+                if(maid == maids[i].sprite)
+                    maids[i].hasMilk = true;
+
+            for(i = 0; i < milkObjs.length; i++)
+            {
+                if(milk == milkObjs[i].sprite)
+                    milkObjs[i].hit = true;
+            }
+
+            winCount++;
+            if(winCount >= NUM_MAIDS)
+                playerWin();
+
+            state = GAME_OVER;
+        }
     }
 
     function preload () {
@@ -142,23 +199,14 @@ function mainGame() {
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
-        milks = game.add.group();
+        allSprites = game.add.group();
 
         cow = game.add.sprite(game.world.centerX, 60, 'cow');
         cow.anchor.setTo(0.5, 0.5);
 
         originalScale = cow.scale.x;
 
-        for(i = 0; i < NUM_MAIDS; i++)
-        {
-            var maidPosX = 100 + (50 * i);
-            var maidPosY = 370;
-
-            var maid = new Maid(maidPosX, maidPosY, 200);
-            maids.push(maid);
-        }
-
-        milks.sort('z', Phaser.Group.SORT_DESCENDING);
+        allSprites.sort('z', Phaser.Group.SORT_DESCENDING);
         
         cursors = game.input.keyboard.createCursorKeys();
         
@@ -174,7 +222,8 @@ function mainGame() {
         var onTouch = function(pointer) {
             if(state == NOT_PLAYING)
             {
-                state = PLAYING
+                state = PLAYING;
+                initGame();
             }
 
             if(state == GAME_OVER && canRestart)
@@ -191,8 +240,6 @@ function mainGame() {
                     tween = game.add.tween(win).to( {y: -GAME_HEIGHT/2}, 500, Phaser.Easing.Quadratic.In, true);
                     tween.onComplete.add(dropOutComplete, this);   
                 }
-
-                initGame();
             }
         }
         
@@ -222,7 +269,25 @@ function mainGame() {
     }
 
     function initGame(){ 
-        
+        spawnIndex = 0;
+        spawnMaidEvent = game.time.events.repeat(Phaser.Timer.SECOND, NUM_MAIDS, spawnMaid, this);
+        spawnChickenEvent = game.time.events.repeat(Phaser.Timer.SECOND, 3, spawnChicken, this);
+
+        for(i = 0; i < chickens.length; i++)
+        {
+            chickens[i].destroy();
+        }
+
+        chickens = [];
+    }
+
+    function spawnMaid(){
+        var xPos = (game.rnd.integerInRange(0, 1) == 1) ? -50 : 840;
+        new Maid(xPos, 400, 200);
+    }
+
+    function spawnChicken(){
+        new Chicken();
     }
     
     function desktopInput(){
@@ -255,29 +320,40 @@ function mainGame() {
     }
 
     function update() {
-        if(game.device.desktop)
-            desktopInput();
-        else
-            mobileInput();
+        for(c = 0; c < chickens.length; c++)
+            chickens[c].update();
 
-        cow.x = game.math.clamp(cow.x, 80, 720);
+        for(m = maids.length - 1; m >= 0; m--)
+            maids[m].update();
 
-        for(i = milks.length; i >= 0; i--)
+        if(state == PLAYING)
         {
-            var milk = milks.getAt(i);
-            if(milk.y > 410 || milk.hit)
-            {
-                milks.remove(milk);
-                milk.destroy();
-            }
+            if(game.device.desktop)
+                desktopInput();
             else
-            {
-                for(m = 0; m < maids.length; m++)
-                    if(!milk.hit && !maids[m].hasMilk)
-                        game.physics.arcade.overlap(milk, maids[m].sprite, milkHitOther, null, this);
+                mobileInput();
 
-                if(!milk.hit)
-                    game.physics.arcade.overlap(milk, chicken, milkHitOther, null, this);
+            cow.x = game.math.clamp(cow.x, 80, 720);
+
+            for(i = milkObjs.length - 1; i >= 0; i--)
+            {
+                var milk = milkObjs[i];
+                if(milk.sprite.y > 410 || milk.hit)
+                {
+                    milkObjs.splice(i, 1);
+                    allSprites.remove(milk.sprite);
+                    milk.sprite.destroy();
+                }
+                else
+                {
+                    for(m = 0; m < maids.length; m++)
+                        if(!milk.hit && !maids[m].hasMilk)
+                            game.physics.arcade.overlap(milk.sprite, maids[m].sprite, milkHitMaid, null, this);
+
+                    for(c = 0; c < chickens.length; c++)
+                        if(!milk.hit)
+                            game.physics.arcade.overlap(milk.sprite, chickens[c].sprite, milkHitChicken, null, this);
+                }
             }
         }
     }
@@ -358,9 +434,12 @@ function mainGame() {
             game.debug.body(maids[i].sprite);
         }
 
-        for(i = 0; i < milks.length; i++)
+        for(i = 0; i < milkObjs.length; i++)
         {
-            game.debug.body(milks.getAt(i));
+            game.debug.body(milkObjs[i]);
         }
+
+        for(i = 0; i < chickens.length; i++)
+            game.debug.body(chickens[i].sprite);
     }
 };
