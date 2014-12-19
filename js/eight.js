@@ -37,6 +37,7 @@ function mainGame() {
     var milkButton;
 
     var milks;
+    var chicken;
 
     function Milk () {
         this.sprite = game.add.sprite(cow.x, cow.y, 'milk');
@@ -47,7 +48,67 @@ function mainGame() {
         this.sprite.body.allowGravity = false;
         this.sprite.body.velocity.y = 250;
 
+        this.hit = false;
+
         milks.addChild(this.sprite);
+    }
+
+    function Maid(xPos, yPos, moveSpeed) {
+        this.sprite = game.add.sprite(xPos, yPos, 'maid');
+        this.sprite.anchor.setTo(0.5, 0.5);
+
+        this.sprite.animations.add('walk');
+        this.sprite.animations.play('walk', 10, true);
+
+        game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
+        this.sprite.body.allowGravity = false;
+
+        if(xPos > GAME_WIDTH/2)
+            this.sprite.body.velocity.x = -moveSpeed;
+        else
+            this.sprite.body.velocity.x = moveSpeed;
+
+        this.sprite.body.bounce = 1;
+        this.hasMilk = false;
+    }
+
+    Maid.prototype.update() function(){
+        if(this.hasMilk)
+        {
+            this.sprite.body.collideWorldBounds = true;
+        }
+        else
+        {
+            if(this.sprite.x > 50 && this.sprite.y < 750)
+            {
+                this.sprite.body.collideWorldBounds = true;
+            }
+        }
+    }
+
+    function Chicken(xPos, yPos){
+        this.sprite = game.add.sprite(xPos, yPos, 'chicken');
+        this.sprite.anchor.setTo(0.5, 0.5);
+
+        this.sprite.animations.add('walk');
+        this.sprite.animations.play('walk', 10, true);
+
+        game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
+        this.sprite.body.allowGravity = false;
+    }
+
+    function milkHitOther(milk, other){
+        if(other == chicken)
+        {
+            log('hit chicken');
+        }
+        else
+        {
+            log('hit maid');
+            other.hasMilk = true;
+        }
+
+        milk.hit = true;
     }
 
     function preload () {
@@ -93,8 +154,7 @@ function mainGame() {
             var maidPosX = 100 + (50 * i);
             var maidPosY = 370;
 
-            var maid = game.add.sprite(maidPosX, maidPosY, 'maid');
-            maid.anchor.setTo(0.5, 0.5);
+            var maid = new Maid(maidPosX, maidPosY, 200);
             maids.push(maid);
         }
 
@@ -205,10 +265,19 @@ function mainGame() {
         for(i = milks.length; i >= 0; i--)
         {
             var milk = milks.getAt(i);
-            if(milk.y > 410)
+            if(milk.y > 410 || milk.hit)
             {
                 milks.remove(milk);
                 milk.destroy();
+            }
+            else
+            {
+                for(m = 0; m < maids.length; m++)
+                    if(!milk.hit && !maids[m].hasMilk)
+                        game.physics.arcade.overlap(milk, maids[m].sprite, milkHitOther, null, this);
+
+                if(!milk.hit)
+                    game.physics.arcade.overlap(milk, chicken, milkHitOther, null, this);
             }
         }
     }
@@ -284,5 +353,14 @@ function mainGame() {
     }
 
     function render() {
+        for(i = 0; i < maids.length; i++)
+        {
+            game.debug.body(maids[i].sprite);
+        }
+
+        for(i = 0; i < milks.length; i++)
+        {
+            game.debug.body(milks.getAt(i));
+        }
     }
 };
