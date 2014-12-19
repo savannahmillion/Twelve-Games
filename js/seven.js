@@ -20,8 +20,6 @@ function mainGame() {
     var lose;
     var tween;
 
-    var canRestart = false;
-
     var STARTING_X = 40;
     var ENDING_X = 750;
 
@@ -47,6 +45,8 @@ function mainGame() {
 
     var prevY;
     var testPos = false;
+
+    var cursors;
 
     function Swan (xPos, yPos, spriteName) {
         this.sprite = game.add.sprite(xPos, yPos, spriteName);
