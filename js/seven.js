@@ -36,6 +36,18 @@ function mainGame() {
     var obstacles = [];
     var turtle;
 
+    var canRestart = false;
+
+    var sfx_ring;
+    var sfx_bells;
+    var sfx_thump;
+
+    var endSoundCount = 0;
+    var END_SOUND_MAX = 3;
+
+    var prevY;
+    var testPos = false;
+
     function Swan (xPos, yPos, spriteName) {
         this.sprite = game.add.sprite(xPos, yPos, spriteName);
         this.sprite.anchor.setTo(0.5, 0.5);
@@ -43,6 +55,7 @@ function mainGame() {
 
         game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
         this.sprite.body.allowGravity = false;
+        this.sprite.body.height *= 0.8;
 
         this.originalScale = this.sprite.scale.x;
     }
@@ -63,6 +76,9 @@ function mainGame() {
 
         game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
         this.sprite.body.allowGravity = false;
+
+        this.sprite.body.width *= 0.8;
+        this.sprite.body.height *= 0.9;
 
         this.anim = this.sprite.animations.add('bob');
         this.sprite.animations.play('bob', 1, true);
@@ -121,18 +137,18 @@ function mainGame() {
 
         this.load.audio('sfx_bells', 'sfx/bells.wav');
         this.load.audio('sfx_thump', 'sfx/thump.wav');
-
-        sfx_bells = game.add.audio('sfx_bells');
-        sfx_bells.addMarker('bells', 0.0, 1.0);
-
-        sfx_thump = game.add.audio('sfx_thump');
-        sfx_thump.addMarker('thump', 0.0, 1.0);
     }
 
     function create () {
         setupGameScaling();
         updateSize();
         
+        sfx_bells = game.add.audio('sfx_bells');
+        sfx_bells.addMarker('bells', 0.0, 1.0);
+
+        sfx_thump = game.add.audio('sfx_thump');
+        sfx_thump.addMarker('thump', 0.0, 1.0);
+
         var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
         background.anchor.setTo(0.5, 0.5);
 
@@ -154,7 +170,7 @@ function mainGame() {
         enableTurtle();
 
         var log = new Obstacle(307, getRandomHeight(), 'log', 1.5, []);
-        var log2 = new Obstacle(620, getRandomHeight(), 'log', 1.5, []);
+        var log2 = new Obstacle(620, getRandomHeight(), 'log', -1.5, []);
 
         for(i = 0; i < 7; i++)
         {
@@ -243,6 +259,7 @@ function mainGame() {
         }
 
         currentSwanIndex = 0;
+        endSoundCount = 0;
     }
     
     function desktopInput(){
@@ -324,6 +341,7 @@ function mainGame() {
 
         tween = game.add.tween(win).to( {y: GAME_HEIGHT/2}, 2000, Phaser.Easing.Bounce.Out, true);
         tween.onComplete.add(dropInComplete, this);
+        tween.onUpdateCallback(tweenUpdate, this);
     }
 
     function playerLose(){
@@ -331,6 +349,7 @@ function mainGame() {
 
         tween = game.add.tween(lose).to( {y: GAME_HEIGHT/2}, 2000, Phaser.Easing.Bounce.Out, true);
         tween.onComplete.add(dropInComplete, this);
+        tween.onUpdateCallback(tweenUpdate, this);
     }
 
     function dropInComplete(){
@@ -344,16 +363,59 @@ function mainGame() {
         win.visible = false;
     }
 
-    function render() {
-        // for(s = 0; s < swans.length; s++)
-        // {
-        //     game.debug.body(swans[s].sprite);
-        // }
+    function tweenUpdate(){
+        var sprite;
+        var playerWins = false;
+        if(win.visible)
+        {
+            sprite = win;
+            playerWins = true;
+        }
+        else if (lose.visible)
+            sprite = lose;
+        else
+            return;
 
-        // for(o = 0; o < obstacles.length; o++)
-        // {
-        //     if(obstacles[o].test)
-        //         game.debug.body(obstacles[o].sprite);
-        // }
+        if(sprite.visible){
+            if(testPos)
+            {
+                if(prevY > sprite.position.y)
+                {
+                    if(endSoundCount < END_SOUND_MAX)
+                    {
+                        if(playerWins)
+                            sfx_bells.play('bells', 0, 0.3);
+                        else
+                            sfx_thump.play('thump', 0, 0.5);
+
+                        endSoundCount++;
+                        testPos = false;
+                    }
+                }
+            }
+            else
+            {
+                if(endSoundCount < END_SOUND_MAX)
+                {
+                    if(prevY < sprite.position.y)
+                        testPos = true;
+                }
+            }
+            
+            prevY = sprite.position.y;
+        }
+    }
+
+    function render() {
+        //for(s = 0; s < swans.length; s++)
+        //{
+        //    game.debug.body(swans[s].sprite);
+        //}
+        
+        //for(o = 0; o < obstacles.length; o++)
+        //{
+        //    if(obstacles[o].test)
+        //        game.debug.body(obstacles[o].sprite);
+        //}
     }
 };

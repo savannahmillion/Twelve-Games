@@ -44,8 +44,6 @@ function mainGame() {
 
     var prevY;
     var testPos = false;
-
-    var movement = 0;
     
     function Ring (spriteName) {
         this.sprite = game.add.sprite(0, 0, spriteName);

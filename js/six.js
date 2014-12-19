@@ -58,7 +58,19 @@ function mainGame() {
 
     var canRestart = false;
 
+    var sfx_bells;
+    var sfx_thump;
+
+    var prevY;
+    var testPos = false;
+
+    var endSoundCount = 0;
+    var END_SOUND_MAX = 3;
+
     function preload () {
+        this.load.image('nice', 'img/nice.png');
+        this.load.image('naughty', 'img/naughty.png');
+
         this.load.image('background', 'img/six/background.png');
         
         this.load.image('ornament', 'img/one/ornament.png');
@@ -66,11 +78,20 @@ function mainGame() {
         this.load.image('goose', 'img/six/goose.png');
         this.load.atlasJSONHash('lei', 'img/six/lei.png', 'img/six/lei_anim.json');
         this.load.image('lei-back', 'img/six/lei-back.png');
+
+        this.load.audio('sfx_bells', 'sfx/bells.wav');
+        this.load.audio('sfx_thump', 'sfx/thump.wav');
     }
 
     function create () {
         setupGameScaling();
         updateSize();
+
+        sfx_bells = game.add.audio('sfx_bells');
+        sfx_bells.addMarker('bells', 0.0, 1.0);
+
+        sfx_thump = game.add.audio('sfx_thump');
+        sfx_thump.addMarker('thump', 0.0, 1.0);
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.arcade.gravity.y = 1200;
@@ -94,6 +115,9 @@ function mainGame() {
         winZone = new Phaser.Rectangle(goose.x - 50, goose.y - 15,
                                        50, 40);
 
+        correctCount = 0;
+        wrongCount = 0;
+
         var onTouch = function(pointer) {
             if(state == PLAYING)
             {
@@ -102,16 +126,16 @@ function mainGame() {
                     if(Phaser.Rectangle.intersects(leiRect, winZone))
                     {
                         //RIGHT
-                       // log('right');
-                        if(correctCount >= zoneSizes)
+                        correctCount++;
+                        if(correctCount >= zoneSizes.length)
                         {
                             //Win!
+                            state = GAME_OVER;
+                            playerWin();
                         }
                         else
                         {
-                            correctCount++;
                             timeObject.animations.currentAnim.frame++;
-
                             leiRect.width = zoneSizes[correctCount];
                         }
                     }
@@ -120,9 +144,13 @@ function mainGame() {
                         //log('wrong');
                         if(wrongCount < ornaments.length)
                             ornaments[wrongCount].body.allowGravity = true;
-
+                            
                         wrongCount++;
-                        //WRONG
+                        if(wrongCount >= ornaments.length)
+                        {
+                            state = GAME_OVER;
+                            playerLose();
+                        }
                     }
 
                     acceptingInput = false;
@@ -132,18 +160,27 @@ function mainGame() {
             if(state == NOT_PLAYING)
             {
                 state = PLAYING;
-
-                log('reset start time');
                 startTime = game.time.now;
-                correctCount = 0;
-                multiplier = 1;
-
                 speed = BASE_SPEED;
+                acceptingInput = true;
             }
 
-            if(state == GAME_OVER && canRestart))
+            if(state == GAME_OVER && canRestart)
             {
-                state = NOT_PLAYING;
+                canRestart = false;
+
+                if(lose.visible)
+                {
+                    tween = game.add.tween(lose).to( {y: -GAME_HEIGHT/2}, 500, Phaser.Easing.Quadratic.In, true);
+                    tween.onComplete.add(dropOutComplete, this);
+                }
+                else if(win.visible)
+                {
+                    tween = game.add.tween(win).to( {y: -GAME_HEIGHT/2}, 500, Phaser.Easing.Quadratic.In, true);
+                    tween.onComplete.add(dropOutComplete, this);   
+                }
+
+                initGame();
             }
         }
 
@@ -159,14 +196,24 @@ function mainGame() {
             game.physics.enable(ornament, Phaser.Physics.ARCADE);
             ornament.body.allowGravity = false;
         }
+
+        win = game.add.sprite(game.world.centerX, -GAME_HEIGHT/2, 'nice');
+        win.anchor.setTo(0.5, 0.5);
+        win.visible = false;
+        
+        lose = game.add.sprite(game.world.centerX, -GAME_HEIGHT/2, 'naughty');
+        lose.anchor.setTo(0.5, 0.5);
+        lose.visible = false;
     }
 
     function initGame(){
         correctCount = 0;
-        startTime = game.time.now;
+        wrongCount = 0;
+        endSoundCount = 0;
 
         for(i = 0; i < MAX_MISTAKES; i++)
         {
+            var ornament = ornaments[i];
             ornament.body.allowGravity = false;
             ornament.body.velocity = new Phaser.Point(0, 0);
             ornament.x = ornamentStartX + (i * ornamentIncrement);
@@ -175,7 +222,7 @@ function mainGame() {
     }
 
     function gameLoop(){
-        if(state == PLAYING)
+        if(state == PLAYING || state == GAME_OVER)
         {
             prevPos = timeObject.x;
 
@@ -205,10 +252,10 @@ function mainGame() {
             }
             prevDelta = delta;
         }
-    }
+        else
+        {
 
-    function initGame() {
-
+        }
     }
 
     function playerWin(){
@@ -216,6 +263,7 @@ function mainGame() {
 
         tween = game.add.tween(win).to( {y: GAME_HEIGHT/2}, 2000, Phaser.Easing.Bounce.Out, true);
         tween.onComplete.add(dropInComplete, this);
+        tween.onUpdateCallback(tweenUpdate, this);
     }
 
     function playerLose(){
@@ -223,6 +271,7 @@ function mainGame() {
 
         tween = game.add.tween(lose).to( {y: GAME_HEIGHT/2}, 2000, Phaser.Easing.Bounce.Out, true);
         tween.onComplete.add(dropInComplete, this);
+        tween.onUpdateCallback(tweenUpdate, this);
     }
 
     function dropInComplete(){
@@ -234,6 +283,60 @@ function mainGame() {
 
         lose.visible = false;
         win.visible = false;
+
+        timeObject.x = game.world.centerX;
+
+        leiBack.x = timeObject.x;
+        leiRect.centerX = timeObject.x;
+
+        goose.x = game.world.centerX;
+        winZone.centerX = goose.x - 25;
+
+        timeObject.animations.currentAnim.frame = 0;
+        leiRect.width = zoneSizes[0];
+    }
+
+    function tweenUpdate(){
+        var sprite;
+        var playerWins = false;
+        if(win.visible)
+        {
+            sprite = win;
+            playerWins = true;
+        }
+        else if (lose.visible)
+            sprite = lose;
+        else
+            return;
+
+        if(sprite.visible){
+            if(testPos)
+            {
+                if(prevY > sprite.position.y)
+                {
+                    if(endSoundCount < END_SOUND_MAX)
+                    {
+                        if(playerWins)
+                            sfx_bells.play('bells', 0, 0.3);
+                        else
+                            sfx_thump.play('thump', 0, 0.5);
+
+                        endSoundCount++;
+                        testPos = false;
+                    }
+                }
+            }
+            else
+            {
+                if(endSoundCount < END_SOUND_MAX)
+                {
+                    if(prevY < sprite.position.y)
+                        testPos = true;
+                }
+            }
+            
+            prevY = sprite.position.y;
+        }
     }
 
     function update() {
@@ -241,7 +344,7 @@ function mainGame() {
     }
 
     function render() {
-        game.debug.geom(leiRect, 'black', false);
-        game.debug.geom(winZone, 'red', false);
+        //game.debug.geom(leiRect, 'black', false);
+        //game.debug.geom(winZone, 'red', false);
     }
 };

@@ -19,10 +19,10 @@
 			<div class="about-game" id="about-game">
 				<h3>about this game</h3>
 				<p>
-					Goal: time your hips swinging to keep the hula hoop from falling! (10 times)<br/><br/>
+					Goal: properly time the swinging of your lei around your neck (9 times)<br/><br/>
 
-					Desktop: alternate pressing the left and right arrow key.<br/>
-					Mobile: alternate tapping the left and right side of the game screen.<br/>
+					Desktop: click anywhere while the white flowers pass over the goose's neck.<br/>
+					Mobile: tap anywhere while the white flowers pass over the goose's neck.<br/>
 				</p>
 				<small>Released December 19th, 2014</small>
 			</div>
