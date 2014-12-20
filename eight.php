@@ -19,9 +19,12 @@
 			<div class="about-game" id="about-game">
 				<h3>about this game</h3>
 				<p>
-					In A Partridge, use the spacebar and arrow keys to grab pears. Try to avoid breaking the ornaments. A Partridge also works on mobile. Steer the bird by tilting your phone, and tap to fly up.<br/>
+					Goal: drop milk into the maids' jars, avoid hitting chickens!<br/><br/>
+
+					Desktop: click to start, move with the left and right arrow keys, drop milk with spacebar.<br/>
+					Mobile: tap to start and drop milk, tilt left and right to move.<br/>	
 				</p>
-				<small>Released December 14th, 2014</small>
+				<small>Released December 21st, 2014</small>
 			</div>
 
 		</div>	

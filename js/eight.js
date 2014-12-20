@@ -43,16 +43,16 @@ function mainGame() {
 
     var winCount = 0;
 
+    var mobileMovement = 0;
+
     function Milk () {
         this.sprite = game.add.sprite(cow.x, cow.y, 'milk');
         this.sprite.anchor.setTo(0.5, 0.5);
-        this.sprite.scale.x = 0.5;
-        this.sprite.scale.y = 0.5;
         this.sprite.z = -1;
 
         game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
         this.sprite.body.allowGravity = false;
-        this.sprite.body.velocity.y = 250;
+        this.sprite.body.velocity.y = 400;
 
         this.hit = false;
 
@@ -63,8 +63,6 @@ function mainGame() {
     function Maid(xPos, yPos, moveSpeed) {
         this.sprite = game.add.sprite(xPos, yPos, 'maid');
         this.sprite.anchor.setTo(0.5, 0.5);
-        this.sprite.scale.x = 0.5;
-        this.sprite.scale.y = 0.5;
         this.sprite.z = -1;
 
         this.sprite.animations.add('walk');
@@ -105,10 +103,8 @@ function mainGame() {
     }
 
     function Chicken(){
-        this.sprite = game.add.sprite(-50, 420, 'chicken');
+        this.sprite = game.add.sprite(-50, 390, 'chicken');
         this.sprite.anchor.setTo(0.5, 0.5);
-        this.sprite.scale.x = 0.5;
-        this.sprite.scale.y = 0.5;
 
         this.sprite.animations.add('walk');
         this.sprite.animations.play('walk', 10, true);
@@ -162,9 +158,10 @@ function mainGame() {
 
             winCount++;
             if(winCount >= NUM_MAIDS)
+            {
                 playerWin();
-
-            state = GAME_OVER;
+                state = GAME_OVER;
+            }
         }
     }
 
@@ -200,13 +197,11 @@ function mainGame() {
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
         allSprites = game.add.group();
-
+        allSprites.sort('z', Phaser.Group.SORT_DESCENDING);
+        
         cow = game.add.sprite(game.world.centerX, 60, 'cow');
         cow.anchor.setTo(0.5, 0.5);
-
         originalScale = cow.scale.x;
-
-        allSprites.sort('z', Phaser.Group.SORT_DESCENDING);
         
         cursors = game.input.keyboard.createCursorKeys();
         
@@ -216,10 +211,44 @@ function mainGame() {
         }
         else
         {
+             var handleOrientation = function(e) {
+                var val = 0;
+                var orientation = window.orientation;
 
+                if(orientation == 0)
+                {
+                    val = e.gamma;
+                }
+                else if(orientation == 90)
+                {
+                    val = e.beta;
+                }
+                else if(orientation == -90)
+                {
+                    val = -e.beta;
+                }
+
+                //log(Number(val));
+
+                var THRESHOLD = 5;
+                if(val > THRESHOLD)
+                    mobileMovement = 1;//mooveRight();
+                else if (val < -THRESHOLD)
+                    mobileMovement = -1;//mooveLeft();
+                else
+                    mobileMovement = 0;//stopMoving();
+            };
+
+            window.addEventListener('deviceorientation', handleOrientation);
         }
 
         var onTouch = function(pointer) {
+            if(state == PLAYING)
+            {
+                if(!game.device.desktop)
+                    dropMilk();
+            }
+
             if(state == NOT_PLAYING)
             {
                 state = PLAYING;
@@ -240,6 +269,8 @@ function mainGame() {
                     tween = game.add.tween(win).to( {y: -GAME_HEIGHT/2}, 500, Phaser.Easing.Quadratic.In, true);
                     tween.onComplete.add(dropOutComplete, this);   
                 }
+
+                clearData();
             }
         }
         
@@ -269,13 +300,24 @@ function mainGame() {
     }
 
     function initGame(){ 
-        spawnIndex = 0;
+        winCount = 0;
+        endSoundCount = 0;
+
         spawnMaidEvent = game.time.events.repeat(Phaser.Timer.SECOND, NUM_MAIDS, spawnMaid, this);
         spawnChickenEvent = game.time.events.repeat(Phaser.Timer.SECOND, 3, spawnChicken, this);
+    }
+
+    function clearData(){
+        for(i = 0; i < maids.length; i++)
+        {
+            maids[i].sprite.destroy();
+        }
+
+        maids = [];
 
         for(i = 0; i < chickens.length; i++)
         {
-            chickens[i].destroy();
+            chickens[i].sprite.destroy();
         }
 
         chickens = [];
@@ -283,7 +325,7 @@ function mainGame() {
 
     function spawnMaid(){
         var xPos = (game.rnd.integerInRange(0, 1) == 1) ? -50 : 840;
-        new Maid(xPos, 400, 200);
+        new Maid(xPos, 370, 200);
     }
 
     function spawnChicken(){
@@ -306,17 +348,21 @@ function mainGame() {
     }
     
     function mobileInput(){
-        if(game.input.activePointer.isDown)
-        {
-            if(game.input.activePointer.x > GAME_WIDTH/2)
-            {
+        // if(game.input.activePointer.isDown)
+        // {
+        //     if(game.input.activePointer.x > GAME_WIDTH/2)
+        //     {
 
-            }
-            else
-            {
+        //     }
+        //     else
+        //     {
 
-            }
-        }
+        //     }
+        // }
+        if(mobileMovement == 1)
+            mooveRight();
+        else if(mobileMovement == -1)
+            mooveLeft();
     }
 
     function update() {
@@ -359,6 +405,9 @@ function mainGame() {
     }
 
     function playerWin(){
+        game.time.events.remove(spawnMaidEvent);
+        game.time.events.remove(spawnChickenEvent);
+
         win.visible = true;
 
         tween = game.add.tween(win).to( {y: GAME_HEIGHT/2}, 2000, Phaser.Easing.Bounce.Out, true);
@@ -367,6 +416,9 @@ function mainGame() {
     }
 
     function playerLose(){
+        game.time.events.remove(spawnMaidEvent);
+        game.time.events.remove(spawnChickenEvent);
+
         lose.visible = true;
 
         tween = game.add.tween(lose).to( {y: GAME_HEIGHT/2}, 2000, Phaser.Easing.Bounce.Out, true);
@@ -429,17 +481,17 @@ function mainGame() {
     }
 
     function render() {
-        for(i = 0; i < maids.length; i++)
-        {
-            game.debug.body(maids[i].sprite);
-        }
+        // for(i = 0; i < maids.length; i++)
+        // {
+        //     game.debug.body(maids[i].sprite);
+        // }
 
-        for(i = 0; i < milkObjs.length; i++)
-        {
-            game.debug.body(milkObjs[i]);
-        }
+        // for(i = 0; i < milkObjs.length; i++)
+        // {
+        //     game.debug.body(milkObjs[i]);
+        // }
 
-        for(i = 0; i < chickens.length; i++)
-            game.debug.body(chickens[i].sprite);
+        // for(i = 0; i < chickens.length; i++)
+        //     game.debug.body(chickens[i].sprite);
     }
 };
