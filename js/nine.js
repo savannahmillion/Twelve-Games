@@ -23,12 +23,38 @@ function mainGame() {
     var prevY;
     var testPos = false;
 
+    var positions = [
+        new Phaser.Point(250, 175),
+        new Phaser.Point(350, 100),
+        new Phaser.Point(450, 100),
+        new Phaser.Point(550, 175),
+        new Phaser.Point(550, 275),
+        new Phaser.Point(450, 350),
+        new Phaser.Point(350, 350),
+        new Phaser.Point(250, 275),
+        new Phaser.Point(400, 225)
+    ];
+
+    function Lady(position){
+        this.sprite = game.add.sprite(position.x, position.y, 'lady');
+        this.sprite.anchor.setTo(0.5, 0.5);
+
+        this.sprite.animations.add('dance', [0, 1, 2, 1]);
+        this.sprite.animations.add('cheer', [3]);
+        this.sprite.play('cheer', 10, true);
+
+        this.highlight = game.add.sprite(position.x, position.y, 'circle');
+        this.highlight.anchor.setTo(0.5, 0.5);
+    }
+
+
     function preload () {
         this.load.image('nice', 'img/nice.png');
         this.load.image('naughty', 'img/naughty.png');
 
         this.load.image('background', 'img/nine/background.png');
 
+        this.load.image('circle', 'img/nine/circle.png');
         this.load.atlasJSONHash('lady', 'img/nine/dancing-lady.png', 'img/nine/lady_anim.json');
 
         this.load.audio('sfx_bells', 'sfx/bells.wav');
@@ -86,6 +112,11 @@ function mainGame() {
         lose = game.add.sprite(game.world.centerX, -GAME_HEIGHT/2, 'naughty');
         lose.anchor.setTo(0.5, 0.5);
         lose.visible = false;
+
+        for(i = 0; i < positions.length; i++)
+        {
+            new Lady(positions[i]);
+        }
     }
 
     function initGame(){ 
