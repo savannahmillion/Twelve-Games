@@ -70,6 +70,10 @@ function mainGame() {
 
         game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
         this.sprite.body.allowGravity = false;
+        this.sprite.body.width *= 0.5;
+
+        this.milk = game.add.sprite(xPos, yPos - 78, 'milk');
+        this.milk.anchor.setTo(0.5, 0.5);
 
         if(xPos > GAME_WIDTH/2)
             this.sprite.body.velocity.x = -moveSpeed;
@@ -91,6 +95,8 @@ function mainGame() {
             {
                 this.sprite.destroy();
                 maids.splice(maids.indexOf(this), 1);
+
+                this.milk.destroy();
             }
         }
         else
@@ -100,6 +106,9 @@ function mainGame() {
                 this.sprite.body.collideWorldBounds = true;
             }
         }
+
+        this.milk.position.x = this.sprite.position.x;      
+        this.milk.visible = this.hasMilk;
     }
 
     function Chicken(){
@@ -481,17 +490,17 @@ function mainGame() {
     }
 
     function render() {
-        // for(i = 0; i < maids.length; i++)
-        // {
-        //     game.debug.body(maids[i].sprite);
-        // }
+         // for(i = 0; i < maids.length; i++)
+         // {
+         //     game.debug.body(maids[i].sprite);
+         // }
 
-        // for(i = 0; i < milkObjs.length; i++)
-        // {
-        //     game.debug.body(milkObjs[i]);
-        // }
+         // for(i = 0; i < milkObjs.length; i++)
+         // {
+         //     game.debug.body(milkObjs[i]);
+         // }
 
-        // for(i = 0; i < chickens.length; i++)
-        //     game.debug.body(chickens[i].sprite);
+         // for(i = 0; i < chickens.length; i++)
+         //     game.debug.body(chickens[i].sprite);
     }
 };
