@@ -1,0 +1,28 @@
+{"frames": [
+{
+	"frame": {"x":0,"y":0,"w":77,"h":93},
+	"rotated": false,
+	"trimmed": false,
+	"sourceSize": {"w":77,"h":93}
+},
+{
+	"frame": {"x":77,"y":0,"w":77,"h":93},
+	"rotated": false,
+	"trimmed": false,
+	"sourceSize": {"w":77,"h":93}
+},
+{
+	"frame": {"x":154,"y":0,"w":77,"h":93},
+	"rotated": false,
+	"trimmed": false,
+	"sourceSize": {"w":77,"h":93}
+}],
+"meta": {
+	"app": "http://www.texturepacker.com",
+	"version": "1.0",
+	"format": "RGBA8888",
+	"size": {"w":231,"h":93},
+	"scale": "1.0",
+	"smartupdate": "$TexturePacker:SmartUpdate:fb56f261b1eb04e3198824426595f64c$"
+}
+}
