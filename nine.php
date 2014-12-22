@@ -19,9 +19,12 @@
 			<div class="about-game" id="about-game">
 				<h3>about this game</h3>
 				<p>
-					In A Partridge, use the spacebar and arrow keys to grab pears. Try to avoid breaking the ornaments. A Partridge also works on mobile. Steer the bird by tilting your phone, and tap to fly up.<br/>
+					Goal: select the ladies who want to dance before their timer runs out! (blue circle disappears)<br/><br/>
+
+					Desktop: click to start and select.<br/>
+					Mobile: tap to start and select.<br/>	
 				</p>
-				<small>Released December 14th, 2014</small>
+				<small>Released December 22nd, 2014</small>
 			</div>
 
 		</div>	
