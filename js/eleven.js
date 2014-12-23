@@ -56,7 +56,12 @@ function mainGame() {
         this.moveX = 0;
         this.moveY = 0;
 
+        this.delay = 0;
+
         this.speed = 200;
+
+        this.sprite.body.width *= 0.25;
+        this.sprite.body.height *= 0.25;
 
         this.posQueue = [];
         this.followPos = new Phaser.Point(xPos, yPos);
@@ -80,6 +85,7 @@ function mainGame() {
     }
 
     Piper.prototype.update = function(){
+        this.delay++;
 
         this.posQueue.push(new Phaser.Point(this.sprite.x, this.sprite.y));
         if(this.posQueue.length >= QUEUE_SIZE)
@@ -251,10 +257,16 @@ function mainGame() {
 
         pipers = [];
         leader = new Piper(150, game.world.centerY);
+
+        pickup.visible = false;
+        pickup.body.enable = false;
+
+        trap.visible = false;
+        trap.body.enable = false;
     }
 
     function createPickup(){
-        updateRegions();
+        updateRegions(true);
         var randomRegionIndex = game.rnd.integerInRange(0, openRegions.length - 1);
         var region = openRegions[randomRegionIndex].trigger.body;
 
@@ -272,7 +284,7 @@ function mainGame() {
     }
 
     function createTrap(){
-        updateRegions();
+        updateRegions(false);
         var randomRegionIndex = game.rnd.integerInRange(0, openRegions.length - 1);
         var region = openRegions[randomRegionIndex].trigger.body;
 
@@ -316,12 +328,19 @@ function mainGame() {
 
                     piper.sprite.x = prevPiper.followPos.x;
                     piper.sprite.y = prevPiper.followPos.y;
+
+                    if(piper.delay > 10
+                    && Phaser.Rectangle.intersects(leader.sprite.body, piper.sprite.body))
+                    {
+                        playerLose();
+                        return;
+                    }
                 }
             }
         }
     }
 
-    function updateRegions(){
+    function updateRegions(ignorePickup){
         openRegions = [];
         for(i = 0; i < regions.length; i++)
         {
@@ -333,6 +352,10 @@ function mainGame() {
                 if(Phaser.Rectangle.intersects(region.body, piper.sprite.body))
                     pass = false;
             }
+
+            if(!ignorePickup)
+                if(Phaser.Rectangle.intersects(region.body, pickup.body))
+                    pass = false;
 
             if(pass)
                 openRegions.push(regions[i]);
@@ -349,6 +372,9 @@ function mainGame() {
         {
             new Piper(pickupSprite.x, pickupSprite.y);
             game.time.events.add(Phaser.Timer.SECOND, createPickup, this);
+
+            if(winCount > 4)
+                game.time.events.add(Phaser.Timer.SECOND * 1.2, createTrap, this);
         }
 
         pickupSprite.visible = false;
@@ -440,15 +466,15 @@ function mainGame() {
     }
 
     function render() {
-        //game.debug.body(leader.sprite);
-        //game.debug.body(pickup);
+        // for(i = 0; i < pipers.length; i++)
+        //     game.debug.body(pipers[i].sprite);
 
-        for(i = 0; i < regions.length; i++)
-        {
-            if(Phaser.Rectangle.intersects(regions[i].trigger.body, leader.sprite.body))
-                game.debug.body(regions[i], 'rgba(255,0,0,0.4)', false);
-            else
-                game.debug.body(regions[i], 'rgba(0,255,0,0.4)', false);
-        }
+        // for(i = 0; i < regions.length; i++)
+        // {
+        //     if(Phaser.Rectangle.intersects(regions[i].trigger.body, leader.sprite.body))
+        //         game.debug.body(regions[i].trigger, 'rgba(255,0,0,0.4)', false);
+        //     else
+        //         game.debug.body(regions[i].trigger, 'rgba(0,255,0,0.4)', false);
+        // }
     }
 };
