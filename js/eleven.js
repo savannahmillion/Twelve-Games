@@ -16,6 +16,7 @@ function mainGame() {
 
     var sfx_bells;
     var sfx_thump;
+    var sfx_flute;
 
     var endSoundCount = 0;
     var END_SOUND_MAX = 3;
@@ -114,6 +115,7 @@ function mainGame() {
 
         this.load.audio('sfx_bells', 'sfx/bells.wav');
         this.load.audio('sfx_thump', 'sfx/thump.wav');
+        this.load.audio('sfx_flute', 'sfx/eleven/flute.wav');
     }
 
     function create () {
@@ -127,6 +129,9 @@ function mainGame() {
 
         sfx_thump = game.add.audio('sfx_thump');
         sfx_thump.addMarker('thump', 0.0, 1.0);
+
+        sfx_flute = game.add.audio('sfx_flute');
+        sfx_flute.addMarker('flute', 0.0, 1.0);
         
         var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
         background.anchor.setTo(0.5, 0.5);
@@ -363,6 +368,8 @@ function mainGame() {
     }
 
     function hitPickup(piperSprite, pickupSprite){
+        sfx_flute.play('flute', 0, 0.3)
+
         winCount++;
         if(winCount >= 11)
         {

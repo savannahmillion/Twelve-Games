@@ -16,6 +16,8 @@ function mainGame() {
 
     var sfx_bells;
     var sfx_thump;
+    var sfx_drum;
+    var sfx_paddle;
 
     var endSoundCount = 0;
     var END_SOUND_MAX = 3;
@@ -46,6 +48,9 @@ function mainGame() {
         
         this.load.audio('sfx_bells', 'sfx/bells.wav');
         this.load.audio('sfx_thump', 'sfx/thump.wav');
+
+        this.load.audio('sfx_drum', 'sfx/twelve/drum.wav');
+        this.load.audio('sfx_paddle', 'sfx/twelve/hit.wav');
     }
 
     function create () {
@@ -59,6 +64,12 @@ function mainGame() {
 
         sfx_thump = game.add.audio('sfx_thump');
         sfx_thump.addMarker('thump', 0.0, 1.0);
+
+        sfx_drum = game.add.audio('sfx_drum');
+        sfx_drum.addMarker('drum', 0.0, 1.0);
+
+        sfx_paddle = game.add.audio('sfx_paddle');
+        sfx_paddle.addMarker('hit', 0.0, 1.0);
         
         var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
         background.anchor.setTo(0.5, 0.5);
@@ -75,6 +86,8 @@ function mainGame() {
         game.physics.enable(ornament, Phaser.Physics.ARCADE);
         ornament.body.collideWorldBounds = true;
         ornament.body.bounce.set(1);
+        ornament.body.width *= 0.8;
+        ornament.body.height *= 0.8;
 
         for(w = 0; w < 4; w++)
         {
@@ -86,6 +99,9 @@ function mainGame() {
 
                 drum.body.immovable = true;
                 drum.body.bounce.set(1);
+                drum.body.width *= 0.8;
+                drum.body.height *= 0.8;
+
                 drums.push(drum);
             }
         }
@@ -152,7 +168,7 @@ function mainGame() {
 
     function launchBall(){
         ornament.body.collideWorldBounds = true;
-        
+
         ornament.body.velocity.y = -ballSpeed;
         ornament.body.velocity.x = game.rnd.integerInRange(-ballSpeed, ballSpeed);
     }
@@ -236,6 +252,7 @@ function mainGame() {
 
     function paddleHit(paddleSprite, ornamentSprite){
         ornament.body.velocity.x = (ornamentSprite.x - paddleSprite.x) * 2;
+        sfx_paddle.play('hit', 0, 0.3);
     }
 
     function drumHit(drumSprite, ornamentSprite){
@@ -244,6 +261,8 @@ function mainGame() {
 
         ornament.body.velocity.x *= 1.05;
         ornament.body.velocity.y *= 1.05;
+
+        sfx_drum.play('drum', 0, 0.3);
 
         winCount++;
         if(winCount == 12)
